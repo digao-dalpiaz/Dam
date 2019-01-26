@@ -216,6 +216,34 @@ The method `ShowErrorMsg` shows the currently exception. You can use this as try
 
 The function `CaptureErrorMsg` allows you to get the error message on current exception. You should use this at try..except block.
 
+**Exception catch example:**
+
+```delphi
+try
+  DoSomeStuff;
+except
+  ShowErrorMessage; //will show error message dialog using Dam concept
+end;
+```
+
+```delphi
+try
+  DoSaveFile;
+except
+  MsgError('Fatal error saving file: %p', [CaptureErrorMsg]);
+end;
+```
+
+If you specify literal `{except}` at message text, this will be replaced by the current error message:
+
+```delphi
+try
+  DoSaveFile;
+except
+  MsgError('Fatal error saving file: {except}'); //don't need to use CaptureErrorMsg function!
+end;
+```
+
 ## History
 
 The design of this component came about around 2005 when I checked the need to create standardized dialog boxes for my applications.
