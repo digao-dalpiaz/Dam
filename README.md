@@ -46,3 +46,13 @@ If you specify parameters in the message text, then when you call the message me
 
 *Please read carefully this documentation to know how this component works.* :grin:
 
+## Screenshots
+
+The Dam container listing all messages created, stored at DFM:
+
+![Dam List](Dam_List.png)
+
+The Message Wizard Creator, to customize the message dialog:
+
+![DamMsg Editor](DamMsg_Editor.png)
+
