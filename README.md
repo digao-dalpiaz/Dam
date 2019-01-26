@@ -118,5 +118,7 @@ If you use the wizard, the name will be automatically start with this character.
 
 **OK, but I don't want to use this unit! Is there another method?**
 
-Yes, of course. You can call the message by using the functions of TDamMsg object. Just use the message object `Run` function. In this case I recomend you to not hide the message, so you can call by the object name as is.
+Yes, of course. You can call the message by using the functions of TDamMsg object. Just use the message object `Run` or `RunAsBool` functions. In this case I recomend you to not hide the message, so you can call by the object name as is.
+
+> But I honestly recommend you to use the unit as it will make much more sense. :wink:
 
