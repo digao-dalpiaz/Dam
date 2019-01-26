@@ -126,3 +126,63 @@ Yes, of course. You can call the message by using the functions of TDamMsg objec
 
 > But I honestly recommend you to use the unit as it will make much more sense. :wink:
 
+**Can I use more than one TDam container in my application?**
+
+Yes, you can. The TDam allows you to define some configurations, like the message font and sounds. So you may have more than one TDam to have this group of configuration. Besides that, you can use various TDam to group messages by category. You can put TDam in specific forms, eighter, but remember that the containter needs to exist to fire the messages, of course.
+
+## TDam properties
+
+`DamDefault: Boolean` = Defines if this TDam will be used to fire quick messages (please read Quick Messages section). You only can have one defined as Default in the application.
+
+`DamUnitName: String` = Specify the unit name to be created with all message methods in the project folder. Do not specify file extension, because the component will complete the name automatically with ".pas" extension.
+
+`HandleExceptions: Boolean` = Defines this TDam to handle all application exceptions, showing the error message with the same dialog as all other Dam messages. Only one TDam can be set to handle exceptions in the application.
+
+`Language: TDamLanguage` = Defines the language used by message buttons and message form title.
+
+`MessageFont: TFont` = Defines the text font of messages
+
+`PlaySounds: Boolean` = Enabled system sounds when showing messages of kind Warning, Question and Error.
+
+## TDamMsg properties
+
+`Button1: String` = Caption of Button 1 on message dialog. Available when Buttons=dbOne/dbTwo/dbThree.
+
+`Button2: String` = Caption of Button 2 on message dialog. Available when Buttons=dbTwo/dbThree.
+
+`Button3: String` = Caption of Button 3 on message dialog. Available when Buttons=dbThree.
+
+`Buttons: TDamMsgButtons` = Defines the buttons in the message dialog:
+- dbOK: Defines one button OK
+- dbYesNo: Defines two buttons Yes/No
+- dbOne: Defines one button by Button1 defined caption
+- dbTwo: Defines two buttons by Button1 and Button2 defined captions
+- dbThree: Defines three buttons by Button1, Button2 and Button3 defined captions
+
+`CustomIcon: TIcon` = Defines a custom icon to show in the messsage dialog. This icon only is shown when Icon=diCustom.
+
+`CustomTitle: String` = Defines a custom title for message form. This caption is only used then Title=dtCustom.
+
+`Icon: TDamMsgIcon` = Defines the icon in the message dialog:
+- diApp: The application icon
+- diInfo: The information system icon
+- diQuest: The question system icon
+- diWarn: The warning system icon
+- diError: The error system icon
+- diCustom: The icon is defined in the CustomIcon property
+
+`Message: String` = The message text. Please use the message wizard creator for text formatting or read the HTLabel documentation.
+
+`Name: String` = Message object name. If then name starts with `_` character, means the message is hidden, so the Delphi will not think you are calling this object when you call the method of message having the same name.
+
+`RaiseExcept: Boolean` = Set this message as a RAISE message. When you call this message, will be raised an exception with the message text. In this case, you need to use at least one TDam with HandleExceptions=True, otherwise the message will not be formatted with Dam customization.
+
+`SwapFocus: Boolean` = By default, when a message is fired, always the first button on the left will start with focus. If you enable this option, this message will start the focus at last button (the button at right).
+
+`Title: TDamMsgTitle` = Defines the message form title
+- dtApp: The title is the same as application title
+- dtParentForm: The title is the same as parent form title
+- dtMainForm: The title is the same as main form title
+- dtByIcon: The title is defined by Icon property (this uses language resource)
+- dtCustom: The title is defined by CustomTitle property
+
