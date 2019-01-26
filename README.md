@@ -63,15 +63,15 @@ If you specify parameters in the message text, then when you call the message me
 
 The Dam container listing all messages created, stored at DFM:
 
-![Dam List](Dam_List.png)
+![Dam List](images/Dam_List.png)
 
 The Message Wizard Creator, to customize the message dialog:
 
-![DamMsg Editor](DamMsg_Editor.png)
+![DamMsg Editor](images/DamMsg_Editor.png)
 
 The Message Dialog: :stuck_out_tongue:
 
-![Dam Message Dialog](Dam_Dialog.png)
+![Dam Message Dialog](images/Dam_Dialog.png)
 
 ## How to install
 
