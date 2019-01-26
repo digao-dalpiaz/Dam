@@ -244,6 +244,16 @@ except
 end;
 ```
 
+You can also re-raise an exception:
+
+```delphi
+try
+  DoSaveFile;
+except
+  MsgRaise('Fatal error saving file: {except}'); //re-raise a new exception with better text message
+end;
+```
+
 ## History
 
 The design of this component came about around 2005 when I checked the need to create standardized dialog boxes for my applications.
