@@ -62,6 +62,7 @@ The Message Wizard Creator, to customize the message dialog:
 
    This is a label with HTML formatting component. The messages uses this component to display formatted text.
 
+
 2. Open the package DamPackage in the Delphi. Then Build and Install.
 
 3. Add "Lib" sub folder to Delphi Library Path.
