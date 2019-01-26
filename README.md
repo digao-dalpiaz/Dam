@@ -96,12 +96,27 @@ The language set the caption of buttons in the message dialogs, like OK, Cancel,
 
 The main ideia is to drop one TDam in the main form, or main data module. The TDam is a container that have all TDamMsg (message dialog).
 
+To manage messages, just double-click at the TDam component.
+
 **But how to call the messages?**
 
-The TDam has a property called DamUnitName. Here you define a unit name to contain all message methods. The component will create this unit automatically with the methods based in all created messages (with the same name as the message name).
+The TDam has a property called `DamUnitName`. Here you define a unit name to contain all message methods. When you use the function **Build Unit**, the component will create this unit automatically with the methods based in all created messages (with the same name as the message name).
 
 So, at any unit, you just add a uses to this unit, and call the message you want by message name. If the message has parameters, the method will be declared automatically asking for parameters in an array.
 
 **Yeah, but if I'am at the same unit that is the TDam and TDamMsg messages, if I call method by message name, the Delphi think I'm reffering the object of message!**
 
 This is true, and because of that, the component has a object hidden function. You only need to name the message starting with `_`. So the unit builder will remove this character to name the method and the Delphi will not confuse the two things.
+
+I recomend you to create all messages named starting with the `_` character.
+
+If you use the wizard, the name will be automatically start with this character.
+
+*There is a button on the Dam manager to hide/un-hide all selected messages.*
+
+> Remember, every time you change the messages, you need to rebuld the unit. Just click the button Build Unit to update.
+
+**OK, but I don't want to use this unit! Is there another method?**
+
+Yes, of course. You can call the message by using the functions of TDamMsg object. Just use the message object `Run` function. In this case I recomend you to not hide the message, so you can call by the object name as is.
+
