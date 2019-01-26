@@ -58,10 +58,9 @@ The Message Wizard Creator, to customize the message dialog:
 
 ## How to install
 
-1 .First you need to install my HTLabel component. Get it here: https://github.com/digao-dalpiaz/HTLabel
+1. First you need to install my HTLabel component. Get it here: https://github.com/digao-dalpiaz/HTLabel
 
    This is a label with HTML formatting component. The messages uses this component to display formatted text.
-
 
 2. Open the package DamPackage in the Delphi. Then Build and Install.
 
