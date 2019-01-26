@@ -181,7 +181,7 @@ Yes, you can. The TDam allows you to define some configurations, like the messag
 - diError: The error system icon
 - diCustom: The icon is defined in the CustomIcon property
 
-`Message: String` = The message text. Please use the message wizard creator for text formatting or read the HTLabel documentation. The parameters replaceble are defined by `%p` at message text. Use the parameters at array in the message method in the same order as specifyed in the message text.
+`Message: String` = The message text. Please use the message wizard creator for text formatting or read the HTLabel documentation. The parameters replaceable are defined by `%p` at message text. Use the parameters at array in the message method in the same order as specifyed in the message text. You can also specify the literal `{except}` to catch current exception message and replace at this variable in the message text (please, see Exceptions section).
 
 `Name: String` = Message object name. If then name starts with `_` character, means the message is hidden, so the Delphi will not think you are calling this object when you call the method of message having the same name.
 
