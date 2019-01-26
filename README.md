@@ -14,6 +14,7 @@
 - [TDam properties](#tdam-properties)
 - [TDamMsg properties](#tdammsg-properties)
 - [Quick Messages](#quick-messages)
+- [History](#history)
 
 ## Introduction
 
@@ -214,3 +215,15 @@ You can show quick messages directly on the code, just typing the messages and p
 The method `ShowErrorMsg` shows the currently exception. You can use this as try..except block.
 
 The function `CaptureErrorMsg` allows you to get the error message on current exception. You should use this at try..except block.
+
+## History
+
+The design of this component came about around 2005 when I checked the need to create standardized dialog boxes for my applications.
+
+At that time, I called the component of "Better Dialogue", which in Portuguese would be DM.
+
+After a while, the project came to contain a new structure with the container. Then I renamed the component for "Dialogue Still Better", which in Portuguese is DAM.
+
+So the name of the component ended up staying as Dam.
+
+Today I use this component in almost all my Delphi applications.
