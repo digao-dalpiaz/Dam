@@ -73,3 +73,22 @@ The Message Wizard Creator, to customize the message dialog:
 
 > Supports Delphi XE2..Delphi 10.3 Rio
 
+# Supported Languages
+
+At this time, the following languages are available for messages:
+
+- English
+- Portuguese
+- Spanish
+- German
+- Italian
+- Chinese
+- Japanese
+- Greek
+- Russian
+- French
+
+The language set the caption of buttons in the message dialogs, like OK, Cancel, Yes, No, and the title of the form, when Information, Question, Warning, Error and Message (custom). The form title can be changed in the message properties and can be automatically set by other objects, like parent form title, main form title and application title.
+
+> You can open an issue to send me a new language translation or correct current translation
+
