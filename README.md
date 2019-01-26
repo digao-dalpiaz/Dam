@@ -148,6 +148,16 @@ If message has two or three buttons, the method will be a function. When it has 
 
 When message has three button, the funcion returns integer value 1, 2 or 3, dependind on which button was pressed in the message dialog. The first button is the left one; the second is the middle button; the third button is de right button.
 
+So, when using three buttons, you can use a variable or even a `case`:
+
+```delphi
+case QuestionSaveFile([aFileName]) of
+  1: DoSaveFile; //Yes button
+  2: {continue}; //No button
+  3: Abort; //Cancel button
+end;
+```
+
 ## TDam properties
 
 `DamDefault: Boolean` = Defines if this TDam will be used to fire quick messages (please read Quick Messages section). You only can have one defined as Default in the application.
