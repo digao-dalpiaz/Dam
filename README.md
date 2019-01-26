@@ -199,13 +199,14 @@ Yes, you can. The TDam allows you to define some configurations, like the messag
 ## Quick Messages
 
 ```delphi
-procedure MsgInfo(const Msg: String; const Params: TDamParams = nil);
-procedure MsgWarn(const Msg: String; const Params: TDamParams = nil);
-procedure MsgError(const Msg: String; const Params: TDamParams = nil);
-function MsgQuest(const Msg: String; const Params: TDamParams = nil): Boolean;
-procedure ShowErrorMsg;
-function CaptureErrorMsg: String;
-procedure MsgRaise(const Msg: String; const Params: TDamParams = nil);
+procedure MsgInfo(const Msg: String; const Params: TDamParams = nil); //message with Information icon
+procedure MsgWarn(const Msg: String; const Params: TDamParams = nil); //message with Warning icon
+procedure MsgError(const Msg: String; const Params: TDamParams = nil); //message with Error icon
+function MsgQuest(const Msg: String; const Params: TDamParams = nil): Boolean; //message with Question mark icon
+procedure MsgRaise(const Msg: String; const Params: TDamParams = nil); //message with Error icon (this raises an exception)
+
+procedure ShowErrorMsg; //show current error message
+function CaptureErrorMsg: String; //get current error message
 ```
 
 These methods are available globally, at unit `DamUnit` or at unit name you have specifyed in the DamUnitName property.
