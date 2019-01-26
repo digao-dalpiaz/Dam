@@ -222,8 +222,8 @@ The design of this component came about around 2005 when I checked the need to c
 
 At that time, I called the component of "Better Dialog", which in Portuguese would be DM.
 
-After a while, the project came to contain a new structure with the container. Then I renamed the component for "Dialog Still Better", which in Portuguese is DAM.
+After a while, the project came to contain a new structure with the container. Then I renamed the component for "Dialog Still Better", which in Portuguese is DAM. :laughing:
 
 So the name of the component ended up staying as Dam.
 
-Today I use this component in almost all my Delphi applications.
+Today I use this component in almost all my Delphi applications. :wink:
