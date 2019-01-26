@@ -3,6 +3,9 @@
 
 ## Delphi Message Dialogs with Formatted Text
 
+![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-XE2..10.3%20Rio-blue.svg)
+![Delphi Supported Versions](https://img.shields.io/badge/Dam%20Version-3.0-green.svg)
+
 ## Introduction
 
 Almost every application you build, you need to add message dialogs.
