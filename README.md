@@ -220,7 +220,7 @@ The function `CaptureErrorMsg` allows you to get the error message on current ex
 
 The design of this component came about around 2005 when I checked the need to create standardized dialog boxes for my applications.
 
-At that time, I called the component of "Better Dialogue", which in Portuguese would be DM.
+At that time, I called the component of "Better Dialog", which in Portuguese would be DM.
 
 After a while, the project came to contain a new structure with the container. Then I renamed the component for "Dialogue Still Better", which in Portuguese is DAM.
 
