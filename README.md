@@ -140,6 +140,14 @@ Yes, of course. You can call the message by using the functions of TDamMsg objec
 
 Yes, you can. The TDam allows you to define some configurations, like the message font and sounds. So you may have more than one TDam to have this group of configuration. Besides that, you can use various TDam to group messages by category. You can put TDam in specific forms, eighter, but remember that the containter needs to exist to fire the messages, of course.
 
+**Message result codes:**
+
+If you call message by method of message name, the method will be a procedure if message has only one button.
+
+If message has two or three buttons, the method will be a function. When it has two buttons, the function will always return boolean value, retuning true if first button on the left was clicked, or returning false if second button (last button on the right) was clicked.
+
+When message has three button, the funcion returns integer value 1, 2 or 3, dependind on which button was pressed in the message dialog. The first button is the left one; the second is the middle button; the third button is de right button.
+
 ## TDam properties
 
 `DamDefault: Boolean` = Defines if this TDam will be used to fire quick messages (please read Quick Messages section). You only can have one defined as Default in the application.
