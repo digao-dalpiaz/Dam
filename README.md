@@ -171,7 +171,7 @@ Yes, you can. The TDam allows you to define some configurations, like the messag
 - diError: The error system icon
 - diCustom: The icon is defined in the CustomIcon property
 
-`Message: String` = The message text. Please use the message wizard creator for text formatting or read the HTLabel documentation.
+`Message: String` = The message text. Please use the message wizard creator for text formatting or read the HTLabel documentation. The parameters replaceble are defined by `%p` at message text. Use the parameters at array in the message method in the same order as specifyed in the message text.
 
 `Name: String` = Message object name. If then name starts with `_` character, means the message is hidden, so the Delphi will not think you are calling this object when you call the method of message having the same name.
 
@@ -186,3 +186,22 @@ Yes, you can. The TDam allows you to define some configurations, like the messag
 - dtByIcon: The title is defined by Icon property (this uses language resource)
 - dtCustom: The title is defined by CustomTitle property
 
+## Quick Messages
+
+```delphi
+procedure MsgInfo(const Msg: String; const Params: TDamParams = nil);
+procedure MsgWarn(const Msg: String; const Params: TDamParams = nil);
+procedure MsgError(const Msg: String; const Params: TDamParams = nil);
+function MsgQuest(const Msg: String; const Params: TDamParams = nil): Boolean;
+procedure ShowErrorMsg;
+function CaptureErrorMsg: String;
+procedure MsgRaise(const Msg: String; const Params: TDamParams = nil);
+```
+
+These methods are available globally, at unit `DamUnit` or at unit name you have specifyed in the DamUnitName property.
+
+You can show quick messages directly on the code, just typing the messages and parameters you like.
+
+The method `ShowErrorMsg` shows the currently exception. You can use this as try..except block.
+
+The function `CaptureErrorMsg` allows you to get the error message on current exception. You should use this at try..except block.
