@@ -59,6 +59,10 @@ The Message Wizard Creator, to customize the message dialog:
 
 ![DamMsg Editor](DamMsg_Editor.png)
 
+The Message Dialog: :stuck_out_tongue:
+
+![Dam Message Dialog](Dam_Dialog.png)
+
 ## How to install
 
 1. First you need to install my HTLabel component. Get it here: https://github.com/digao-dalpiaz/HTLabel
