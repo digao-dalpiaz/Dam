@@ -213,6 +213,8 @@ These methods are available globally, at unit `DamUnit` or at unit name you have
 
 You can show quick messages directly on the code, just typing the messages and parameters you like.
 
+The function `MsgQuest` results true if Yes button was pressed, or returns false if No button was pressed.
+
 The method `ShowErrorMsg` shows the currently exception. You can use this as try..except block.
 
 The function `CaptureErrorMsg` allows you to get the error message on current exception. You should use this at try..except block.
