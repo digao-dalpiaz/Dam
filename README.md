@@ -81,7 +81,7 @@ The Message Dialog: :stuck_out_tongue:
 
 2. Open the package DamPackage in the Delphi. Then Build and Install.
 
-3. Add "Lib" sub folder to Delphi Library Path.
+3. Add "Lib" sub folder to Delphi Library Path (Tools\Options).
 
 4. Run AfterBuild.bat to publish DFM and RES to Lib folder.
 
