@@ -1,3 +1,13 @@
+{------------------------------------------------------------------------------
+TDam component
+Developed by Rodrigo Depiné Dalpiaz (digão dalpiaz)
+Non visual component to manage message dialogs
+
+https://github.com/digao-dalpiaz/Dam
+
+Please, read the documentation at GitHub link.
+------------------------------------------------------------------------------}
+
 unit DamUnit;
 
 interface
