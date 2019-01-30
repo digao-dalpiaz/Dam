@@ -26,7 +26,7 @@ As your project gets bigger, the dialogs may mess up your code, mainly if you ne
 
 If you need to format some part of the message, you need to add labels in a custom form. This is could be really bad.
 
-Figure out this message:
+Look at this message:
 
 ```delphi
 begin
