@@ -3,7 +3,7 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
   Top = 125
   BorderStyle = bsDialog
   Caption = 'TDamMsg Editor'
-  ClientHeight = 369
+  ClientHeight = 385
   ClientWidth = 545
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -536,6 +536,13 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     ParentFont = False
     WordWrap = True
   end
+  object Label1: TLabel
+    Left = 8
+    Top = 312
+    Width = 104
+    Height = 13
+    Caption = 'Message object name'
+  end
   object BtnOK: TBitBtn
     Left = 472
     Top = 216
@@ -564,7 +571,7 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
   end
   object EdNome: TEdit
     Left = 8
-    Top = 312
+    Top = 328
     Width = 385
     Height = 20
     AutoSize = False
@@ -603,7 +610,7 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
   object Box: TScrollBox
     Left = 8
     Top = 216
-    Width = 385
+    Width = 457
     Height = 89
     VertScrollBar.Smooth = True
     VertScrollBar.Tracking = True
@@ -616,7 +623,7 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     object LbMsg: THTLabel
       Left = 4
       Top = 4
-      Width = 353
+      Width = 429
       Height = 13
       Text = 'PREVIEW'
       AutoHeight = True
@@ -639,7 +646,7 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
   end
   object BoxQuickButtons: TFlowPanel
     Left = 8
-    Top = 336
+    Top = 352
     Width = 409
     Height = 33
     BevelOuter = bvNone

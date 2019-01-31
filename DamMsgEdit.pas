@@ -48,6 +48,7 @@ type
     EdBgColor: TColorBox;
     EdAnyColor: TColorBox;
     M: TRichEdit;
+    Label1: TLabel;
     procedure MChange(Sender: TObject);
     procedure BtnBoldClick(Sender: TObject);
     procedure BtnItalicClick(Sender: TObject);
