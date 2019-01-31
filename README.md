@@ -73,6 +73,8 @@ The Message Dialog: :stuck_out_tongue:
 
 ![Dam Message Dialog](images/Dam_Dialog.png)
 
+> The shortcut `CTRL+C` is available on message form to copy the message to clipboard.
+
 ## How to install
 
 1. First you need to install my HTLabel component. Get it here: https://github.com/digao-dalpiaz/HTLabel
