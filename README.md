@@ -149,6 +149,8 @@ Yes, of course. You can call the message by using the functions of TDamMsg objec
 
 Yes, you can. The TDam allows you to define some configurations, like the message font and sounds. So you may have more than one TDam to have this group of configuration. Besides that, you can use various TDam to group messages by category. You can put TDam in specific forms, eighter, but remember that the containter needs to exist to fire the messages, of course.
 
+If you are using more than one TDam, I recomend you to set the same `DamUnitName` at all TDam components, so when you call **Build Unit** button, it will be generated a single unit with all messages of all TDam containers. So you can use this single unit at all other units of your project to call any message.
+
 **Message result codes:**
 
 If you call message by method of message name, the method will be a procedure if message has only one button.
