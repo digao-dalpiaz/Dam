@@ -174,6 +174,10 @@ end;
 
 `PlaySounds: Boolean` = Enabled system sounds when showing messages of kind Warning, Question and Error.
 
+`MessageColor: TColor` = Define background color of message area on message dialog.
+
+`ButtonsColor: TColor` = Define background color of buttons area on message dialog.
+
 ## TDamMsg properties
 
 `Button1: String` = Caption of Button 1 on message dialog. Available when Buttons=dbOne/dbTwo/dbThree.
