@@ -6,6 +6,7 @@
 ![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-XE2..10.3%20Rio-blue.svg)
 ![Delphi Supported Versions](https://img.shields.io/badge/Dam%20Version-3.0-green.svg)
 
+- [What's New](#whats-new)
 - [Introduction](#introduction)
 - [Screenshots](#screenshots)
 - [How to install](#how-to-install)
@@ -15,6 +16,11 @@
 - [TDamMsg properties](#tdammsg-properties)
 - [Quick Messages](#quick-messages)
 - [History](#history)
+
+## What's New
+
+- 01/05/2019
+   Add new properties MessageColor and ButtonsColor on TDam component, to allow message dialog customization.
 
 ## Introduction
 
