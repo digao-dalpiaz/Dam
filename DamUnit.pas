@@ -27,6 +27,7 @@ type
     FFont: TFont;
     FDefault: Boolean;
     FUnit: String;
+    FColorMsg, FColorBtn: TColor;
     procedure SetFont(const Value: TFont);
     function GetFontStored: Boolean;
 
@@ -45,6 +46,8 @@ type
     property DamDefault: Boolean read FDefault write FDefault default False;
     property DamUnitName: String read FUnit write FUnit;
     property PlaySounds: Boolean read FSounds write FSounds default True;
+    property MessageColor: TColor read FColorMsg write FColorMsg default clWhite;
+    property ButtonsColor: TColor read FColorBtn write FColorBtn default clBtnFace;
   end;
 
   TDamMsgRes = 1..3;
@@ -330,6 +333,9 @@ begin
   FFont.Size := 10;
 
   FSounds := True;
+
+  FColorMsg := clWhite;
+  FColorBtn := clBtnFace;
 
   case SysLocale.PriLangID of
     LANG_ENGLISH: FLanguage := dgEnglish;

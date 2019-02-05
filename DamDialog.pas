@@ -124,6 +124,9 @@ begin
 
     if DamMsg.Dam.PlaySounds then DoSound;
 
+    Color := DamMsg.Dam.MessageColor;
+    BoxButtons.Color := DamMsg.Dam.ButtonsColor;
+
     case DamMsg.Title of
       dtApp       : Caption := Application.Title;
       dtParentForm: Caption := TForm(DamMsg.Dam.Owner).Caption;
