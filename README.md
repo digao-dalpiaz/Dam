@@ -244,6 +244,8 @@ These methods are available globally, at unit `DamUnit` or at unit name you have
 
 You can show quick messages directly on the code, just typing the messages and parameters you like.
 
+> These methods will use the TDam container that is defined as *Default*. So you need to have one TDam available with `DamDefault` property set to **True**.
+
 The function `MsgQuest` results true if Yes button was pressed, or returns false if No button was pressed.
 
 The method `ShowErrorMsg` shows the currently exception. You can use this as try..except block.
