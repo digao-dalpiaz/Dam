@@ -19,7 +19,8 @@
 
 ## What's New
 
-- 01/05/2019
+- 02/05/2019
+
    Add new properties MessageColor and ButtonsColor on TDam component, to allow message dialog customization.
 
 ## Introduction
