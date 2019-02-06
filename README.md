@@ -7,6 +7,7 @@
 ![Delphi Supported Versions](https://img.shields.io/badge/Dam%20Version-3.0-green.svg)
 
 ![Dam Super Print](images/dam_super_print.png)
+![Dam Super Print 2](images/dam_super_print2.png)
 
 - [What's New](#whats-new)
 - [Introduction](#introduction)
