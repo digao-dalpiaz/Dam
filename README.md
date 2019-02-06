@@ -22,7 +22,7 @@
 
 - 02/06/2019
 
-   - Add new property AutoWidth to allow message form auto strech horizontally according message text.
+   - Add new property AutoWidth to allow message form auto stretch horizontally according message text.
    
    - Add new property CenterButtons to arrange buttons on center at message form, otherwhise they will be right-aligned.
 
