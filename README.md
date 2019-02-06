@@ -22,7 +22,9 @@
 
 - 02/06/2019
 
-   Add new property AutoWidth to allow message form auto strech horizontally according message text.
+   - Add new property AutoWidth to allow message form auto strech horizontally according message text.
+   
+   - Add new property CenterButtons to arrange buttons on center at message form, otherwhise they will be right-aligned.
 
 - 02/05/2019
 
@@ -177,6 +179,8 @@ end;
 ## TDam properties
 
 `AutoWidth: Boolean` = Set the dialog form to auto stretch horizontally according to te message text. *There is a minimum and maximum fixed limits to the message form*.
+
+`CenterButtons: Boolean` = Define if the buttons at message form will be aligned at center. If this property is false, the buttons will be aligned at right of form.
 
 `DamDefault: Boolean` = Defines if this TDam will be used to fire quick messages (please read Quick Messages section). You only can have one defined as Default in the application.
 
