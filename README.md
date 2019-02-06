@@ -15,6 +15,7 @@
 - [TDam properties](#tdam-properties)
 - [TDamMsg properties](#tdammsg-properties)
 - [Quick Messages](#quick-messages)
+- [How to change Language file](#how-to-change-language-file)
 - [History](#history)
 
 ## What's New
@@ -291,6 +292,14 @@ except
   MsgRaise('Fatal error saving file: {except}'); //re-raise a new exception with better text message
 end;
 ```
+
+## How to change Language file
+
+There is a file called DamLang.ini, which has all strings used on the component. If you want to change some text on this file, you will need to run "Build Dam Resource.bat" after that. This batch will create a new file "Dam_Resource.res" at the same folder (the source folder).
+
+After that, please run the "AfterBuild.bat" to publish this new resource file to the "Lib" folder.
+
+> If you want to add new language, some changes in the code will be needed. So, please, open a new issue and post the language strings you want, then I will apply in the component.
 
 ## History
 
