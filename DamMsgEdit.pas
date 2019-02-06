@@ -49,6 +49,7 @@ type
     EdAnyColor: TColorBox;
     M: TRichEdit;
     Label1: TLabel;
+    BtnHelp: TBitBtn;
     procedure MChange(Sender: TObject);
     procedure BtnBoldClick(Sender: TObject);
     procedure BtnItalicClick(Sender: TObject);
@@ -68,6 +69,7 @@ type
     procedure BtnDoFontClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure EdFontDropDown(Sender: TObject);
+    procedure BtnHelpClick(Sender: TObject);
   public
     Dam: TDam;
     DamMsg: TDamMsg;
@@ -84,7 +86,8 @@ implementation
 
 {$R *.dfm}
 
-uses Vcl.Graphics, System.SysUtils, Winapi.Messages;
+uses Vcl.Graphics, System.SysUtils,
+  Winapi.Windows, Winapi.Messages, Winapi.ShellAPI;
 
 procedure TFrmDamMsgEdit.FormCreate(Sender: TObject);
 begin
@@ -391,6 +394,11 @@ begin
   Target.Name := EdNome.Text;
   Target.Message := M.Text;
   SetBtn(Target);
+end;
+
+procedure TFrmDamMsgEdit.BtnHelpClick(Sender: TObject);
+begin
+  ShellExecute(0, '', 'https://github.com/digao-dalpiaz/Dam', '', '', SW_SHOWNORMAL);
 end;
 
 end.
