@@ -172,6 +172,8 @@ end;
 
 ## TDam properties
 
+`AutoWidth: Boolean` = Set the dialog form to auto stretch horizontally according to te message text. *There is a minimum and maximum fixed limits to the message form*.
+
 `DamDefault: Boolean` = Defines if this TDam will be used to fire quick messages (please read Quick Messages section). You only can have one defined as Default in the application.
 
 `DamUnitName: String` = Specify the unit name to be created with all message methods in the project folder. Do not specify file extension, because the component will complete the name automatically with ".pas" extension.
