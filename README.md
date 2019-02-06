@@ -20,6 +20,10 @@
 
 ## What's New
 
+- 02/06/2019
+
+   Add new property AutoWidth to allow message form auto strech horizontally according message text.
+
 - 02/05/2019
 
    Add new properties MessageColor and ButtonsColor on TDam component, to allow message dialog customization.
