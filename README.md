@@ -311,9 +311,9 @@ After that, please run the "**AfterBuild.bat**" to publish this new resource fil
 
 The design of this component came about around 2005 when I checked the need to create standardized dialog boxes for my applications.
 
-At that time, I called the component of "Better Dialog", which in Portuguese would be DM.
+At that time, I called the component of "Better Dialog", which in Portuguese would be DM (Diálogo Melhor).
 
-After a while, the project came to contain a new structure with the container. Then I renamed the component for "Dialog Still Better", which in Portuguese is DAM. :laughing:
+After a while, the project came to contain a new structure with the container. Then I renamed the component for "Still Better Dialog", which in Portuguese is DAM (Diálogo Ainda Melhor). :laughing:
 
 So the name of the component ended up staying as Dam.
 
