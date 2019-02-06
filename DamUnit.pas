@@ -28,6 +28,7 @@ type
     FDefault: Boolean;
     FUnit: String;
     FColorMsg, FColorBtn: TColor;
+    FAutoWidth: Boolean;
     procedure SetFont(const Value: TFont);
     function GetFontStored: Boolean;
 
@@ -48,6 +49,7 @@ type
     property PlaySounds: Boolean read FSounds write FSounds default True;
     property MessageColor: TColor read FColorMsg write FColorMsg default clWhite;
     property ButtonsColor: TColor read FColorBtn write FColorBtn default clBtnFace;
+    property AutoWidth: Boolean read FAutoWidth write FAutoWidth default True;
   end;
 
   TDamMsgRes = 1..3;
@@ -336,6 +338,8 @@ begin
 
   FColorMsg := clWhite;
   FColorBtn := clBtnFace;
+
+  FAutoWidth := True;
 
   case SysLocale.PriLangID of
     LANG_ENGLISH: FLanguage := dgEnglish;

@@ -39,26 +39,36 @@ object FrmDamDialog: TFrmDamDialog
     BevelOuter = bvNone
     ParentBackground = False
     TabOrder = 0
-    object Btn2: TBitBtn
-      Left = 248
-      Top = 8
-      Width = 73
-      Height = 25
-      TabOrder = 1
-    end
-    object Btn3: TBitBtn
-      Left = 328
-      Top = 8
-      Width = 73
-      Height = 25
-      TabOrder = 2
-    end
-    object Btn1: TBitBtn
-      Left = 168
-      Top = 8
-      Width = 73
-      Height = 25
+    object BoxFloatBtns: TPanel
+      Left = 160
+      Top = 0
+      Width = 249
+      Height = 39
+      Align = alRight
+      BevelOuter = bvNone
+      ParentColor = True
       TabOrder = 0
+      object Btn1: TBitBtn
+        Left = 8
+        Top = 8
+        Width = 73
+        Height = 25
+        TabOrder = 0
+      end
+      object Btn2: TBitBtn
+        Left = 88
+        Top = 8
+        Width = 73
+        Height = 25
+        TabOrder = 1
+      end
+      object Btn3: TBitBtn
+        Left = 168
+        Top = 8
+        Width = 73
+        Height = 25
+        TabOrder = 2
+      end
     end
   end
   object AL: TActionList
