@@ -33,13 +33,14 @@ type
       OK, Yes, No, Info, Quest, Warn, Error, Msg: String;
     end;
 
+    procedure CalcWidth;
     procedure CalcHeight;
     procedure RealignButtons;
     procedure LoadLanguage;
 
     function GetIconTitle(I: TDamMsgIcon): String;
     procedure DoSound;
-    procedure CalcWidth;
+
   end;
 
 function RunDamDialog(aDamMsg: TDamMsg; const aText: String): TDamMsgRes;
@@ -171,41 +172,37 @@ begin
     dbOK: Btn1.Caption := LangStrs.OK;
     dbYesNo:
       begin
-          Btn1.Caption := '&'+LangStrs.Yes;
-          Btn2.Caption := '&'+LangStrs.No;
+        Btn1.Caption := '&'+LangStrs.Yes;
+        Btn2.Caption := '&'+LangStrs.No;
       end;
   end;
 
   NumButtons := GetNumButtons(DamMsg.Buttons);
 
-  Btn2.Visible := NumButtons>1;
-  Btn3.Visible := NumButtons>2;
-
   RealignButtons;
-
-  case NumButtons of //is the last button
-    1: Btn1.Cancel := True;
-    2: Btn2.Cancel := True;
-    3: Btn3.Cancel := True;
-  end;
-
-  if DamMsg.SwapFocus then
-    case NumButtons of
-      2: ActiveControl := Btn2;
-      3: ActiveControl := Btn3;
-    end;
-
 end;
 
 procedure TFrmDamDialog.RealignButtons;
+var LastBtn: TBitBtn;
 begin
+  Btn2.Visible := NumButtons>1;
+  Btn3.Visible := NumButtons>2;
+
+  LastBtn := nil;
   case NumButtons of
-    1: Btn1.Left := Btn3.Left;
-    2: begin
-         Btn1.Left := Btn2.Left;
-         Btn2.Left := Btn3.Left;
-       end;
+    1: LastBtn := Btn1;
+    2: LastBtn := Btn2;
+    3: LastBtn := Btn3;
   end;
+
+  BoxFloatBtns.Width := LastBtn.Left+LastBtn.Width+8;
+  if DamMsg.Dam.CenterButtons then
+    BoxFloatBtns.Left := (BoxButtons.Width-BoxFloatBtns.Width) div 2 //center
+  else
+    BoxFloatBtns.Left := BoxButtons.Width-BoxFloatBtns.Width; //right
+
+  LastBtn.Cancel := True; //set last button as cancel (esc) button
+  if DamMsg.SwapFocus then ActiveControl := LastBtn; //set last button as start focus button
 end;
 
 procedure TFrmDamDialog.FormClose(Sender: TObject; var Action: TCloseAction);

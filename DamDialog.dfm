@@ -40,11 +40,10 @@ object FrmDamDialog: TFrmDamDialog
     ParentBackground = False
     TabOrder = 0
     object BoxFloatBtns: TPanel
-      Left = 160
+      Left = 0
       Top = 0
       Width = 249
       Height = 39
-      Align = alRight
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 0
