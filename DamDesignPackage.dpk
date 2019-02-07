@@ -1,6 +1,7 @@
-package DamPackage;
+package DamDesignPackage;
 
 {$R *.res}
+{$R 'Dam.dcr'}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
 {$ASSERTIONS ON}
@@ -25,16 +26,18 @@ package DamPackage;
 {$IMAGEBASE $400000}
 {$DEFINE RELEASE}
 {$ENDIF IMPLICITBUILDING}
-{$DESCRIPTION 'Digao - Dam Component'}
-{$RUNONLY}
+{$DESIGNONLY}
 {$IMPLICITBUILD ON}
 
 requires
   rtl,
-  HTLabelPackage;
+  designide,
+  HTLabelPackage,
+  DamPackage;
 
 contains
-  DamDialog in 'DamDialog.pas' {FrmDamDialog},
-  DamUnit in 'DamUnit.pas';
+  DamMsgEdit in 'DamMsgEdit.pas' {FrmDamMsgEdit},
+  DamList in 'DamList.pas' {FrmDamList},
+  DamReg in 'DamReg.pas';
 
 end.

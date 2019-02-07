@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{9CD3ADD8-609E-4B79-BA8C-2A5ED9D8F64A}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="DamPackage.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="DamDesignPackage.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="DamPackage">
+        <MSBuild Projects="DamPackage.dproj"/>
+    </Target>
+    <Target Name="DamPackage:Clean">
+        <MSBuild Projects="DamPackage.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DamPackage:Make">
+        <MSBuild Projects="DamPackage.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="DamDesignPackage">
+        <MSBuild Projects="DamDesignPackage.dproj"/>
+    </Target>
+    <Target Name="DamDesignPackage:Clean">
+        <MSBuild Projects="DamDesignPackage.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DamDesignPackage:Make">
+        <MSBuild Projects="DamDesignPackage.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="DamPackage;DamDesignPackage"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="DamPackage:Clean;DamDesignPackage:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="DamPackage:Make;DamDesignPackage:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
