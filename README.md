@@ -111,9 +111,11 @@ The Message Dialog: :stuck_out_tongue:
 
 5. If you want to use 64 bit platform, select this platform at DamPackage and do a new Build in this package.
 
-6. Add "Win32\Release" sub folder to Delphi Library Path (Tools\Options), on 32-bit option. If you will use 64 bit platform, add "Win64\Release" sub folder on 64-bit option.
+6. Right-click at DamDesignPackage and choose Install.
 
-7. Run AfterBuild.bat to publish DFM and RES to Release folders.
+7. Add "Win32\Release" sub folder to Delphi Library Path (Tools\Options), on 32-bit option. If you will use 64 bit platform, add "Win64\Release" sub folder on 64-bit option.
+
+8. Run AfterBuild.bat to publish DFM and RES to Release folders.
 
 > Supports Delphi XE2..Delphi 10.3 Rio
 
