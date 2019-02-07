@@ -99,23 +99,23 @@ The Message Dialog: :stuck_out_tongue:
 
 ## How to install
 
-1. First you need to install my HTLabel component. Get it here: https://github.com/digao-dalpiaz/HTLabel
+1. First you need to install my **HTLabel** component. Get it here: https://github.com/digao-dalpiaz/HTLabel
 
    *This is a label with HTML formatting component. The messages uses this component to display formatted text.*
 
-2. Open Dam.groupproj in the Delphi.
+2. Open **Dam.groupproj** in the Delphi.
 
-3. Ensure Platform Win32 and Release config are selected at both packages.
+3. Ensure **Win32** Platform and **Release** config are selected at both packages.
 
-4. Right-click at root item in the tree and choose Build All.
+4. Right-click at root item in the tree and choose **Build All**.
 
 5. If you want to use 64 bit platform, select this platform at DamPackage and do a new Build in this package.
 
-6. Right-click at DamDesignPackage and choose Install.
+6. Right-click at **DamDesignPackage** and choose **Install**.
 
 7. Add "Win32\Release" sub folder to Delphi Library Path (Tools\Options), on 32-bit option. If you will use 64 bit platform, add "Win64\Release" sub folder on 64-bit option.
 
-8. Run AfterBuild.bat to publish DFM and RES to Release folders.
+8. Run **AfterBuild.bat** to publish DFM and RES to Release folders.
 
 > Supports Delphi XE2..Delphi 10.3 Rio
 
