@@ -26,7 +26,7 @@
 
 - 02/07/2019
 
-   - Add Win64 support.
+   - Add Win64 support (library folders changed!) :warning:
 
 - 02/06/2019
 
