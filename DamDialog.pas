@@ -3,7 +3,7 @@ unit DamDialog;
 interface
 
 uses Vcl.Forms, System.Classes, System.Actions, Vcl.ActnList, Vcl.StdCtrls,
-  Vcl.Buttons, Vcl.Controls, Vcl.ExtCtrls, HTLabel,
+  Vcl.Buttons, Vcl.Controls, Vcl.ExtCtrls, DgHTMLText,
   //
   DamUnit;
 
@@ -15,7 +15,7 @@ type
     BoxButtons: TPanel;
     AL: TActionList;
     Action_Copy: TAction;
-    LbMsg: THTLabel;
+    LbMsg: TDgHTMLText;
     BoxFloatBtns: TPanel;
     Btn1: TBitBtn;
     Btn2: TBitBtn;

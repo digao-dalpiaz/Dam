@@ -2,8 +2,8 @@ unit DamMsgEdit;
 
 interface
 
-uses Vcl.Forms, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Controls, HTLabel,
-  Vcl.Buttons, System.Classes,
+uses Vcl.Forms, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Controls,
+  DgHTMLText, Vcl.Buttons, System.Classes,
   //
   DamUnit;
 
@@ -33,7 +33,7 @@ type
     EdSize: TComboBox;
     Box: TScrollBox;
     BtnPreview: TBitBtn;
-    LbMsg: THTLabel;
+    LbMsg: TDgHTMLText;
     BtnLeft: TSpeedButton;
     BoxQuickButtons: TFlowPanel;
     tInfo: TSpeedButton;

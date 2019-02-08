@@ -620,7 +620,7 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     Color = clWhite
     ParentColor = False
     TabOrder = 6
-    object LbMsg: THTLabel
+    object LbMsg: TDgHTMLText
       Left = 4
       Top = 4
       Width = 429
