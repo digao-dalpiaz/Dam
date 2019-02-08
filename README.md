@@ -24,6 +24,10 @@
 
 ## What's New
 
+- 02/08/2019
+
+   - The component had to be adapted because of a name change in the dependent HTML component. Please check the dependency component page to correct uninstall older version and update to the new version. :warning:
+
 - 02/07/2019
 
    - Add Win64 support (library folders changed!) :warning:
