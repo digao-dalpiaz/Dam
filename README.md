@@ -99,7 +99,7 @@ The Message Dialog: :stuck_out_tongue:
 
 ## How to install
 
-1. First you need to install my **HTLabel** component. Get it here: https://github.com/digao-dalpiaz/HTLabel
+1. First you need to install my **DgHTMLText** component. Get it here: https://github.com/digao-dalpiaz/DgHTMLText
 
    *This is a label with HTML formatting component. The messages uses this component to display formatted text.*
 
