@@ -95,6 +95,9 @@ procedure TFrmDamDialog.CalcHeight;
 begin
   if LbMsg.TextHeight>LbMsg.Height then
     ClientHeight := LbMsg.TextHeight+(ClientHeight-LbMsg.Height);
+
+  if LbMsg.TextHeight<Ico.Height then //text smaller than icon
+    LbMsg.Top := LbMsg.Top + ((Ico.Height-LbMsg.TextHeight) div 2);
 end;
 
 //
