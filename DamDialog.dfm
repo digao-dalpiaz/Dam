@@ -23,7 +23,7 @@ object FrmDamDialog: TFrmDamDialog
     Width = 32
     Height = 32
   end
-  object LbMsg: TDgHTMLText
+  object LbMsg: TDzHTMLText
     Left = 48
     Top = 8
     Width = 353
