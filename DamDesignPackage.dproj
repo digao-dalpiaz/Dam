@@ -100,7 +100,7 @@
         <DCCReference Include="Dam.dcr"/>
         <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="designide.dcp"/>
-        <DCCReference Include="DgHTMLText.dcp"/>
+        <DCCReference Include="DzHTMLText.dcp"/>
         <DCCReference Include="DamPackage.dcp"/>
         <DCCReference Include="DamMsgEdit.pas">
             <Form>FrmDamMsgEdit</Form>

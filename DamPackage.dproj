@@ -114,7 +114,7 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
-        <DCCReference Include="DgHTMLText.dcp"/>
+        <DCCReference Include="DzHTMLText.dcp"/>
         <DCCReference Include="DamDialog.pas">
             <Form>FrmDamDialog</Form>
         </DCCReference>

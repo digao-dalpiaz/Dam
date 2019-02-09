@@ -32,7 +32,7 @@ package DamDesignPackage;
 requires
   rtl,
   designide,
-  DgHTMLText,
+  DzHTMLText,
   DamPackage;
 
 contains
