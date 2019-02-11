@@ -24,6 +24,10 @@
 
 ## What's New
 
+- 02/11/2019
+
+   - Include auto install app
+
 - 02/08/2019
 
    - The component had to be adapted because of a name change in the dependent HTML component. Please check the dependency component page to correct uninstall older version and update to the new version. :warning:
@@ -102,6 +106,12 @@ The Message Dialog: :stuck_out_tongue:
 > The shortcut `CTRL+C` is available on message form to copy the message to clipboard.
 
 ## How to install
+
+### Auto install
+
+Close Delphi IDE and run **CompInstall.exe** app to auto install component into Delphi.
+
+### Manual install
 
 1. First you need to install my **DzHTMLText** component. Get it here: https://github.com/digao-dalpiaz/DzHTMLText
 
