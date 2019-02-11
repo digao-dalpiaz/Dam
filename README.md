@@ -6,7 +6,7 @@
 ![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-XE2..10.3%20Rio-blue.svg)
 ![Platforms](https://img.shields.io/badge/Platforms-Win32%20and%20Win64-red.svg)
 ![Auto Install](https://img.shields.io/badge/-Auto%20Install%20App-orange.svg)
-![Delphi Supported Versions](https://img.shields.io/badge/Dam%20Version-3.0-green.svg)
+![Dam Version](https://img.shields.io/badge/Dam%20Version-3.0-green.svg)
 
 ![Dam Super Print](images/dam_super_print.png)
 ![Dam Super Print 2](images/dam_super_print2.png)
