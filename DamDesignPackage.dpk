@@ -26,6 +26,7 @@ package DamDesignPackage;
 {$IMAGEBASE $400000}
 {$DEFINE RELEASE}
 {$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'Digao Dalpiaz - Dam Component'}
 {$DESIGNONLY}
 {$IMPLICITBUILD ON}
 
