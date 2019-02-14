@@ -8,6 +8,9 @@ type
   TDamPropEdit = class(TComponentEditor)
   public
     procedure Edit; override;
+    function GetVerbCount: Integer; override;
+    function GetVerb(Index: Integer): string; override;
+    procedure ExecuteVerb(Index: Integer); override;
   end;
 
 procedure Register;
@@ -47,6 +50,25 @@ begin
     if F=nil then
       F := TFrmDamList.Create(Component, Designer);
     F.Show;
+end;
+
+procedure TDamPropEdit.ExecuteVerb(Index: Integer);
+begin
+  case Index of
+    0: Edit;
+  end;
+end;
+
+function TDamPropEdit.GetVerb(Index: Integer): string;
+begin
+  case Index of
+    0: Result := 'Manage Dam Messages';
+  end;
+end;
+
+function TDamPropEdit.GetVerbCount: Integer;
+begin
+  Result := 1;
 end;
 
 end.
