@@ -156,7 +156,7 @@ The language set the caption of buttons in the message dialogs, like OK, Cancel,
 
 The main ideia is to drop one TDam in the main form, or main data module. The TDam is a container that have all TDamMsg (message dialog).
 
-To manage messages, just double-click at the TDam component.
+To manage messages, just **double-click** at the TDam component, or right-click and choose **Manage Dam Messages**.
 
 **But how to call the messages?**
 
