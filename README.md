@@ -107,29 +107,29 @@ The Message Dialog: :stuck_out_tongue:
 
 ## How to install
 
+- First you need to install my **DzHTMLText** component. Get it here: https://github.com/digao-dalpiaz/DzHTMLText
+
+   *This is a label with HTML formatting component. The messages uses this component to display formatted text.*
+
 ### Auto install
 
 Close Delphi IDE and run **CompInstall.exe** app to auto install component into Delphi.
 
 ### Manual install
 
-1. First you need to install my **DzHTMLText** component. Get it here: https://github.com/digao-dalpiaz/DzHTMLText
+1. Open **Dam.groupproj** in the Delphi.
 
-   *This is a label with HTML formatting component. The messages uses this component to display formatted text.*
+2. Ensure **Win32** Platform and **Release** config are selected at both packages.
 
-2. Open **Dam.groupproj** in the Delphi.
+3. Right-click at root item in the tree and choose **Build All**.
 
-3. Ensure **Win32** Platform and **Release** config are selected at both packages.
+4. If you want to use 64 bit platform, select this platform at DamPackage and do a new Build in this package.
 
-4. Right-click at root item in the tree and choose **Build All**.
+5. Right-click at **DamDesignPackage** and choose **Install**.
 
-5. If you want to use 64 bit platform, select this platform at DamPackage and do a new Build in this package.
+6. Add "Win32\Release" sub folder to Delphi Library Path (Tools\Options), on 32-bit option. If you will use 64 bit platform, add "Win64\Release" sub folder on 64-bit option.
 
-6. Right-click at **DamDesignPackage** and choose **Install**.
-
-7. Add "Win32\Release" sub folder to Delphi Library Path (Tools\Options), on 32-bit option. If you will use 64 bit platform, add "Win64\Release" sub folder on 64-bit option.
-
-8. Run **AfterBuild.bat** to publish DFM and RES to Release folders.
+7. Run **AfterBuild.bat** to publish DFM and RES to Release folders.
 
 > Supports Delphi XE2..Delphi 10.3 Rio
 
