@@ -9,10 +9,12 @@ uses
 type
   TForm1 = class(TForm)
     Dam1: TDam;
-    _DamMsg1: TDamMsg;
-    _DamMsg2: TDamMsg;
+    _QuestionSaveFile: TDamMsg;
+    _QuestionConfirmValues: TDamMsg;
     Button1: TButton;
     Button2: TButton;
+    Label1: TLabel;
+    EdResult: TEdit;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
   private
@@ -28,9 +30,15 @@ implementation
 
 {$R *.dfm}
 
+uses DamMessages;
+
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  _DamMsg1.Run;
+  case QuestionSaveFile of
+    1: EdResult.Text := 'YES';
+    2: EdResult.Text := 'NO';
+    3: EdResult.Text := 'MORE INFO';
+  end;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
@@ -47,7 +55,10 @@ begin
   AddLine(2, 2500);
   AddLine(3, 150500);
 
-  _DamMsg2.Run([A]);
+  if QuestionConfirmValues([A]) then
+    EdResult.Text := 'TRUE'
+  else
+    EdResult.Text := 'FALSE';
 end;
 
 end.

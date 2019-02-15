@@ -13,6 +13,13 @@ object Form1: TForm1
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
+  object Label1: TLabel
+    Left = 224
+    Top = 40
+    Width = 34
+    Height = 13
+    Caption = 'Result:'
+  end
   object Button1: TButton
     Left = 16
     Top = 16
@@ -31,12 +38,22 @@ object Form1: TForm1
     TabOrder = 1
     OnClick = Button2Click
   end
+  object EdResult: TEdit
+    Left = 224
+    Top = 56
+    Width = 121
+    Height = 21
+    TabStop = False
+    ReadOnly = True
+    TabOrder = 2
+  end
   object Dam1: TDam
     Language = dgEnglish
+    DamUnitName = 'DamMessages'
     AutoWidth = False
     Left = 168
     Top = 64
-    object _DamMsg1: TDamMsg
+    object _QuestionSaveFile: TDamMsg
       CustomTitle = 'Do you want to save the file?'
       CustomIcon.Data = {
         0000010006000000000001002000282004006600000010100000010020006804
@@ -11623,7 +11640,7 @@ object Form1: TForm1
       Buttons = dbThree
       Dam = Dam1
     end
-    object _DamMsg2: TDamMsg
+    object _QuestionConfirmValues: TDamMsg
       CustomTitle = 'Confirm Values'
       Title = dtCustom
       Icon = diQuest
