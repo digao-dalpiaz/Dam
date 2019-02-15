@@ -50,6 +50,8 @@ type
     M: TRichEdit;
     Label1: TLabel;
     BtnHelp: TBitBtn;
+    BtnParameter: TSpeedButton;
+    BtnExceptPar: TSpeedButton;
     procedure MChange(Sender: TObject);
     procedure BtnBoldClick(Sender: TObject);
     procedure BtnItalicClick(Sender: TObject);
@@ -70,6 +72,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure EdFontDropDown(Sender: TObject);
     procedure BtnHelpClick(Sender: TObject);
+    procedure BtnParameterClick(Sender: TObject);
+    procedure BtnExceptParClick(Sender: TObject);
   public
     Dam: TDam;
     DamMsg: TDamMsg;
@@ -267,6 +271,16 @@ end;
 procedure TFrmDamMsgEdit.BtnDoLinkClick(Sender: TObject);
 begin
   PutSelText('a');
+end;
+
+procedure TFrmDamMsgEdit.BtnParameterClick(Sender: TObject);
+begin
+  M.SelText := '%p';
+end;
+
+procedure TFrmDamMsgEdit.BtnExceptParClick(Sender: TObject);
+begin
+  M.SelText := '{except}';
 end;
 
 procedure ClearMsg(Msg: TDamMsg);
