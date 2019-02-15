@@ -218,7 +218,7 @@ end;
 
 `HandleExceptions: Boolean` = Defines this TDam to handle all application exceptions, showing the error message with the same dialog as all other Dam messages. Only one TDam can be set to handle exceptions in the application.
 
-`Language: TDamLanguage` = Defines the language used by message buttons and message form title.
+`Language: TDamLanguage` = Defines the language used by message buttons and message form title. *When you place an instance of TDam component, this property will be initialized according to the system current language. If there is no language available according to the system, English language will be set. This property has no default value, precisely because it should store the language being defined.*
 
 `MessageFont: TFont` = Defines the text font of messages
 
