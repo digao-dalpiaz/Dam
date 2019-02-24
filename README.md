@@ -41,7 +41,7 @@
 - 02/06/2019
 
    - Add new property AutoWidth to allow message form auto stretch horizontally according message text.   
-   - Add new property CenterButtons to arrange buttons on center at message form, otherwhise they will be right-aligned.
+   - Add new property CenterButtons to arrange buttons on center at message form, otherwise they will be right-aligned.
 
 - 02/05/2019
 
@@ -80,7 +80,7 @@ begin
 end;
 ```
 
-This component allows you to manage all your application messages in a "container". You can create de message dialog with a wizard creator, allowing you to format the message (bold, italic, underline, font name, font size, text background color, align center, align right, use tab alignment, clicable links, etc).
+This component allows you to manage all your application messages in a "container". You can create the message dialog with a wizard creator, allowing you to format the message (bold, italic, underline, font name, font size, text background color, align center, align right, use tab alignment, clickable links, etc).
 
 You can specify the message buttons, the icon, the form title, and much more.
 
@@ -155,7 +155,7 @@ The language set the caption of buttons in the message dialogs, like OK, Cancel,
 
 # How to use
 
-The main ideia is to drop one TDam in the main form, or main data module. The TDam is a container that have all TDamMsg (message dialog).
+The main idea is to drop one TDam in the main form, or main data module. The TDam is a container that have all TDamMsg (message dialog).
 
 To manage messages, just **double-click** at the TDam component, or right-click and choose **Manage Dam Messages**.
 
@@ -165,29 +165,29 @@ The TDam has a property called `DamUnitName`. Here you define a unit name to con
 
 So, at any unit, you just add a uses to this unit, and call the message you want by message name. If the message has parameters, the method will be declared automatically asking for parameters in an array.
 
-**Yeah, but if I am at the same unit that is the TDam and TDamMsg messages, if I call method by message name, the Delphi think I'm reffering the object of message!**
+**Yeah, but if I am at the same unit that is the TDam and TDamMsg messages, if I call method by message name, the Delphi think I'm referring the object of message!**
 
 This is true, and because of that, the component has a object hidden function. You only need to name the message starting with `_`. So the unit builder will remove this character to name the method and the Delphi will not confuse the two things.
 
-I recomend you to create all messages named starting with the `_` character.
+I recommend you to create all messages named starting with the `_` character.
 
 If you use the wizard, the name will be automatically start with this character.
 
 *There is a button on the Dam manager to hide/un-hide all selected messages.*
 
-> Remember, every time you change the messages, you need to rebuld the unit. Just click the button Build Unit to update.
+> Remember, every time you change the messages, you need to rebuild the unit. Just click the button Build Unit to update.
 
 **OK, but I don't want to use this unit! Is there another method?**
 
-Yes, of course. You can call the message by using the functions of TDamMsg object. Just use the message object `Run` or `RunAsBool` functions. In this case I recomend you to not hide the message, so you can call by the object name as is.
+Yes, of course. You can call the message by using the functions of TDamMsg object. Just use the message object `Run` or `RunAsBool` functions. In this case I recommend you to not hide the message, so you can call by the object name as is.
 
 > But I honestly recommend you to use the unit as it will make much more sense. :wink:
 
 **Can I use more than one TDam container in my application?**
 
-Yes, you can. The TDam allows you to define some configurations, like the message font and sounds. So you may have more than one TDam to have this group of configuration. Besides that, you can use various TDam to group messages by category. You can put TDam in specific forms, eighter, but remember that the containter needs to exist to fire the messages, of course.
+Yes, you can. The TDam allows you to define some configurations, like the message font and sounds. So you may have more than one TDam to have this group of configuration. Besides that, you can use various TDam to group messages by category. You can put TDam in specific forms, either, but remember that the container needs to exist to fire the messages, of course.
 
-If you are using more than one TDam, I recomend you to set the same `DamUnitName` at all TDam components, so when you call **Build Unit** button, it will be generated a single unit with all messages of all TDam containers. So you can use this single unit at all other units of your project to call any message.
+If you are using more than one TDam, I recommend you to set the same `DamUnitName` at all TDam components, so when you call **Build Unit** button, it will be generated a single unit with all messages of all TDam containers. So you can use this single unit at all other units of your project to call any message.
 
 **Message result codes:**
 
@@ -195,7 +195,7 @@ If you call message by method of message name, the method will be a procedure if
 
 If message has two or three buttons, the method will be a function. When it has two buttons, the function will always return boolean value, retuning true if first button on the left was clicked, or returning false if second button (last button on the right) was clicked.
 
-When message has three button, the funcion returns integer value 1, 2 or 3, dependind on which button was pressed in the message dialog. The first button is the left one; the second is the middle button; the third button is de right button.
+When message has three button, the function returns integer value 1, 2 or 3, depending on which button was pressed in the message dialog. The first button is the left one; the second is the middle button; the third button is the right button.
 
 So, when using three buttons, you can use a variable or even a `case`:
 
@@ -209,7 +209,7 @@ end;
 
 ## TDam properties
 
-`AutoWidth: Boolean` = Set the dialog form to auto stretch horizontally according to te message text. *There is a minimum and maximum fixed limits to the message form*.
+`AutoWidth: Boolean` = Set the dialog form to auto stretch horizontally according to the message text. *There is a minimum and maximum fixed limits to the message form*.
 
 `CenterButtons: Boolean` = Define if the buttons at message form will be aligned at center. If this property is false, the buttons will be aligned at right of form.
 
@@ -244,7 +244,7 @@ end;
 - dbTwo: Defines two buttons by Button1 and Button2 defined captions
 - dbThree: Defines three buttons by Button1, Button2 and Button3 defined captions
 
-`CustomIcon: TIcon` = Defines a custom icon to show in the messsage dialog. This icon only is shown when Icon=diCustom.
+`CustomIcon: TIcon` = Defines a custom icon to show in the message dialog. This icon only is shown when Icon=diCustom.
 
 `CustomTitle: String` = Defines a custom title for message form. This caption is only used then Title=dtCustom.
 
@@ -256,7 +256,7 @@ end;
 - diError: The error system icon
 - diCustom: The icon is defined in the CustomIcon property
 
-`Message: String` = The message text. Please use the message wizard creator for text formatting or read the HTLabel documentation. The parameters replaceable are defined by `%p` at message text. Use the parameters at array in the message method in the same order as specifyed in the message text. You can also specify the literal `{except}` to catch current exception message and replace at this variable in the message text (please, see exception examples).
+`Message: String` = The message text. Please use the message wizard creator for text formatting or read the HTLabel documentation. The parameters replaceable are defined by `%p` at message text. Use the parameters at array in the message method in the same order as specified in the message text. You can also specify the literal `{except}` to catch current exception message and replace at this variable in the message text (please, see exception examples).
 
 `Name: String` = Message object name. If then name starts with `_` character, means the message is hidden, so the Delphi will not think you are calling this object when you call the method of message having the same name.
 
@@ -284,7 +284,7 @@ procedure ShowErrorMsg; //show current error message
 function CaptureErrorMsg: String; //get current error message
 ```
 
-These methods are available globally, at unit `DamUnit` or at unit name you have specifyed in the DamUnitName property.
+These methods are available globally, at unit `DamUnit` or at unit name you have specified in the DamUnitName property.
 
 You can show quick messages directly on the code, just typing the messages and parameters you like.
 

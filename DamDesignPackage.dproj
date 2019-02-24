@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{2752669B-6202-4A0D-93C1-31F3493FAF32}</ProjectGuid>
         <MainSource>DamDesignPackage.dpk</MainSource>
-        <ProjectVersion>18.5</ProjectVersion>
+        <ProjectVersion>18.6</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Release</Config>
