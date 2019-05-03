@@ -240,6 +240,7 @@ begin
     dgGreek: aLang := 'Greek';
     dgRussian: aLang := 'Russian';
     dgFrench: aLang := 'French';
+    dgPolish: aLang := 'Polish';
     else raise Exception.Create('Unknown language');
   end;
 

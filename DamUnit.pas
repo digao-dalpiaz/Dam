@@ -16,7 +16,7 @@ uses System.Classes, System.SysUtils, Vcl.Graphics;
 
 type
   TDamLanguage = (dgEnglish, dgPortuguese, dgSpanish, dgGerman, dgItalian,
-    dgChinese, dgJapanese, dgGreek, dgRussian, dgFrench);
+    dgChinese, dgJapanese, dgGreek, dgRussian, dgFrench, dgPolish);
 
   TDam = class(TComponent)
   private
@@ -355,6 +355,7 @@ begin
     LANG_GREEK: FLanguage := dgGreek;
     LANG_RUSSIAN: FLanguage := dgRussian;
     LANG_FRENCH: FLanguage := dgFrench;
+    LANG_POLISH: FLanguage := dgPolish;
   end;
 end;
 
