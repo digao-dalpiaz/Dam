@@ -228,7 +228,7 @@ end;
 
 `MessageFont: TFont` = Defines the text font of messages
 
-`PlaySounds: Boolean` = Enabled system sounds when showing messages of kind Warning, Question and Error.
+`PlaySounds: Boolean` = Enable system sounds when showing messages of Warning, Question and Error kinds.
 
 `MessageColor: TColor` = Define background color of message area on message dialog.
 
