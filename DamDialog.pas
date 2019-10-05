@@ -40,6 +40,7 @@ type
 
     function GetIconTitle(I: TDamMsgIcon): String;
     procedure DoSound;
+    procedure SetFormPosition;
 
   end;
 
@@ -60,6 +61,7 @@ begin
     F.DamMsg := aDamMsg;
     F.LbMsg.Text := aText;
 
+    F.SetFormPosition;
     F.ShowModal;
     Result := F.DamResult;
   finally
@@ -76,6 +78,24 @@ begin
   Btn1.ModalResult := 101;
   Btn2.ModalResult := 102;
   Btn3.ModalResult := 103;
+end;
+
+procedure TFrmDamDialog.SetFormPosition;
+begin
+  case DamMsg.Dam.DialogPosition of
+    dpScreenCenter: Position := poScreenCenter;
+    dpActiveFormCenter:
+      begin
+        if Assigned(Screen.ActiveForm) then
+        begin
+          Position := poDesigned;
+
+          Left := Screen.ActiveForm.Left + ((Screen.ActiveForm.Width - Width) div 2);
+          Top := Screen.ActiveForm.Top + ((Screen.ActiveForm.Height - Height) div 2);
+        end
+      end;
+    dpMainFormCenter: Position := poMainFormCenter;
+  end;
 end;
 
 procedure TFrmDamDialog.CalcWidth;

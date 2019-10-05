@@ -18,6 +18,8 @@ type
   TDamLanguage = (dgEnglish, dgPortuguese, dgSpanish, dgGerman, dgItalian,
     dgChinese, dgJapanese, dgGreek, dgRussian, dgFrench, dgPolish);
 
+  TDamDlgPosition = (dpScreenCenter, dpActiveFormCenter, dpMainFormCenter);
+
   TDam = class(TComponent)
   private
     FAbout: String;
@@ -30,6 +32,7 @@ type
     FColorMsg, FColorBtn: TColor;
     FAutoWidth: Boolean;
     FCenterButtons: Boolean;
+    FDialogPosition: TDamDlgPosition;
     procedure SetFont(const Value: TFont);
     function GetFontStored: Boolean;
 
@@ -52,6 +55,7 @@ type
     property ButtonsColor: TColor read FColorBtn write FColorBtn default clBtnFace;
     property AutoWidth: Boolean read FAutoWidth write FAutoWidth default True;
     property CenterButtons: Boolean read FCenterButtons write FCenterButtons default True;
+    property DialogPosition: TDamDlgPosition read FDialogPosition write FDialogPosition default dpScreenCenter;
   end;
 
   TDamMsgRes = 1..3;

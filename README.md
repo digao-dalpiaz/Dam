@@ -26,6 +26,10 @@
 
 ## What's New
 
+- 10/05/2019
+
+   - Include DialogPosition property.
+
 - 05/03/2019
 
    - Include Polish language support. Thanks to @jackdp.
@@ -221,6 +225,11 @@ end;
 `DamDefault: Boolean` = Defines if this TDam will be used to fire quick messages (please read Quick Messages section). You only can have one defined as Default in the application.
 
 `DamUnitName: String` = Specify the unit name to be created with all message methods in the project folder. Do not specify file extension, because the component will complete the name automatically with ".pas" extension.
+
+`DialogPosition: TDamDlgPosition` = Defines the dialog form position:
+- dpScreenCenter: center the window based on the screen
+- dpMainFormCenter: center the window based on the main window
+- dpActiveFormCenter: center the window based on the active window
 
 `HandleExceptions: Boolean` = Defines this TDam to handle all application exceptions, showing the error message with the same dialog as all other Dam messages. Only one TDam can be set to handle exceptions in the application.
 
