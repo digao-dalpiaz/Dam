@@ -33,6 +33,7 @@ type
     FAutoWidth: Boolean;
     FCenterButtons: Boolean;
     FDialogPosition: TDamDlgPosition;
+    FDialogBorder: Boolean;
     procedure SetFont(const Value: TFont);
     function GetFontStored: Boolean;
 
@@ -56,6 +57,7 @@ type
     property AutoWidth: Boolean read FAutoWidth write FAutoWidth default True;
     property CenterButtons: Boolean read FCenterButtons write FCenterButtons default True;
     property DialogPosition: TDamDlgPosition read FDialogPosition write FDialogPosition default dpScreenCenter;
+    property DialogBorder: Boolean read FDialogBorder write FDialogBorder default True;
   end;
 
   TDamMsgRes = 1..3;
@@ -347,6 +349,7 @@ begin
 
   FAutoWidth := True;
   FCenterButtons := True;
+  FDialogBorder := True;
 
   case SysLocale.PriLangID of
     LANG_ENGLISH: FLanguage := dgEnglish;

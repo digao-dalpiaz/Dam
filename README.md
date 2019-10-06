@@ -29,6 +29,10 @@
 - 10/06/2019
 
    - Include Messages Find function: Now when you are designing messages, in the Dam message container, there is a new button "Find". If you have a lot of messages, you can find them by message name and/or message text.
+   - Include DialogBorder property.
+   - Fix Message Editor form to use background color property in the preview area.
+   - Adjust Message Dialog to minimum of Width=300px and Height=100px.
+   - Adjust Message Dialog Max Width to be 75% of Monitor Width.
 
 - 10/05/2019
 

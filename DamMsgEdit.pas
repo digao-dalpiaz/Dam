@@ -105,6 +105,7 @@ begin
   EdFont.Text := Dam.MessageFont.Name;
   EdSize.Text := Dam.MessageFont.Size.ToString;
 
+  Box.Color := Dam.MessageColor;
   LbMsg.Font.Assign(Dam.MessageFont);
 
   if DamMsg <> nil then

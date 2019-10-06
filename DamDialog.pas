@@ -40,8 +40,8 @@ type
 
     function GetIconTitle(I: TDamMsgIcon): String;
     procedure DoSound;
-    procedure SetFormPosition;
 
+    procedure SetFormCustomization;
   end;
 
 function RunDamDialog(aDamMsg: TDamMsg; const aText: String): TDamMsgRes;
@@ -61,7 +61,7 @@ begin
     F.DamMsg := aDamMsg;
     F.LbMsg.Text := aText;
 
-    F.SetFormPosition;
+    F.SetFormCustomization;
     F.ShowModal;
     Result := F.DamResult;
   finally
@@ -80,8 +80,16 @@ begin
   Btn3.ModalResult := 103;
 end;
 
-procedure TFrmDamDialog.SetFormPosition;
+procedure TFrmDamDialog.SetFormCustomization;
 begin
+  if not DamMsg.Dam.DialogBorder then
+    BorderStyle := bsNone;
+
+  //-- Minimum bounds
+  ClientHeight := 100;
+  ClientWidth := 300;
+  //--
+
   case DamMsg.Dam.DialogPosition of
     dpScreenCenter: Position := poScreenCenter;
     dpActiveFormCenter:
@@ -104,7 +112,7 @@ begin
   Old := LbMsg.Width;
   Dif := ClientWidth-LbMsg.Width;
 
-  LbMsg.MaxWidth := 800; //max width
+  LbMsg.MaxWidth := Trunc(Monitor.Width * 0.75); //max width
   LbMsg.AutoWidth := True; //force auto width
 
   if LbMsg.Width>Old then
