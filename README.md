@@ -26,6 +26,10 @@
 
 ## What's New
 
+- 10/06/2019
+
+   - Include Messages Find function: Now when you are designing messages, in the Dam message container, there is a new button "Find". If you have a lot of messages, you can find them by message name and/or message text.
+
 - 10/05/2019
 
    - Include DialogPosition property.

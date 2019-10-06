@@ -36,6 +36,7 @@ type
     Action_Del: TAction;
     MUnit: TMemo;
     StatusBar: TStatusBar;
+    BtnFind: TBitBtn;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure BtnAddClick(Sender: TObject);
     procedure LClick(Sender: TObject);
@@ -56,6 +57,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure Action_DelExecute(Sender: TObject);
     procedure BtnUpOrDownClick(Sender: TObject);
+    procedure BtnFindClick(Sender: TObject);
   private
     Dam: TDam;
     Own: TComponent;
@@ -85,7 +87,8 @@ implementation
 {$R *.dfm}
 
 uses System.SysUtils, System.StrUtils, Vcl.Graphics, Winapi.Windows,
-  DamMsgEdit, Vcl.Clipbrd, System.Win.Registry;
+  DamMsgEdit, Vcl.Clipbrd, System.Win.Registry,
+  DamFind;
 
 const REG_PATH = 'Digao\Dam';
 
@@ -288,6 +291,8 @@ begin
 
     BtnBuildUnit.Enabled := (Dam.DamUnitName<>'');
     BtnHide.Enabled := SelVarious;
+
+    BtnFind.Enabled := L.Items.Count>0;
 
     StatusBar.Panels[0].Text := IfThen(Dam.HandleExceptions, 'Exceptions');
     StatusBar.Panels[1].Text := IfThen(Dam.DamDefault, 'Default');
@@ -568,6 +573,11 @@ begin
     end;
 
     if Mudou then Designer.Modified;
+end;
+
+procedure TFrmDamList.BtnFindClick(Sender: TObject);
+begin
+  DoFindDamMessage(Dam, Designer);
 end;
 
 ////////////////////////////////////////////////////////////////

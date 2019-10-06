@@ -39,6 +39,7 @@ requires
 contains
   DamMsgEdit in 'DamMsgEdit.pas' {FrmDamMsgEdit},
   DamList in 'DamList.pas' {FrmDamList},
-  DamReg in 'DamReg.pas';
+  DamReg in 'DamReg.pas',
+  DamFind in 'DamFind.pas' {FrmDamFind};
 
 end.
