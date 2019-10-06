@@ -226,7 +226,7 @@ end;
 
 `DamUnitName: String` = Specify the unit name to be created with all message methods in the project folder. Do not specify file extension, because the component will complete the name automatically with ".pas" extension.
 
-`DialogPosition: TDamDlgPosition` = Defines the dialog form position:
+`DialogPosition: TDamDlgPosition` = Defines the dialog form start position:
 - dpScreenCenter: center the window based on the screen
 - dpMainFormCenter: center the window based on the main window
 - dpActiveFormCenter: center the window based on the active window
