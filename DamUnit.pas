@@ -20,6 +20,16 @@ type
 
   TDamDlgPosition = (dpScreenCenter, dpActiveFormCenter, dpMainFormCenter);
 
+  TDamMsgRes = 1..3;
+  TDamMsgTitle = (dtApp, dtParentForm, dtMainForm, dtByIcon, dtCustom);
+  TDamMsgIcon = (diApp, diInfo, diQuest, diWarn, diError, diCustom);
+  TDamMsgButtons = (dbOK, dbYesNo, dbOne, dbTwo, dbThree);
+  TDamParams = TArray<Variant>;
+
+  TDamMsg = class;
+  TDamMsgShowEvent = procedure(Sender: TObject; Msg: TDamMsg; var MsgText: String;
+    var Handled: Boolean; var MsgResult: TDamMsgRes) of object;
+
   TDam = class(TComponent)
   private
     FAbout: String;
@@ -34,6 +44,7 @@ type
     FCenterButtons: Boolean;
     FDialogPosition: TDamDlgPosition;
     FDialogBorder: Boolean;
+    FShowEvent: TDamMsgShowEvent;
     procedure SetFont(const Value: TFont);
     function GetFontStored: Boolean;
 
@@ -58,13 +69,8 @@ type
     property CenterButtons: Boolean read FCenterButtons write FCenterButtons default True;
     property DialogPosition: TDamDlgPosition read FDialogPosition write FDialogPosition default dpScreenCenter;
     property DialogBorder: Boolean read FDialogBorder write FDialogBorder default True;
+    property OnShowMessage: TDamMsgShowEvent read FShowEvent write FShowEvent;
   end;
-
-  TDamMsgRes = 1..3;
-  TDamMsgTitle = (dtApp, dtParentForm, dtMainForm, dtByIcon, dtCustom);
-  TDamMsgIcon = (diApp, diInfo, diQuest, diWarn, diError, diCustom);
-  TDamMsgButtons = (dbOK, dbYesNo, dbOne, dbTwo, dbThree);
-  TDamParams = TArray<Variant>;
 
   TDamMsg = class(TComponent)
   private
@@ -268,10 +274,20 @@ begin
 end;
 
 function TDamMsg.Run(const Params: TDamParams): TDamMsgRes;
-var newMsg: String;
+var
+  newMsg: String;
+  Handled: Boolean; HndRes: TDamMsgRes;
 begin
   newMsg := FMessage;
   ParseParams(newMsg, Params);
+
+  if Assigned(FDam.FShowEvent) then
+  begin
+    Handled := False;
+    HndRes := 1; //default
+    FDam.FShowEvent(FDam, Self, newMsg, Handled, HndRes);
+    if Handled then Exit(HndRes);
+  end;
 
   if FRaise then
     raise EDamException.Create(newMsg, Self);

@@ -19,12 +19,17 @@
 - [Supported Languages](#supported-languages)
 - [How to use](#how-to-use)
 - [TDam properties](#tdam-properties)
+- [TDam events](#tdam-events)
 - [TDamMsg properties](#tdammsg-properties)
 - [Quick Messages](#quick-messages)
 - [How to change Language file](#how-to-change-language-file)
 - [History](#history)
 
 ## What's New
+
+- 10/07/2019
+
+   - Include OnShowMessage event.
 
 - 10/06/2019
 
@@ -252,6 +257,13 @@ end;
 `MessageColor: TColor` = Define background color of message area on message dialog.
 
 `ButtonsColor: TColor` = Define background color of buttons area on message dialog.
+
+## TDam events
+
+`OnShowMessage(Sender: TObject; Msg: TDamMsg; var MsgText: String; var Handled: Boolean; var MsgResult: TDamMsgRes)`
+Fires before a Dam Message is displayed, allowing you to intercept messages and even bypass message display, by using Handled parameter.
+
+> Warning! If you bypass an Exception message, the component will not raise an exception, continuing the code execution (unless you create your own exception at event procedure).
 
 ## TDamMsg properties
 
