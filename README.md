@@ -27,6 +27,10 @@
 
 ## What's New
 
+- 04/19/2020
+
+   - Renamed Dam_Resource.rc to Dam_Resource.rc_ because .rc extension is not considered as code information. If using GitHub default Delphi gitignore files, for example, then .rc will be ignored. Another example: backuping data with .rc extension ignored.
+
 - 10/07/2019
 
    - Include OnShowMessage event.
