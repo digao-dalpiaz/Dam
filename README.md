@@ -29,7 +29,7 @@
 
 - 04/26/2020
 
-   - Now you can include images in the message text area, by using new `<imgres:[resource_name]` tag. Just add PNG image to the application resources and use the tag to reference them into the message. This implementation is in DzHTMLText component, used by Dam. You just need to update your DzHTMLText component and this feature will be available. Please read the [DzHTMLText Image Tag section](https://github.com/digao-dalpiaz/DzHTMLText#image-tag) to more info.
+   - Now you can include images in the message text area, by using new `<imgres:{resource_name}>` tag. Just add PNG image to the application resources and use the tag to reference them into the message. This implementation is in DzHTMLText component, used by Dam. You just need to update your DzHTMLText component and this feature will be available. Please read the [DzHTMLText Image Tag section](https://github.com/digao-dalpiaz/DzHTMLText#image-tag) to more info. **Please remember: images won't visible at design-time**.
 
 - 04/19/2020
 
