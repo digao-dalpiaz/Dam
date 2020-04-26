@@ -27,6 +27,10 @@
 
 ## What's New
 
+- 04/26/2020
+
+   - Now you can include images in the message text area, by using new `<imgres:[resource_name]` tag. Just add PNG image to the application resources and use the tag to reference them into the message. This implementation is in DzHTMLText component, used by Dam. You just need to update your DzHTMLText component and this feature will be available. Please read the [DzHTMLText Image Tag section](https://github.com/digao-dalpiaz/DzHTMLText#image-tag) to more info.
+
 - 04/19/2020
 
    - Renamed Dam_Resource.rc to Dam_Resource.rc_ because .rc extension is not considered as code information. If using GitHub default Delphi .gitignore file, for example, then .rc will be ignored. Another example: backuping data with .rc extension ignored.
