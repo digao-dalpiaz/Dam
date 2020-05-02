@@ -127,6 +127,8 @@ procedure ShowErrorMsg;
 function CaptureErrorMsg: String;
 procedure MsgRaise(const Msg: String; const Params: TDamParams = nil);
 
+function DamParams(const Params: array of Variant): TDamParams; //compatibility with old dynamic array
+
 implementation
 
 uses DamDialog, Vcl.Forms, Winapi.Windows, System.UITypes, System.StrUtils;
@@ -169,6 +171,14 @@ begin
   CheckDamDefault;
 
   ObjDefault.OnError(nil, Exception(ExceptObject));
+end;
+
+function DamParams(const Params: array of Variant): TDamParams;
+var I: Integer;
+begin
+  SetLength(Result, Length(Params));
+  for I := Low(Params) to High(Params) do
+    Result[I] := Params[I];
 end;
 
 function QuickMsg(const Msg: String; const Params: TDamParams; Kind: TDamMsgIcon): Boolean;

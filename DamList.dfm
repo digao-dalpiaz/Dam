@@ -888,6 +888,8 @@ object FrmDamList: TFrmDamList
       ''
       'uses DamUnit;'
       ''
+      'function DamParams(const Params: array of Variant): TDamParams;'
+      ''
       
         'procedure MsgInfo(const Msg: String; const Params: TDamParams = ' +
         'nil);'
@@ -910,6 +912,11 @@ object FrmDamList: TFrmDamList
       'implementation'
       ''
       'uses <USES>;'
+      ''
+      'function DamParams(const Params: array of Variant): TDamParams;'
+      'begin'
+      '  Result := DamUnit.DamParams(Params);'
+      'end;'
       ''
       'procedure MsgInfo(const Msg: String; const Params: TDamParams);'
       'begin'
