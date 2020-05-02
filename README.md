@@ -34,6 +34,8 @@
    - Removed uses `System.ImageList` from DamList unit (design-time package), because is not supported by Delphi versions below XE8.
    - Removed `AutoWidth` property in TDam. Now there is a new property `FixedWidth` in TDamMsg component, so you can specify custom width by message. The component will keep auto-width internal function if FixedWidth is zero (default value).
    - Fixed message window width bug behavior because of DzHTMLText updates.
+   - Fixed message text incorrect center alignment position when form at minimum size (issue #5).
+   - Changed `CenterButtons` property to default false, because new Windows dialogs style have buttons aligned at right.
 
 - 04/26/2020
 

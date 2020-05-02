@@ -64,7 +64,7 @@ type
     property PlaySounds: Boolean read FSounds write FSounds default True;
     property MessageColor: TColor read FColorMsg write FColorMsg default clWhite;
     property ButtonsColor: TColor read FColorBtn write FColorBtn default clBtnFace;
-    property CenterButtons: Boolean read FCenterButtons write FCenterButtons default True;
+    property CenterButtons: Boolean read FCenterButtons write FCenterButtons default False;
     property DialogPosition: TDamDlgPosition read FDialogPosition write FDialogPosition default dpScreenCenter;
     property DialogBorder: Boolean read FDialogBorder write FDialogBorder default True;
     property OnShowMessage: TDamMsgShowEvent read FShowEvent write FShowEvent;
@@ -373,7 +373,6 @@ begin
   FColorMsg := clWhite;
   FColorBtn := clBtnFace;
 
-  FCenterButtons := True;
   FDialogBorder := True;
 
   case SysLocale.PriLangID of
