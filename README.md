@@ -32,6 +32,8 @@
 
    - New global function `DamParams` to fill parameters when using Dam Message methods. This is needed for Delphi versions below XE8, because didn't have dynamic array as type support.
    - Removed uses `System.ImageList` from DamList unit (design-time package), because is not supported by Delphi versions below XE8.
+   - Removed `AutoWidth` property in TDam. Now there is a new property `FixedWidth` in TDamMsg component, so you can specify custom width by message. The component will keep auto-width internal function if FixedWidth is zero (default value).
+   - Fixed message window width bug behavior because of DzHTMLText updates.
 
 - 04/26/2020
 
@@ -245,8 +247,6 @@ end;
 
 ## TDam properties
 
-`AutoWidth: Boolean` = Set the dialog form to auto stretch horizontally according to the message text. *There is a minimum and maximum fixed limits to the message form*.
-
 `CenterButtons: Boolean` = Define if the buttons at message form will be aligned at center. If this property is false, the buttons will be aligned at right of form.
 
 `DamDefault: Boolean` = Defines if this TDam will be used to fire quick messages (please read Quick Messages section). You only can have one defined as Default in the application.
@@ -297,6 +297,8 @@ Fires before a Dam Message is displayed, allowing you to intercept messages and 
 `CustomIcon: TIcon` = Defines a custom icon to show in the message dialog. This icon only is shown when Icon=diCustom.
 
 `CustomTitle: String` = Defines a custom title for message form. This caption is only used then Title=dtCustom.
+
+`FixedWidth: Integer` = Defines a fixed width of message window, in pixels. If this value is zero (default), then the window width will be automatically calculated according to the message text. *There is a minimum and maximum fixed limits to the message form*.
 
 `Icon: TDamMsgIcon` = Defines the icon in the message dialog:
 - diApp: The application icon
