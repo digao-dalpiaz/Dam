@@ -40,7 +40,6 @@ type
     FDefault: Boolean;
     FUnit: String;
     FColorMsg, FColorBtn: TColor;
-    FAutoWidth: Boolean;
     FCenterButtons: Boolean;
     FDialogPosition: TDamDlgPosition;
     FDialogBorder: Boolean;
@@ -65,8 +64,7 @@ type
     property PlaySounds: Boolean read FSounds write FSounds default True;
     property MessageColor: TColor read FColorMsg write FColorMsg default clWhite;
     property ButtonsColor: TColor read FColorBtn write FColorBtn default clBtnFace;
-    property AutoWidth: Boolean read FAutoWidth write FAutoWidth default True;
-    property CenterButtons: Boolean read FCenterButtons write FCenterButtons default True;
+    property CenterButtons: Boolean read FCenterButtons write FCenterButtons default False;
     property DialogPosition: TDamDlgPosition read FDialogPosition write FDialogPosition default dpScreenCenter;
     property DialogBorder: Boolean read FDialogBorder write FDialogBorder default True;
     property OnShowMessage: TDamMsgShowEvent read FShowEvent write FShowEvent;
@@ -85,6 +83,7 @@ type
     FButtons: TDamMsgButtons;
     FSwapFocus: Boolean;
     FRaise: Boolean;
+    FFixedWidth: Integer;
 
     FDam: TDam;
 
@@ -115,6 +114,7 @@ type
     property Buttons: TDamMsgButtons read FButtons write FButtons default dbOK;
     property SwapFocus: Boolean read FSwapFocus write FSwapFocus default False;
     property RaiseExcept: Boolean read FRaise write FRaise default False;
+    property FixedWidth: Integer read FFixedWidth write FFixedWidth default 0;
 
     property Dam: TDam read FDam write FDam;
   end;
@@ -126,6 +126,8 @@ function MsgQuest(const Msg: String; const Params: TDamParams = nil): Boolean;
 procedure ShowErrorMsg;
 function CaptureErrorMsg: String;
 procedure MsgRaise(const Msg: String; const Params: TDamParams = nil);
+
+function DamParams(const Params: array of Variant): TDamParams; //compatibility with old dynamic array
 
 implementation
 
@@ -169,6 +171,14 @@ begin
   CheckDamDefault;
 
   ObjDefault.OnError(nil, Exception(ExceptObject));
+end;
+
+function DamParams(const Params: array of Variant): TDamParams;
+var I: Integer;
+begin
+  SetLength(Result, Length(Params));
+  for I := Low(Params) to High(Params) do
+    Result[I] := Params[I];
 end;
 
 function QuickMsg(const Msg: String; const Params: TDamParams; Kind: TDamMsgIcon): Boolean;
@@ -363,8 +373,6 @@ begin
   FColorMsg := clWhite;
   FColorBtn := clBtnFace;
 
-  FAutoWidth := True;
-  FCenterButtons := True;
   FDialogBorder := True;
 
   case SysLocale.PriLangID of

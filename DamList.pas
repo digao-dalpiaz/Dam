@@ -3,7 +3,7 @@ unit DamList;
 interface
 
 uses DesignWindows, System.Classes, System.Actions, Vcl.ActnList,
-  System.ImageList, Vcl.ImgList, Vcl.Controls, Vcl.ComCtrls, Vcl.StdCtrls,
+  Vcl.ImgList, Vcl.Controls, Vcl.ComCtrls, Vcl.StdCtrls,
   Vcl.Buttons, Vcl.ExtCtrls,
   //
   System.UITypes, System.Types, Vcl.Forms, Winapi.Messages,

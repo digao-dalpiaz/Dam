@@ -2,9 +2,7 @@ unit Unit1;
 
 interface
 
-uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, DamUnit, Vcl.StdCtrls;
+uses Vcl.Forms, DamUnit, Vcl.StdCtrls, Vcl.Controls, System.Classes;
 
 type
   TForm1 = class(TForm)
@@ -17,10 +15,6 @@ type
     EdResult: TEdit;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 var
@@ -30,7 +24,11 @@ implementation
 
 {$R *.dfm}
 
-uses DamMessages;
+uses DamMessages, System.SysUtils;
+
+{$IF CompilerVersion < 29} //below Delphi XE8
+  {$DEFINE USE_ARRAY}
+{$ENDIF}
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
@@ -55,7 +53,11 @@ begin
   AddLine(2, 2500);
   AddLine(3, 150500);
 
+{$IFDEF USE_ARRAY}
+  if QuestionConfirmValues(DamParams([A])) then
+{$ELSE}
   if QuestionConfirmValues([A]) then
+{$ENDIF}
     EdResult.Text := 'TRUE'
   else
     EdResult.Text := 'FALSE';

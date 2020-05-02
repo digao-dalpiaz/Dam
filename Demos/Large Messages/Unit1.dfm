@@ -50,7 +50,6 @@ object Form1: TForm1
   object Dam1: TDam
     Language = dgEnglish
     DamUnitName = 'DamMessages'
-    AutoWidth = False
     Left = 168
     Top = 64
     object _QuestionSaveFile: TDamMsg
@@ -11638,6 +11637,7 @@ object Form1: TForm1
       Button2 = 'No'
       Button3 = 'More Info'
       Buttons = dbThree
+      FixedWidth = 380
       Dam = Dam1
     end
     object _QuestionConfirmValues: TDamMsg
@@ -11651,6 +11651,7 @@ object Form1: TForm1
         'o continue?</b>'#13#10#13#10'<fc:clRed>Please check all values before writ' +
         'e them on database.</fc>'
       Buttons = dbYesNo
+      FixedWidth = 380
       Dam = Dam1
     end
   end

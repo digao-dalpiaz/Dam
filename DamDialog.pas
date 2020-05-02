@@ -33,7 +33,8 @@ type
       OK, Yes, No, Info, Quest, Warn, Error, Msg: String;
     end;
 
-    procedure CalcWidth;
+    procedure LoadText(const aText: String);
+    procedure CalcWidth(const aText: String);
     procedure CalcHeight;
     procedure RealignButtons;
     procedure LoadLanguage;
@@ -51,7 +52,7 @@ implementation
 {$R *.dfm}
 
 uses Winapi.Windows, System.SysUtils, Vcl.Clipbrd, System.IniFiles,
-  Winapi.MMSystem;
+  Winapi.MMSystem, System.Math;
 
 function RunDamDialog(aDamMsg: TDamMsg; const aText: String): TDamMsgRes;
 var F: TFrmDamDialog;
@@ -59,9 +60,10 @@ begin
   F := TFrmDamDialog.Create(Application);
   try
     F.DamMsg := aDamMsg;
-    F.LbMsg.Text := aText;
 
+    F.LoadText(aText);
     F.SetFormCustomization;
+
     F.ShowModal;
     Result := F.DamResult;
   finally
@@ -73,22 +75,53 @@ end;
 
 procedure TFrmDamDialog.FormCreate(Sender: TObject);
 begin
-  LbMsg.Anchors := [akLeft, akRight, akTop, akBottom];
-
   Btn1.ModalResult := 101;
   Btn2.ModalResult := 102;
   Btn3.ModalResult := 103;
+end;
+
+procedure TFrmDamDialog.LoadText(const aText: String);
+begin
+  LbMsg.Font.Assign(DamMsg.Dam.MessageFont);
+  CalcWidth(aText);
+  CalcHeight;
+end;
+
+procedure TFrmDamDialog.CalcWidth(const aText: String);
+var Dif: Integer;
+const MinSize=300;
+begin
+  Dif := ClientWidth-LbMsg.Width;
+
+  if DamMsg.FixedWidth=0 then
+    LbMsg.Width := Trunc(Monitor.Width * 0.75) //max width
+  else
+    LbMsg.Width := DamMsg.FixedWidth;
+
+  LbMsg.Text := aText; //set MESSAGE TEXT
+
+  if (DamMsg.FixedWidth=0) and (LbMsg.TextWidth < LbMsg.Width) then
+    LbMsg.Width := Max(LbMsg.TextWidth, MinSize);
+
+  ClientWidth := LbMsg.Width+Dif;
+end;
+
+procedure TFrmDamDialog.CalcHeight;
+var Dif: Integer;
+begin
+  Dif := ClientHeight-LbMsg.Height;
+
+  LbMsg.Height := LbMsg.TextHeight;
+  ClientHeight := Max(LbMsg.Height, Ico.Height)+Dif;
+
+  if LbMsg.Height<Ico.Height then //text smaller than icon
+    LbMsg.Top := LbMsg.Top + ((Ico.Height-LbMsg.Height) div 2);
 end;
 
 procedure TFrmDamDialog.SetFormCustomization;
 begin
   if not DamMsg.Dam.DialogBorder then
     BorderStyle := bsNone;
-
-  //-- Minimum bounds
-  ClientHeight := 100;
-  ClientWidth := 300;
-  //--
 
   case DamMsg.Dam.DialogPosition of
     dpScreenCenter: Position := poScreenCenter;
@@ -104,28 +137,6 @@ begin
       end;
     dpMainFormCenter: Position := poMainFormCenter;
   end;
-end;
-
-procedure TFrmDamDialog.CalcWidth;
-var Dif, Old: Integer;
-begin
-  Old := LbMsg.Width;
-  Dif := ClientWidth-LbMsg.Width;
-
-  LbMsg.MaxWidth := Trunc(Monitor.Width * 0.75); //max width
-  LbMsg.AutoWidth := True; //force auto width
-
-  if LbMsg.Width>Old then
-    ClientWidth := LbMsg.Width+Dif;
-end;
-
-procedure TFrmDamDialog.CalcHeight;
-begin
-  if LbMsg.TextHeight>LbMsg.Height then
-    ClientHeight := LbMsg.TextHeight+(ClientHeight-LbMsg.Height);
-
-  if LbMsg.TextHeight<Ico.Height then //text smaller than icon
-    LbMsg.Top := LbMsg.Top + ((Ico.Height-LbMsg.TextHeight) div 2);
 end;
 
 //
@@ -190,10 +201,6 @@ begin
     diError : Ico.Picture.Icon.Handle := LoadIcon(0, IDI_ERROR);
     diCustom: Ico.Picture.Icon := DamMsg.CustomIcon;
   end;
-
-  LbMsg.Font.Assign(DamMsg.Dam.MessageFont);
-  if DamMsg.Dam.AutoWidth then CalcWidth;
-  CalcHeight;
 
   Btn1.Caption := DamMsg.Button1;
   Btn2.Caption := DamMsg.Button2;
