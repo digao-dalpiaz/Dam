@@ -23,9 +23,15 @@
 - [TDamMsg properties](#tdammsg-properties)
 - [Quick Messages](#quick-messages)
 - [How to change Language file](#how-to-change-language-file)
+- [Delphi versions below XE8 remark](#delphi-versions-below-xe8-remark)
 - [History](#history)
 
 ## What's New
+
+- 05/02/2020
+
+   - New global function `DamParams` to fill parameters when using Dam Message methods. This is needed for Delphi versions below XE8, because didn't have dynamic array as type support.
+   - Removed uses `System.ImageList` from DamList unit (design-time package), because is not supported by Delphi versions below XE8.
 
 - 04/26/2020
 
@@ -385,6 +391,21 @@ There is a file called **DamLang.ini**, which has all strings used on the compon
 After that, please run the "**AfterBuild.bat**" to publish this new resource file to the "Lib" folder.
 
 > If you want to add new language, some changes in the code will be needed. So, please, open a new issue and post the language strings you want, then I will apply in the component.
+
+## Delphi versions below XE8 remark
+
+When you are using Delphi versions below XE8, in all Dam methods that contains TDamParams parameter, you will not be able to pass dynamic array parameter directly.
+
+In such cases, use the global function `DamParams`. This function is also available at Dam auto-generated unit.
+
+So, here are some examples of how to use the Dam Message method in these versions:
+
+```delphi
+//Quick message:
+MsgInfo('This is a test message with parameter value = %p', DamParams([999]));
+//Custom message:
+MyCustomMessage(DamParams(['Parameter 1', 'Parameter 2']));
+```
 
 ## History
 
