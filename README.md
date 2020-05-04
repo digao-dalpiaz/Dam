@@ -28,6 +28,10 @@
 
 ## What's New
 
+- 05/03/2020
+
+   - Updated CompInstall to version 1.2
+
 - 05/02/2020
 
    - New global function `DamParams` to fill parameters when using Dam Message methods. This is needed for Delphi versions below XE8, because didn't have dynamic array as type support.
