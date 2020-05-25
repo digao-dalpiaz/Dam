@@ -28,6 +28,10 @@
 
 ## What's New
 
+- 05/25/2020
+
+   - Implemented ImageList support, using DzHTMLText images support (use tag `<img:nnn>`).
+
 - 05/03/2020
 
    - Updated CompInstall to version 1.2
@@ -267,6 +271,8 @@ end;
 `DialogBorder: Boolean` = Defines if the window of message dialog will contain borders. You can disable this property to create modern dialog themes.
 
 `HandleExceptions: Boolean` = Defines this TDam to handle all application exceptions, showing the error message with the same dialog as all other Dam messages. Only one TDam can be set to handle exceptions in the application.
+
+`Images: TCustomImageList` = Allows you to set an ImageList, using tag `<img:idx>` in the message text, where `idx` is image index.
 
 `Language: TDamLanguage` = Defines the language used by message buttons and message form title. *When you place an instance of TDam component, this property will be initialized according to the system current language. If there is no language available according to the system, English language will be set. This property has no default value, precisely because it should store the language being defined.*
 

@@ -107,6 +107,7 @@ begin
 
   Box.Color := Dam.MessageColor;
   LbMsg.Font.Assign(Dam.MessageFont);
+  LbMsg.Images := Dam.Images;
 
   if DamMsg <> nil then
   begin

@@ -82,6 +82,7 @@ end;
 
 procedure TFrmDamDialog.LoadText(const aText: String);
 begin
+  LbMsg.Images := DamMsg.Dam.Images;
   LbMsg.Font.Assign(DamMsg.Dam.MessageFont);
   CalcWidth(aText);
   CalcHeight;

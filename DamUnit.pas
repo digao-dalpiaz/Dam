@@ -12,7 +12,7 @@ unit DamUnit;
 
 interface
 
-uses System.Classes, System.SysUtils, Vcl.Graphics;
+uses System.Classes, System.SysUtils, Vcl.Graphics, Vcl.ImgList;
 
 type
   TDamLanguage = (dgEnglish, dgPortuguese, dgSpanish, dgGerman, dgItalian,
@@ -36,6 +36,7 @@ type
     FLanguage: TDamLanguage;
     FRaises: Boolean;
     FSounds: Boolean;
+    FImages: TCustomImageList;
     FFont: TFont;
     FDefault: Boolean;
     FUnit: String;
@@ -44,6 +45,7 @@ type
     FDialogPosition: TDamDlgPosition;
     FDialogBorder: Boolean;
     FShowEvent: TDamMsgShowEvent;
+    procedure SetImages(const Value: TCustomImageList);
     procedure SetFont(const Value: TFont);
     function GetFontStored: Boolean;
 
@@ -54,10 +56,12 @@ type
   protected
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure Loaded; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   published
     property About: String read FAbout;
     property Language: TDamLanguage read FLanguage write FLanguage;
     property HandleExceptions: Boolean read FRaises write FRaises default False;
+    property Images: TCustomImageList read FImages write SetImages;
     property MessageFont: TFont read FFont write SetFont stored GetFontStored;
     property DamDefault: Boolean read FDefault write FDefault default False;
     property DamUnitName: String read FUnit write FUnit;
@@ -420,6 +424,26 @@ begin
 
     if FDefault then
       ObjDefault := Self;
+  end;
+end;
+
+procedure TDam.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation = opRemove then
+  begin
+    if AComponent = FImages then
+      FImages := nil;
+  end;
+end;
+
+procedure TDam.SetImages(const Value: TCustomImageList);
+begin
+  if Value <> FImages then
+  begin
+    FImages := Value;
+    if FImages <> nil then
+      FImages.FreeNotification(Self);
   end;
 end;
 
