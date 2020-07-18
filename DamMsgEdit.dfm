@@ -788,7 +788,8 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
       Top = 4
       Width = 453
       Height = 13
-      Text = 'PREVIEW'
+      Lines.Strings = (
+        'PREVIEW')
       AutoHeight = True
     end
   end
