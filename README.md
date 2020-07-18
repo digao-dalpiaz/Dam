@@ -30,7 +30,7 @@
 
 - 99/99/9999
 
-   - Internal compatibility with TDzHTMLText change (TStrings text property). Please, update TDzHTMLText component! :warning:
+   - Internal compatibility with TDzHTMLText change (TStrings text property). **Please, update TDzHTMLText component!** :warning:
 
 - 05/25/2020
 
