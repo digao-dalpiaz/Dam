@@ -30,7 +30,7 @@
 
 - 05/25/2020
 
-   - Implemented ImageList support, using DzHTMLText images support (use tag `<img:nnn>`).
+   - Implemented ImageList support, using DzHTMLText images support (use tag `<img:nnn>`). **It is necessary to update the TDzHTMLText component.** :warning:
 
 - 05/03/2020
 
