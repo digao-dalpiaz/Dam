@@ -285,7 +285,7 @@ begin
   try
     R := TResourceStream.Create(FindClassHInstance(TDam), 'DAM_LANG', RT_RCDATA);
     try
-      S.LoadFromStream(R);
+      S.LoadFromStream(R, TEncoding.UTF8);
     finally
       R.Free;
     end;
