@@ -277,6 +277,7 @@ begin
     dgRussian: aLang := 'Russian';
     dgFrench: aLang := 'French';
     dgPolish: aLang := 'Polish';
+    dgDutch: aLang := 'Dutch';
     else raise Exception.Create('Unknown language');
   end;
 
