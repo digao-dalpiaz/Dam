@@ -28,6 +28,10 @@
 
 ## What's New
 
+- 07/30/2020
+
+   - Internal compatibility with TDzHTMLText change (TStrings text property). **Please, update TDzHTMLText component!** :warning:
+
 - 07/21/2020
 
    - Included Dutch language support.
