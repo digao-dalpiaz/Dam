@@ -28,7 +28,7 @@
 
 ## What's New
 
-- 99/99/9999
+- 07/30/2020
 
    - Internal compatibility with TDzHTMLText change (TStrings text property). **Please, update TDzHTMLText component!** :warning:
 
