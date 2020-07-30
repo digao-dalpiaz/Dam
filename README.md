@@ -7,7 +7,7 @@
 ![Platforms](https://img.shields.io/badge/Platforms-Win32%20and%20Win64-red.svg)
 ![Auto Install](https://img.shields.io/badge/-Auto%20Install%20App-orange.svg)
 ![Dam Version](https://img.shields.io/badge/Dam%20Version-3.0-green.svg)
-![Languages](https://img.shields.io/badge/Languages-11-brightgreen.svg)
+![Languages](https://img.shields.io/badge/Languages-12-brightgreen.svg)
 
 ![Dam Super Print](images/dam_super_print.png)
 ![Dam Super Print 2](images/dam_super_print2.png)
@@ -32,9 +32,13 @@
 
    - Internal compatibility with TDzHTMLText change (TStrings text property). **Please, update TDzHTMLText component!** :warning:
 
+- 07/21/2020
+
+   - Included Dutch language support.
+
 - 05/25/2020
 
-   - Implemented ImageList support, using DzHTMLText images support (use tag `<img:nnn>`).
+   - Implemented ImageList support, using DzHTMLText images support (use tag `<img:nnn>`). **It is necessary to update the TDzHTMLText component.** :warning:
 
 - 05/03/2020
 
@@ -200,6 +204,7 @@ At this time, the following languages are available for messages:
 - Russian
 - French
 - Polish
+- Dutch
 
 The language set the caption of buttons in the message dialogs, like OK, Cancel, Yes, No, and the title of the form, when Information, Question, Warning, Error and Message (custom). The form title can be changed in the message properties and can be automatically set by other objects, like parent form title, main form title and application title.
 

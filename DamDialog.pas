@@ -277,6 +277,7 @@ begin
     dgRussian: aLang := 'Russian';
     dgFrench: aLang := 'French';
     dgPolish: aLang := 'Polish';
+    dgDutch: aLang := 'Dutch';
     else raise Exception.Create('Unknown language');
   end;
 
@@ -284,7 +285,7 @@ begin
   try
     R := TResourceStream.Create(FindClassHInstance(TDam), 'DAM_LANG', RT_RCDATA);
     try
-      S.LoadFromStream(R);
+      S.LoadFromStream(R, TEncoding.UTF8);
     finally
       R.Free;
     end;

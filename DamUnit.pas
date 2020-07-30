@@ -16,7 +16,7 @@ uses System.Classes, System.SysUtils, Vcl.Graphics, Vcl.ImgList;
 
 type
   TDamLanguage = (dgEnglish, dgPortuguese, dgSpanish, dgGerman, dgItalian,
-    dgChinese, dgJapanese, dgGreek, dgRussian, dgFrench, dgPolish);
+    dgChinese, dgJapanese, dgGreek, dgRussian, dgFrench, dgPolish, dgDutch);
 
   TDamDlgPosition = (dpScreenCenter, dpActiveFormCenter, dpMainFormCenter);
 
@@ -391,6 +391,7 @@ begin
     LANG_RUSSIAN: FLanguage := dgRussian;
     LANG_FRENCH: FLanguage := dgFrench;
     LANG_POLISH: FLanguage := dgPolish;
+    LANG_DUTCH: FLanguage := dgDutch;
   end;
 end;
 
