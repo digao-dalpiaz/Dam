@@ -28,6 +28,10 @@
 
 ## What's New
 
+- 08/03/2020
+
+   - Included HelpContext and HelpKeyword support in TDamMsg.
+
 - 07/30/2020
 
    - Internal compatibility with TDzHTMLText change (TStrings text property). **Please, update TDzHTMLText component!** :warning:
@@ -320,6 +324,10 @@ Fires before a Dam Message is displayed, allowing you to intercept messages and 
 `CustomTitle: String` = Defines a custom title for message form. This caption is only used then Title=dtCustom.
 
 `FixedWidth: Integer` = Defines a fixed width of message window, in pixels. If this value is zero (default), then the window width will be automatically calculated according to the message text. *There is a minimum and maximum fixed limits to the message form*.
+
+`HelpContext: THelpContext` = Defines help context. If this property is defined, when the message dialog will display a help button and will open application help on context target. It's also possible to use F1 key.
+
+`HelpKeyword: String` = Defines help keyword. If this property is defined, when the message dialog will display a help button and will open application help on keyword target. It's also possible to use F1 key.
 
 `Icon: TDamMsgIcon` = Defines the icon in the message dialog:
 - diApp: The application icon
