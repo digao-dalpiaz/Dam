@@ -38,8 +38,16 @@ object FrmDamDialog: TFrmDamDialog
     BevelOuter = bvNone
     ParentBackground = False
     TabOrder = 0
+    object BtnHelp: TSpeedButton
+      Left = 8
+      Top = 8
+      Width = 25
+      Height = 25
+      Caption = '?'
+      OnClick = BtnHelpClick
+    end
     object BoxFloatBtns: TPanel
-      Left = 0
+      Left = 40
       Top = 0
       Width = 249
       Height = 39
@@ -76,6 +84,11 @@ object FrmDamDialog: TFrmDamDialog
       Caption = 'Action_Copy'
       ShortCut = 16451
       OnExecute = Action_CopyExecute
+    end
+    object Action_Help: TAction
+      Caption = 'Action_Help'
+      ShortCut = 112
+      OnExecute = Action_HelpExecute
     end
   end
 end
