@@ -88,6 +88,8 @@ type
     FSwapFocus: Boolean;
     FRaise: Boolean;
     FFixedWidth: Integer;
+    FHelpContext: THelpContext;
+    FHelpKeyword: String;
 
     FDam: TDam;
 
@@ -119,6 +121,8 @@ type
     property SwapFocus: Boolean read FSwapFocus write FSwapFocus default False;
     property RaiseExcept: Boolean read FRaise write FRaise default False;
     property FixedWidth: Integer read FFixedWidth write FFixedWidth default 0;
+    property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
+    property HelpKeyword: String read FHelpKeyword write FHelpKeyword;
 
     property Dam: TDam read FDam write FDam;
   end;

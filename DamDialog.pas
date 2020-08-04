@@ -20,10 +20,14 @@ type
     Btn1: TBitBtn;
     Btn2: TBitBtn;
     Btn3: TBitBtn;
+    BtnHelp: TSpeedButton;
+    Action_Help: TAction;
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Action_CopyExecute(Sender: TObject);
+    procedure BtnHelpClick(Sender: TObject);
+    procedure Action_HelpExecute(Sender: TObject);
   private
     DamMsg: TDamMsg;
     DamResult: Byte;
@@ -43,6 +47,7 @@ type
     procedure DoSound;
 
     procedure SetFormCustomization;
+    procedure LoadHelp;
   end;
 
 function RunDamDialog(aDamMsg: TDamMsg; const aText: String): TDamMsgRes;
@@ -144,7 +149,6 @@ end;
 
 function TFrmDamDialog.GetIconTitle(I: TDamMsgIcon): String;
 begin
-  Result := '';
   case I of
     diApp   : Result := Application.Title;
     diInfo  : Result := LangStrs.Info;
@@ -152,16 +156,17 @@ begin
     diWarn  : Result := LangStrs.Warn;
     diError : Result := LangStrs.Error;
     diCustom: Result := LangStrs.Msg;
+    else raise Exception.Create('Unknown icon kind property');
   end;
 end;
 
 function GetNumButtons(B: TDamMsgButtons): Byte;
 begin
-  Result := 0;
   case B of
     dbOne, dbOK: Result := 1;
     dbTwo, dbYesNo: Result := 2;
     dbThree: Result := 3;
+    else raise Exception.Create('Unknown buttons kind property');
   end;
 end;
 
@@ -218,6 +223,7 @@ begin
 
   NumButtons := GetNumButtons(DamMsg.Buttons);
 
+  LoadHelp;
   RealignButtons;
 end;
 
@@ -317,6 +323,28 @@ begin
   finally
     S.Free;
   end;
+end;
+
+procedure TFrmDamDialog.LoadHelp;
+begin
+  BtnHelp.Visible := (DamMsg.HelpContext<>0) or (DamMsg.HelpKeyword<>EmptyStr);
+end;
+
+procedure TFrmDamDialog.BtnHelpClick(Sender: TObject);
+begin
+  if DamMsg.HelpContext<>0 then
+    Application.HelpContext(DamMsg.HelpContext)
+  else
+  if DamMsg.HelpKeyword<>EmptyStr then
+    Application.HelpKeyword(DamMsg.HelpKeyword)
+  else
+    raise Exception.Create('Unknown help property');
+end;
+
+procedure TFrmDamDialog.Action_HelpExecute(Sender: TObject);
+begin
+  if BtnHelp.Visible then
+    BtnHelp.Click;
 end;
 
 end.
