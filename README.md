@@ -28,6 +28,10 @@
 
 ## What's New
 
+- 08/07/2020
+
+   - Fixed dialog position when ActiveForm is MDI Child and using DialogPosition=dpActiveFormCenter (issue #16).
+
 - 08/03/2020
 
    - Included HelpContext and HelpKeyword support in TDamMsg.
