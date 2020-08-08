@@ -125,23 +125,28 @@ begin
 end;
 
 procedure TFrmDamDialog.SetFormCustomization;
+var F: TForm;
 begin
   if not DamMsg.Dam.DialogBorder then
     BorderStyle := bsNone;
 
   case DamMsg.Dam.DialogPosition of
-    dpScreenCenter: Position := poScreenCenter;
+    dpScreenCenter: {Position := poScreenCenter}; //default
     dpActiveFormCenter:
       begin
-        if Assigned(Screen.ActiveForm) then
+        F := Screen.ActiveForm;
+        if Assigned(F) then
         begin
+          if F.FormStyle=fsMDIChild then F := Application.MainForm;
+
           Position := poDesigned;
 
-          Left := Screen.ActiveForm.Left + ((Screen.ActiveForm.Width - Width) div 2);
-          Top := Screen.ActiveForm.Top + ((Screen.ActiveForm.Height - Height) div 2);
-        end
+          Left := F.Left + ((F.Width - Width) div 2);
+          Top := F.Top + ((F.Height - Height) div 2);
+        end;
       end;
     dpMainFormCenter: Position := poMainFormCenter;
+    else raise Exception.Create('Invalid dialog position property');
   end;
 end;
 
