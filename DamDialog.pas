@@ -126,6 +126,7 @@ end;
 
 procedure TFrmDamDialog.SetFormCustomization;
 var F: TForm;
+  R: TRect;
 begin
   if not DamMsg.Dam.DialogBorder then
     BorderStyle := bsNone;
@@ -137,12 +138,13 @@ begin
         F := Screen.ActiveForm;
         if Assigned(F) then
         begin
-          if F.FormStyle=fsMDIChild then F := Application.MainForm;
-
           Position := poDesigned;
 
-          Left := F.Left + ((F.Width - Width) div 2);
-          Top := F.Top + ((F.Height - Height) div 2);
+          if not GetWindowRect(F.Handle, R) then
+            raise Exception.Create('Error getting window rect');
+
+          Left := R.Left + ((R.Width - Width) div 2);
+          Top := R.Top + ((R.Height - Height) div 2);
         end;
       end;
     dpMainFormCenter: Position := poMainFormCenter;
