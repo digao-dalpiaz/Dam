@@ -28,6 +28,10 @@
 
 ## What's New
 
+- 08/11/2020
+
+   - Changed DialogPosition=dpActiveFormCenter to always get absolute window rect. When active window is MDI child, then message dialog will be centered by active form absolute screen position.
+
 - 08/07/2020
 
    - Fixed dialog position when ActiveForm is MDI Child and using DialogPosition=dpActiveFormCenter (issue #16).
