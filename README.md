@@ -28,6 +28,10 @@
 
 ## What's New
 
+- 09/24/2020
+
+   - Fixed message background color and message dialog width x message width when using application VCL Theme Styles (issue #17).   
+
 - 08/11/2020
 
    - Changed DialogPosition=dpActiveFormCenter to always get absolute window rect. When active window is MDI child, then message dialog will be centered by active form absolute screen position.

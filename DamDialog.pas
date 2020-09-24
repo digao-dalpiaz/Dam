@@ -57,7 +57,7 @@ implementation
 {$R *.dfm}
 
 uses Winapi.Windows, System.SysUtils, Vcl.Clipbrd, System.IniFiles,
-  Winapi.MMSystem, System.Math;
+  Winapi.MMSystem, System.Math, Vcl.Themes;
 
 function RunDamDialog(aDamMsg: TDamMsg; const aText: String): TDamMsgRes;
 var F: TFrmDamDialog;
@@ -83,6 +83,10 @@ begin
   Btn1.ModalResult := 101;
   Btn2.ModalResult := 102;
   Btn3.ModalResult := 103;
+
+  //when using app custom style theme, the DzHTMLText doesn't get theme backgound color
+  if TStyleManager.IsCustomStyleActive then
+    LbMsg.Color := TStyleManager.ActiveStyle.GetStyleColor(TStyleColor.scWindow);
 end;
 
 procedure TFrmDamDialog.LoadText(const aText: String);
@@ -94,11 +98,8 @@ begin
 end;
 
 procedure TFrmDamDialog.CalcWidth(const aText: String);
-var Dif: Integer;
 const MinSize=300;
 begin
-  Dif := ClientWidth-LbMsg.Width;
-
   if DamMsg.FixedWidth=0 then
     LbMsg.Width := Trunc(Monitor.Width * 0.75) //max width
   else
@@ -109,7 +110,7 @@ begin
   if (DamMsg.FixedWidth=0) and (LbMsg.TextWidth < LbMsg.Width) then
     LbMsg.Width := Max(LbMsg.TextWidth, MinSize);
 
-  ClientWidth := LbMsg.Width+Dif;
+  ClientWidth := LbMsg.Left+LbMsg.Width+8;
 end;
 
 procedure TFrmDamDialog.CalcHeight;
