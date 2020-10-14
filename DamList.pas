@@ -545,6 +545,10 @@ end;
 
 procedure TFrmDamList.MessageObjectAdded(C: TDamMsg);
 begin
+  {$IFDEF FPC}
+  GlobalDesignHook.PersistentAdded(C, False); //required for adding object into form unit
+  {$ENDIF}
+
   DoModified;
   DoSelectObject(C);
 end;
