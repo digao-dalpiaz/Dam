@@ -2,8 +2,13 @@ unit DamMsgEdit;
 
 interface
 
-uses Vcl.Forms, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Controls,
+uses
+{$IFDEF FPC}
+  Forms, Buttons, StdCtrls, ExtCtrls, ColorBox, Controls,
+{$ELSE}
+  Vcl.Forms, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Controls,
   Vcl.Buttons, System.Classes,
+{$ENDIF}
   //
   DamUnit, DzHTMLText;
 
@@ -47,11 +52,11 @@ type
     EdFontColor: TColorBox;
     EdBgColor: TColorBox;
     EdAnyColor: TColorBox;
-    M: TRichEdit;
     Label1: TLabel;
     BtnHelp: TBitBtn;
     BtnParameter: TSpeedButton;
     BtnExceptPar: TSpeedButton;
+    M: TMemo;
     procedure MChange(Sender: TObject);
     procedure BtnBoldClick(Sender: TObject);
     procedure BtnItalicClick(Sender: TObject);
@@ -90,8 +95,13 @@ implementation
 
 {$R *.dfm}
 
-uses Vcl.Graphics, System.SysUtils,
+uses
+{$IFDEF FPC}
+  Graphics, SysUtils, LCLIntf;
+{$ELSE}
+  Vcl.Graphics, System.SysUtils,
   Winapi.Windows, Winapi.Messages, Winapi.ShellAPI;
+{$ENDIF}
 
 procedure TFrmDamMsgEdit.FormCreate(Sender: TObject);
 begin
@@ -159,47 +169,8 @@ begin
 end;
 
 procedure TFrmDamMsgEdit.MChange(Sender: TObject);
-var X, Len: Integer;
-    tgX: Integer;
-    I: Integer;
-    A: String;
 begin
   LbMsg.Text := M.Text;
-
-  X := M.SelStart;
-  Len := M.SelLength;
-
-  M.Perform(WM_SETREDRAW, 0, 0);
-  try
-    M.SelectAll;
-    M.SelAttributes.Color := clBlack;
-
-    tgX := 0;
-    A := M.Text;
-    A := StringReplace(A, #10, '', [rfReplaceAll]);
-    for I := 1 to Length(A) do
-    begin
-      case A[I] of
-        '<': tgX := I;
-        '>':
-        if tgX>0 then
-        begin
-
-          M.SelStart := tgX-1;
-          M.SelLength := I-tgX+1;
-
-          M.SelAttributes.Color := clRed;
-          tgX := 0;
-        end;
-      end;
-    end;
-
-    M.SelStart := X;
-    M.SelLength := Len;
-  finally
-    M.Perform(WM_SETREDRAW, 1, 0);
-    M.Refresh;
-  end;
 end;
 
 function CorToStr(C: TColor): String;
@@ -413,8 +384,13 @@ begin
 end;
 
 procedure TFrmDamMsgEdit.BtnHelpClick(Sender: TObject);
+const URL = 'https://github.com/digao-dalpiaz/Dam';
 begin
-  ShellExecute(0, '', 'https://github.com/digao-dalpiaz/Dam', '', '', SW_SHOWNORMAL);
+{$IFDEF FPC}
+  OpenURL(URL);
+{$ELSE}
+  ShellExecute(0, '', URL, '', '', SW_SHOWNORMAL);
+{$ENDIF}
 end;
 
 end.

@@ -1,7 +1,7 @@
 object FrmDamFind: TFrmDamFind
   Left = 0
   Top = 0
-  BorderIcons = [biSystemMenu, biMaximize]
+  BorderIcons = [biSystemMenu]
   Caption = 'Find Dam Message'
   ClientHeight = 382
   ClientWidth = 425
