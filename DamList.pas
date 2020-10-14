@@ -223,11 +223,6 @@ begin
   Constraints.MinHeight := Height;
 
   {$IFDEF FPC}
-  Width := ClientWidth;
-  Height := ClientHeight;
-  {$ENDIF}
-
-  {$IFDEF FPC}
   RegisterGlobalDesignHook;
 
   ShowButtonsGlyph;
