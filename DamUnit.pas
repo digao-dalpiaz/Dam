@@ -383,7 +383,7 @@ constructor TDam.Create(AOwner: TComponent);
 begin
   inherited;
 
-  FAbout := 'Digao Dalpiaz / Version 3.0';
+  FAbout := 'Digao Dalpiaz / Version 4.0';
 
   FFont := TFont.Create;
   FFont.Name := 'Segoe UI';

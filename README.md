@@ -6,7 +6,8 @@
 ![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-XE2..10.3%20Rio-blue.svg)
 ![Platforms](https://img.shields.io/badge/Platforms-Win32%20and%20Win64-red.svg)
 ![Auto Install](https://img.shields.io/badge/-Auto%20Install%20App-orange.svg)
-![Dam Version](https://img.shields.io/badge/Dam%20Version-3.0-green.svg)
+![Lazarus support](https://img.shields.io/badge/-Lazarus%20support-green.svg)
+![Dam Version](https://img.shields.io/badge/Dam%20Version-4.0-green.svg)
 ![Languages](https://img.shields.io/badge/Languages-12-brightgreen.svg)
 
 ![Dam Super Print](images/dam_super_print.png)
@@ -28,7 +29,7 @@
 
 ## What's New
 
-- 10/14/2020
+- 10/14/2020 (Version 4.0)
 
    - **Lazarus support**. :smile:
    
