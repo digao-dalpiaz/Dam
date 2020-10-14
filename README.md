@@ -35,7 +35,7 @@
    
    *Remarks:*
    
-   - The TRichText control in Message Editor Dialog was replaced by a TMemo, because in non Windows systems this control doesn't exist. So the syntax highlight under HTML tags are also no longer displayed in the editor.
+   - The TRichEdit control in Message Editor Dialog was replaced by a TMemo, because in non Windows systems this control doesn't exist. So the syntax highlight under HTML tags are also no longer displayed in the editor.
    - At this time, the Cut, Copy and Paste commands for messages in the Lazarus IDE environment are not yet available.
 
 - 09/24/2020
