@@ -19,11 +19,11 @@ type
     BtnCancel: TButton;
     BtnOK: TButton;
     EdMessage: TMemo;
-    procedure FormCreate(Sender: TObject);
     procedure EdTextChange(Sender: TObject);
     procedure BtnOKClick(Sender: TObject);
     procedure LClick(Sender: TObject);
     procedure LDblClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     Dam: TDam;
   end;
@@ -59,8 +59,9 @@ end;
 
 //
 
-procedure TFrmDamFind.FormCreate(Sender: TObject);
+procedure TFrmDamFind.FormShow(Sender: TObject);
 begin
+  //Anchors must be defined on show due to Lazarus incorrect form size behavior
   EdText.Anchors := [akLeft,akRight,akTop];
   L.Anchors := [akLeft,akRight,akTop,akBottom];
   EdMessage.Anchors := [akLeft,akRight,akBottom];

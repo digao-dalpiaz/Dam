@@ -73,6 +73,7 @@ type
     procedure Action_DelExecute(Sender: TObject);
     procedure BtnUpOrDownClick(Sender: TObject);
     procedure BtnFindClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     Dam: TDam;
     Own: TComponent;
@@ -212,18 +213,12 @@ procedure TFrmDamList.FormCreate(Sender: TObject);
         TBitBtn(BoxButtons.Controls[I]).GlyphShowMode := gsmAlways;
     end;
   end;
-{$ELSE}
-var Reg: TRegistry;
 {$ENDIF}
 begin
-  L.Anchors := [akLeft,akRight,akTop,akBottom];
-  BoxButtons.Anchors := [akRight,akTop];
-
-  Constraints.MinWidth := Width;
-  Constraints.MinHeight := Height;
-
   {$IFDEF FPC}
   RegisterGlobalDesignHook;
+
+  StatusBar.SimplePanel := False;
 
   ShowButtonsGlyph;
 
@@ -236,6 +231,35 @@ begin
   UpdClipboard;
   AddClipboardFormatListener(Handle); //set clipboard monitoring
   {$ENDIF}
+end;
+
+procedure TFrmDamList.FormDestroy(Sender: TObject);
+begin
+  {$IFNDEF FPC}
+  RemoveClipboardFormatListener(Handle); //remove clipboard monitoring
+  {$ENDIF}
+
+  {$IFDEF FPC}
+  if Assigned(GlobalDesignHook) then
+    GlobalDesignHook.RemoveAllHandlersForObject(Self);
+  {$ELSE}
+  Designer := nil;
+  {$ENDIF}
+
+  Sel.Free;
+end;
+
+procedure TFrmDamList.FormShow(Sender: TObject);
+{$IFNDEF FPC}
+var Reg: TRegistry;
+{$ENDIF}
+begin
+  //Anchors must be defined on show due to Lazarus incorrect form size behavior
+  L.Anchors := [akLeft,akRight,akTop,akBottom];
+  BoxButtons.Anchors := [akRight,akTop];
+
+  Constraints.MinWidth := Width;
+  Constraints.MinHeight := Height;
 
   {$IFDEF FPC}
   IDEDialogLayoutList.ApplyLayout(Self);
@@ -251,11 +275,13 @@ begin
   {$ENDIF}
 end;
 
-procedure TFrmDamList.FormDestroy(Sender: TObject);
+procedure TFrmDamList.FormClose(Sender: TObject; var Action: TCloseAction);
 {$IFNDEF FPC}
 var Reg: TRegistry;
 {$ENDIF}
 begin
+  Action := caFree;
+
   {$IFDEF FPC}
   IDEDialogLayoutList.SaveLayout(Self);
   {$ELSE}
@@ -268,24 +294,6 @@ begin
     Reg.Free;
   end;
   {$ENDIF}
-
-  {$IFNDEF FPC}
-  RemoveClipboardFormatListener(Handle); //remove clipboard monitoring
-  {$ENDIF}
-
-  {$IFDEF FPC}
-  if Assigned(GlobalDesignHook) then
-    GlobalDesignHook.RemoveAllHandlersForObject(Self);
-  {$ELSE}
-  Designer := nil;
-  {$ENDIF}
-
-  Sel.Free;
-end;
-
-procedure TFrmDamList.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  Action := caFree;
 end;
 
 procedure TFrmDamList.FormResize(Sender: TObject);
