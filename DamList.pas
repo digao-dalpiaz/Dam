@@ -829,7 +829,7 @@ begin
     A := MUnit.Text;
     A := StringReplace(A, '<UNIT>', StmUnit, []);
     A := StringReplace(A, '<TIMESTAMP>', aTime, []);
-    A := StringReplace(A, '<USES>', 'DamUnit', []);
+    A := StringReplace(A, '<USES>', Own.UnitName, []);
     A := StringReplace(A, '<DECLARATIONS>', aDecs, []);
     A := StringReplace(A, '<FUNCTIONS>', Func, []);
 
