@@ -12,7 +12,7 @@ uses
 {$ELSE}
   DesignWindows, System.Classes, System.Actions, Vcl.ActnList,
   Vcl.ImgList, Vcl.Controls, Vcl.ComCtrls, Vcl.StdCtrls,
-  Vcl.Buttons, Vcl.ExtCtrls,
+  Vcl.Buttons, Vcl.ExtCtrls, System.ImageList,
   //
   System.UITypes, System.Types, Vcl.Forms, Winapi.Messages,
   DesignIntf, ToolsAPI, System.Generics.Collections,
@@ -221,6 +221,11 @@ begin
 
   Constraints.MinWidth := Width;
   Constraints.MinHeight := Height;
+
+  {$IFDEF FPC}
+  Width := ClientWidth;
+  Height := ClientHeight;
+  {$ENDIF}
 
   {$IFDEF FPC}
   RegisterGlobalDesignHook;

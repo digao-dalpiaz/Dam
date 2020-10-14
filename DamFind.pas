@@ -65,6 +65,11 @@ begin
   L.Anchors := [akLeft,akRight,akTop,akBottom];
   EdMessage.Anchors := [akLeft,akRight,akBottom];
   BoxDIO.Anchors := [akBottom];
+
+  {$IFDEF FPC}
+  Width := ClientWidth;
+  Height := ClientHeight;
+  {$ENDIF}
 end;
 
 procedure TFrmDamFind.EdTextChange(Sender: TObject);
