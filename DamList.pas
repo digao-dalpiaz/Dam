@@ -52,7 +52,7 @@ type
     MUnit: TMemo;
     StatusBar: TStatusBar;
     BtnFind: TBitBtn;
-    procedure FormClose(Sender: TObject; var {$IFDEF FPC}xAction{$ELSE}Action{$ENDIF}: TCloseAction);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure BtnAddClick(Sender: TObject);
     procedure LClick(Sender: TObject);
     procedure BtnDelClick(Sender: TObject);
@@ -283,9 +283,9 @@ begin
   Sel.Free;
 end;
 
-procedure TFrmDamList.FormClose(Sender: TObject; var {$IFDEF FPC}xAction{$ELSE}Action{$ENDIF}: TCloseAction);
+procedure TFrmDamList.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  {$IFDEF FPC}xAction{$ELSE}Action{$ENDIF} := caFree;
+  Action := caFree;
 end;
 
 procedure TFrmDamList.FormResize(Sender: TObject);
