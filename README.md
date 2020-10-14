@@ -1,7 +1,7 @@
 
 # Dam
 
-## Delphi Message Dialogs with Formatted Text
+## Delphi and Lazarus Message Dialogs with Formatted Text
 
 ![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-XE2..10.3%20Rio-blue.svg)
 ![Platforms](https://img.shields.io/badge/Platforms-Win32%20and%20Win64-red.svg)
@@ -27,6 +27,15 @@
 - [History](#history)
 
 ## What's New
+
+- 10/14/2020
+
+   - **Lazarus support**. :smile:
+   
+   *Remarks:*
+   
+   - The TRichText control in Message Editor Dialog was replaced by a TMemo, because in non Windows systems this control doesn't exist. So the syntax highlight under HTML tags are also no longer displayed in the editor.
+   - At this time, the Cut, Copy and Paste commands for messages in the Lazarus IDE environment are not yet available.
 
 - 09/24/2020
 
