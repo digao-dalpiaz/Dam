@@ -15,7 +15,7 @@ uses
   Vcl.Buttons, Vcl.ExtCtrls, System.ImageList,
   //
   System.UITypes, System.Types, Vcl.Forms, Winapi.Messages,
-  DesignIntf, ToolsAPI, System.Generics.Collections,
+  DesignIntf, System.Generics.Collections,
 {$ENDIF}
   DamUnit;
 
@@ -126,12 +126,12 @@ implementation
 
 uses
 {$IFDEF FPC}
-  StrUtils, SysUtils, Graphics, Menus, LCLType, IDEWindowIntf, LazIDEIntf,
+  StrUtils, SysUtils, Graphics, Menus, LCLType, IDEWindowIntf,
 {$ELSE}
   System.SysUtils, System.StrUtils, Vcl.Graphics, Winapi.Windows,
   Vcl.Clipbrd, System.Win.Registry,
 {$ENDIF}
-  DamMsgEdit, DamFind;
+  DamMsgEdit, DamFind, DamFileGenerator;
 
 //
 
@@ -739,111 +739,9 @@ begin
     DoSelectObject(Msg);
 end;
 
-////////////////////////////////////////////////////////////////
-// UNIT BULDER
-////////////////////////////////////////////////////////////////
-
 procedure TFrmDamList.BtnBuildUnitClick(Sender: TObject);
-var
-{$IFNDEF FPC}
-    ModServices: IOTAModuleServices;
-    Module: IOTAModule;
-{$ENDIF}
-    C: TComponent;
-    Dir: String;
-    aFile: String;
-    StmUnit: String;
-    Msg: TDamMsg;
-    S: TStringList;
-    A, aFuncName, aFuncKind, aResFunc, aPreCmd, aCmd, aEv, aPar1, aPar2, aCab, aTxt: String;
-    aDecs, Func: String;
-    aTime: String;
-const ENTER = #13#10;
 begin
-{$IFDEF FPC}
-    Dir := LazarusIDE.ActiveProject.Directory;
-{$ELSE}
-    ModServices := BorlandIDEServices as IOTAModuleServices;
-    Module := ModServices.FindFormModule(Own.Name);
-
-    if Module = nil then
-      raise Exception.Create('Form Module not found');
-
-    Dir := ExtractFilePath(Module.FileName);
-{$ENDIF}
-
-    StmUnit := Dam.DamUnitName;
-
-    aFile := StmUnit + '.pas';
-
-    aTime := DateTimeToStr(Now);
-
-    for C in Own do
-    if C is TDamMsg then
-    begin
-        Msg := TDamMsg(C);
-        if (Msg.Dam.DamUnitName = StmUnit) then
-        begin
-          A := Msg.Name;
-          if A[1] = '_' then Delete(A, 1, 1);
-
-          aFuncName := A;
-          aCmd := Own.Name+'.'+Msg.Name;
-
-          aPar1 := '';
-          aPar2 := '';
-          if Pos('%p', Msg.Message) > 0 then
-          begin
-              aPar1 := '(Params: TDamParams)';
-              aPar2 := '(Params)';
-          end;
-
-          if (Msg.RaiseExcept) or (Msg.Buttons in [dbOK, dbOne]) then
-          begin
-              aFuncKind := 'procedure';
-              aResFunc := '';
-              aPreCmd := '';
-              aEv := 'Run';
-          end else
-          if (Msg.Buttons in [dbYesNo, dbTwo]) then
-          begin
-              aFuncKind := 'function';
-              aResFunc := ': Boolean';
-              aPreCmd := 'Result := ';
-              aEv := 'RunAsBool';
-          end else
-          begin
-              aFuncKind := 'function';
-              aResFunc := ': TDamMsgRes';
-              aPreCmd := 'Result := ';
-              aEv := 'Run';
-          end;
-
-          aCab := aFuncKind+' '+aFuncName+aPar1+aResFunc+';';
-          aTxt := aCab+ENTER+
-                  'begin'+ENTER+
-                  '  '+aPreCmd+aCmd+'.'+aEv+aPar2+';'+ENTER+
-                  'end;'+ENTER;
-
-          aDecs := aDecs + aCab + ENTER;
-          Func := Func + aTxt + ENTER;
-        end;
-    end;
-
-    A := MUnit.Text;
-    A := StringReplace(A, '<UNIT>', StmUnit, []);
-    A := StringReplace(A, '<TIMESTAMP>', aTime, []);
-    A := StringReplace(A, '<USES>', Own.UnitName, []);
-    A := StringReplace(A, '<DECLARATIONS>', aDecs, []);
-    A := StringReplace(A, '<FUNCTIONS>', Func, []);
-
-    S := TStringList.Create;
-    try
-      S.Text := A;
-      S.SaveToFile(Dir + aFile);
-    finally
-      S.Free;
-    end;
+  GenerateFile(Dam, MUnit.Text);
 end;
 
 end.

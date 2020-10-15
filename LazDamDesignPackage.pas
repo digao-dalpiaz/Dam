@@ -8,7 +8,7 @@ unit LazDamDesignPackage;
 interface
 
 uses
-  DamReg, DamMsgEdit, DamFind, DamList, LazarusPackageIntf;
+  DamReg, DamMsgEdit, DamFind, DamList, DamFileGenerator, LazarusPackageIntf;
 
 implementation
 

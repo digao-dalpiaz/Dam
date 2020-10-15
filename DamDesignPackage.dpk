@@ -40,6 +40,7 @@ contains
   DamMsgEdit in 'DamMsgEdit.pas' {FrmDamMsgEdit},
   DamList in 'DamList.pas' {FrmDamList},
   DamReg in 'DamReg.pas',
-  DamFind in 'DamFind.pas' {FrmDamFind};
+  DamFind in 'DamFind.pas' {FrmDamFind},
+  DamFileGenerator in 'DamFileGenerator.pas';
 
 end.

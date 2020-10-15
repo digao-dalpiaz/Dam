@@ -16,7 +16,7 @@
         </CompilerMessages>
       </Other>
     </CompilerOptions>
-    <Files Count="8">
+    <Files Count="9">
       <Item1>
         <Filename Value="Dam.lrs"/>
         <Type Value="LRS"/>
@@ -50,6 +50,10 @@
         <Filename Value="DamList.pas"/>
         <UnitName Value="DamList"/>
       </Item8>
+      <Item9>
+        <Filename Value="DamFileGenerator.pas"/>
+        <UnitName Value="DamFileGenerator"/>
+      </Item9>
     </Files>
     <RequiredPkgs Count="3">
       <Item1>
