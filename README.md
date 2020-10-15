@@ -193,11 +193,11 @@ The Message Dialog: :stuck_out_tongue:
 
    *This is a label with HTML formatting component. The messages uses this component to display formatted text.*
 
-### Auto install
+### Delphi auto installation
 
 Close Delphi IDE and run **CompInstall.exe** app to auto install component into Delphi.
 
-### Manual install
+### Delphi manual installation
 
 1. Open **Dam.groupproj** in the Delphi.
 
@@ -214,6 +214,12 @@ Close Delphi IDE and run **CompInstall.exe** app to auto install component into 
 7. Run **AfterBuild.bat** to publish DFM and RES to Release folders.
 
 > Supports Delphi XE2..Delphi 10.3 Rio
+
+### Lazarus installation
+
+1. Go to menu Package > Open Package File (.lpk) and load **LazDamPackage.lpk**, and click into **Compile**.
+
+2. Go to menu Package > Open Package File (.lpk) and load **LazDamDesignPackage.lpk**, and click into **Use > Install**.
 
 # Supported Languages
 
