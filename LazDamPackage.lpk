@@ -10,6 +10,11 @@
       <SearchPaths>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <IgnoredMessages idx6058="True" idx5093="True" idx5057="True" idx5028="True" idx5024="True"/>
+        </CompilerMessages>
+      </Other>
     </CompilerOptions>
     <Files Count="3">
       <Item1>
