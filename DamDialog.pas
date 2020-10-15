@@ -1,9 +1,16 @@
 unit DamDialog;
 
+{$IFDEF FPC}{$mode delphi}{$ENDIF}
+
 interface
 
-uses Vcl.Forms, System.Classes, System.Actions, Vcl.ActnList, Vcl.StdCtrls,
+uses
+{$IFDEF FPC}
+  Forms, Classes, ActnList, Buttons, Controls, ExtCtrls,
+{$ELSE}
+  Vcl.Forms, System.Classes, System.Actions, Vcl.ActnList, Vcl.StdCtrls,
   Vcl.Buttons, Vcl.Controls, Vcl.ExtCtrls,
+{$ENDIF}
   //
   DamUnit, DzHTMLText;
 
@@ -56,8 +63,33 @@ implementation
 
 {$R *.dfm}
 
-uses Winapi.Windows, System.SysUtils, Vcl.Clipbrd, System.IniFiles,
+uses
+{$IFDEF FPC}
+  Windows, SysUtils, Clipbrd, IniFiles, MMSystem;
+{$ELSE}
+  Winapi.Windows, System.SysUtils, Vcl.Clipbrd, System.IniFiles,
   Winapi.MMSystem, System.Math, Vcl.Themes;
+{$ENDIF}
+
+{$IFDEF FPC}
+const
+  {$EXTERNALSYM IDI_HAND}
+  IDI_HAND = MakeIntResource(32513);
+  {$EXTERNALSYM IDI_QUESTION}
+  IDI_QUESTION = MakeIntResource(32514);
+  {$EXTERNALSYM IDI_EXCLAMATION}
+  IDI_EXCLAMATION = MakeIntResource(32515);
+  {$EXTERNALSYM IDI_ASTERISK}
+  IDI_ASTERISK = MakeIntResource(32516);
+  {$EXTERNALSYM IDI_WINLOGO}
+  IDI_WINLOGO = MakeIntResource(32517);
+  {$EXTERNALSYM IDI_WARNING}
+  IDI_WARNING = IDI_EXCLAMATION;
+  {$EXTERNALSYM IDI_ERROR}
+  IDI_ERROR = IDI_HAND;
+  {$EXTERNALSYM IDI_INFORMATION}
+  IDI_INFORMATION = IDI_ASTERISK;
+{$ENDIF}
 
 function RunDamDialog(aDamMsg: TDamMsg; const aText: String): TDamMsgRes;
 var F: TFrmDamDialog;
@@ -84,9 +116,11 @@ begin
   Btn2.ModalResult := 102;
   Btn3.ModalResult := 103;
 
+  {$IFNDEF FPC}
   //when using app custom style theme, the DzHTMLText doesn't get theme backgound color
   if TStyleManager.IsCustomStyleActive then
     LbMsg.Color := TStyleManager.ActiveStyle.GetStyleColor(TStyleColor.scWindow);
+  {$ENDIF}
 end;
 
 procedure TFrmDamDialog.LoadText(const aText: String);
@@ -297,7 +331,7 @@ begin
 
   S := TStringList.Create;
   try
-    R := TResourceStream.Create(FindClassHInstance(TDam), 'DAM_LANG', RT_RCDATA);
+    R := TResourceStream.Create({$IFDEF FPC}HInstance{$ELSE}FindClassHInstance(TDam){$ENDIF}, 'DAM_LANG', RT_RCDATA);
     try
       S.LoadFromStream(R, TEncoding.UTF8);
     finally

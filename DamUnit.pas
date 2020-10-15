@@ -10,9 +10,16 @@ Please, read the documentation at GitHub link.
 
 unit DamUnit;
 
+{$IFDEF FPC}{$mode delphi}{$ENDIF}
+
 interface
 
-uses System.Classes, System.SysUtils, Vcl.Graphics, Vcl.ImgList;
+uses
+{$IFDEF FPC}
+  Classes, SysUtils, Graphics, ImgList;
+{$ELSE}
+  System.Classes, System.SysUtils, Vcl.Graphics, Vcl.ImgList;
+{$ENDIF}
 
 type
   TDamLanguage = (dgEnglish, dgPortuguese, dgSpanish, dgGerman, dgItalian,
@@ -139,7 +146,13 @@ function DamParams(const Params: array of Variant): TDamParams; //compatibility 
 
 implementation
 
-uses DamDialog, Vcl.Forms, Winapi.Windows, System.UITypes, System.StrUtils;
+uses
+  DamDialog,
+{$IFDEF FPC}
+  Forms, StrUtils, Windows;
+{$ELSE}
+  Vcl.Forms, Winapi.Windows, System.UITypes, System.StrUtils;
+{$ENDIF}
 
 var ObjDefault: TDam = nil;
 
@@ -370,7 +383,7 @@ constructor TDam.Create(AOwner: TComponent);
 begin
   inherited;
 
-  FAbout := 'Digão Dalpiaz / Version 3.0';
+  FAbout := 'Digao Dalpiaz / Version 4.0';
 
   FFont := TFont.Create;
   FFont.Name := 'Segoe UI';
@@ -492,6 +505,6 @@ begin
 end;
 
 initialization
-  System.Classes.RegisterClass(TDamMsg);
+  {$IFNDEF FPC}System.{$ENDIF}Classes.RegisterClass(TDamMsg);
 
 end.

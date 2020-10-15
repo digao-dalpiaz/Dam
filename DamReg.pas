@@ -2,7 +2,12 @@ unit DamReg;
 
 interface
 
-uses DesignEditors;
+uses
+{$IFDEF FPC}
+  ComponentEditors;
+{$ELSE}
+  DesignEditors;
+{$ENDIF}
 
 type
   TDamPropEdit = class(TComponentEditor)
@@ -17,39 +22,44 @@ procedure Register;
 
 implementation
 
-uses DamUnit, DamList, Vcl.Forms, System.Classes,
-  DesignIntf;
+uses
+{$IFDEF FPC}
+  Forms, Classes, LResources,
+{$ELSE}
+  Vcl.Forms, System.Classes, DesignIntf,
+{$ENDIF}
+  DamUnit, DamList;
 
 procedure Register;
 begin
-    RegisterComponents('Digao', [TDam]);
-
-    RegisterNoIcon([TDamMsg]);
-
-    RegisterComponentEditor(TDam, TDamPropEdit);
+  {$IFDEF FPC}{$I Dam.lrs}{$ENDIF}
+  RegisterComponents('Digao', [TDam]);
+  RegisterNoIcon([TDamMsg]);
+  RegisterComponentEditor(TDam, TDamPropEdit);
 end;
 
 //
 
 procedure TDamPropEdit.Edit;
-var I: Integer;
-    F: TFrmDamList;
+var
+  I: Integer;
+  F: TFrmDamList;
 begin
-    F := nil;
+  F := nil;
 
-    for I := 0 to Screen.FormCount-1 do
-    begin
-        if Screen.Forms[I] is TFrmDamList then
-          if TFrmDamList(Screen.Forms[I]).GetDam = Component then
-          begin
-              F := TFrmDamList(Screen.Forms[I]);
-              Break;
-          end;
-    end;
+  for I := 0 to Screen.FormCount-1 do
+  begin
+    if Screen.Forms[I] is TFrmDamList then
+      if TFrmDamList(Screen.Forms[I]).GetDam = Component then
+      begin
+        F := TFrmDamList(Screen.Forms[I]);
+        Break;
+      end;
+  end;
 
-    if F=nil then
-      F := TFrmDamList.Create(Component, Designer);
-    F.Show;
+  if F=nil then
+    F := TFrmDamList.Create(Component, Designer);
+  F.Show;
 end;
 
 procedure TDamPropEdit.ExecuteVerb(Index: Integer);

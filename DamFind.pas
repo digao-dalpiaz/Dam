@@ -2,9 +2,13 @@ unit DamFind;
 
 interface
 
-uses Vcl.Forms, Vcl.StdCtrls, Vcl.Controls, Vcl.ExtCtrls, System.Classes,
-  //
-  DamUnit, DesignIntf;
+uses
+{$IFDEF FPC}
+  Forms, StdCtrls, Controls, ExtCtrls, Classes,
+{$ELSE}
+  Vcl.Forms, Vcl.StdCtrls, Vcl.Controls, Vcl.ExtCtrls, System.Classes,
+{$ENDIF}
+  DamUnit;
 
 type
   TFrmDamFind = class(TForm)
@@ -15,40 +19,49 @@ type
     BtnCancel: TButton;
     BtnOK: TButton;
     EdMessage: TMemo;
-    procedure FormCreate(Sender: TObject);
     procedure EdTextChange(Sender: TObject);
     procedure BtnOKClick(Sender: TObject);
     procedure LClick(Sender: TObject);
     procedure LDblClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     Dam: TDam;
-    Design: IDesigner;
   end;
 
 var
   FrmDamFind: TFrmDamFind;
 
-procedure DoFindDamMessage(xDam: TDam; xDesign: IDesigner);
+function DoFindDamMessage(objDam: TDam; out objMsg: TDamMsg): Boolean;
 
 implementation
 
 {$R *.dfm}
 
-uses System.SysUtils, Vcl.Dialogs;
+uses
+{$IFDEF FPC}
+  SysUtils, Dialogs;
+{$ELSE}
+  System.SysUtils, Vcl.Dialogs;
+{$ENDIF}
 
-procedure DoFindDamMessage;
+function DoFindDamMessage(objDam: TDam; out objMsg: TDamMsg): Boolean;
 begin
   FrmDamFind := TFrmDamFind.Create(Application);
-  FrmDamFind.Dam := xDam;
-  FrmDamFind.Design := xDesign;
-  FrmDamFind.ShowModal;
-  FrmDamFind.Free;
+  try
+    FrmDamFind.Dam := objDam;
+    Result := FrmDamFind.ShowModal = mrOk;
+    if Result then
+      objMsg := TDamMsg(FrmDamFind.L.Items.Objects[FrmDamFind.L.ItemIndex]);
+  finally
+    FrmDamFind.Free;
+  end;
 end;
 
 //
 
-procedure TFrmDamFind.FormCreate(Sender: TObject);
+procedure TFrmDamFind.FormShow(Sender: TObject);
 begin
+  //Anchors must be defined on show due to Lazarus incorrect form size behavior
   EdText.Anchors := [akLeft,akRight,akTop];
   L.Anchors := [akLeft,akRight,akTop,akBottom];
   EdMessage.Anchors := [akLeft,akRight,akBottom];
@@ -116,8 +129,6 @@ begin
     MessageDlg('Please, select one message!', mtError, [mbOK], 0);
     Exit;
   end;
-
-  Design.SelectComponent(TPersistent(L.Items.Objects[L.ItemIndex]));
 
   ModalResult := mrOk;
 end;

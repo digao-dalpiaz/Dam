@@ -1,7 +1,7 @@
 object FrmDamFind: TFrmDamFind
   Left = 0
   Top = 0
-  BorderIcons = [biSystemMenu, biMaximize]
+  BorderIcons = [biSystemMenu]
   Caption = 'Find Dam Message'
   ClientHeight = 382
   ClientWidth = 425
@@ -13,7 +13,7 @@ object FrmDamFind: TFrmDamFind
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

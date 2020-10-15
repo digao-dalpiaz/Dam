@@ -738,7 +738,7 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     Width = 385
     Height = 20
     AutoSize = False
-    Font.Charset = ANSI_CHARSET
+    Font.Charset = DEFAULT_CHARSET
     Font.Color = clNavy
     Font.Height = -11
     Font.Name = 'Verdana'
@@ -777,8 +777,6 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     Height = 121
     VertScrollBar.Smooth = True
     VertScrollBar.Tracking = True
-    BevelInner = bvNone
-    BevelKind = bkFlat
     BorderStyle = bsNone
     Color = clWhite
     ParentColor = False
@@ -1126,22 +1124,20 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     TabOrder = 4
     TabStop = False
   end
-  object M: TRichEdit
+  object M: TMemo
     Left = 8
     Top = 72
     Width = 553
     Height = 137
-    Font.Charset = ANSI_CHARSET
+    Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
-    Font.Name = 'Courier New'
+    Font.Name = 'Consolas'
     Font.Style = []
     HideSelection = False
-    HideScrollBars = False
     ParentFont = False
     ScrollBars = ssVertical
     TabOrder = 5
-    Zoom = 100
     OnChange = MChange
   end
   object BtnHelp: TBitBtn

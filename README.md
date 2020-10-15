@@ -1,12 +1,13 @@
 
 # Dam
 
-## Delphi Message Dialogs with Formatted Text
+## Delphi and Lazarus Message Dialogs with Formatted Text
 
 ![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-XE2..10.3%20Rio-blue.svg)
 ![Platforms](https://img.shields.io/badge/Platforms-Win32%20and%20Win64-red.svg)
 ![Auto Install](https://img.shields.io/badge/-Auto%20Install%20App-orange.svg)
-![Dam Version](https://img.shields.io/badge/Dam%20Version-3.0-green.svg)
+![Lazarus support](https://img.shields.io/badge/-Lazarus%20support-green.svg)
+![Dam Version](https://img.shields.io/badge/Dam%20Version-4.0-green.svg)
 ![Languages](https://img.shields.io/badge/Languages-12-brightgreen.svg)
 
 ![Dam Super Print](images/dam_super_print.png)
@@ -27,6 +28,15 @@
 - [History](#history)
 
 ## What's New
+
+- 10/14/2020 (Version 4.0)
+
+   - **Lazarus support**. :smile:
+   
+   *Remarks:*
+   
+   - The TRichEdit control in Message Editor Dialog was replaced by a TMemo, because in non Windows systems this control doesn't exist. So the syntax highlight under HTML tags are also no longer displayed in the editor.
+   - At this time, the Cut, Copy and Paste commands for messages in the Lazarus IDE environment are not yet available.
 
 - 09/24/2020
 
@@ -183,11 +193,11 @@ The Message Dialog: :stuck_out_tongue:
 
    *This is a label with HTML formatting component. The messages uses this component to display formatted text.*
 
-### Auto install
+### Delphi auto installation
 
 Close Delphi IDE and run **CompInstall.exe** app to auto install component into Delphi.
 
-### Manual install
+### Delphi manual installation
 
 1. Open **Dam.groupproj** in the Delphi.
 
@@ -204,6 +214,12 @@ Close Delphi IDE and run **CompInstall.exe** app to auto install component into 
 7. Run **AfterBuild.bat** to publish DFM and RES to Release folders.
 
 > Supports Delphi XE2..Delphi 10.3 Rio
+
+### Lazarus installation
+
+1. Go to menu Package > Open Package File (.lpk) and load **LazDamPackage.lpk**, and click into **Compile**.
+
+2. Go to menu Package > Open Package File (.lpk) and load **LazDamDesignPackage.lpk**, and click into **Use > Install**.
 
 # Supported Languages
 

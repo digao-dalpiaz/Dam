@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="LazDamDesignPackage"/>
+    <Type Value="DesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <IgnoredMessages idx6058="True" idx5093="True" idx5089="True" idx5057="True" idx5028="True" idx5024="True" idx3124="True" idx3123="True"/>
+        </CompilerMessages>
+      </Other>
+    </CompilerOptions>
+    <Files Count="9">
+      <Item1>
+        <Filename Value="Dam.lrs"/>
+        <Type Value="LRS"/>
+      </Item1>
+      <Item2>
+        <Filename Value="DamReg.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="DamReg"/>
+      </Item2>
+      <Item3>
+        <Filename Value="DamMsgEdit.dfm"/>
+        <Type Value="Text"/>
+      </Item3>
+      <Item4>
+        <Filename Value="DamMsgEdit.pas"/>
+        <UnitName Value="DamMsgEdit"/>
+      </Item4>
+      <Item5>
+        <Filename Value="DamFind.dfm"/>
+        <Type Value="Text"/>
+      </Item5>
+      <Item6>
+        <Filename Value="DamFind.pas"/>
+        <UnitName Value="DamFind"/>
+      </Item6>
+      <Item7>
+        <Filename Value="DamList.dfm"/>
+        <Type Value="Text"/>
+      </Item7>
+      <Item8>
+        <Filename Value="DamList.pas"/>
+        <UnitName Value="DamList"/>
+      </Item8>
+      <Item9>
+        <Filename Value="DamFileGenerator.pas"/>
+        <UnitName Value="DamFileGenerator"/>
+      </Item9>
+    </Files>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LazDamPackage"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
+  </Package>
+</CONFIG>
