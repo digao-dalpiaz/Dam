@@ -29,7 +29,7 @@
 
 ## What's New
 
-- 10/18/2020 (Version 4.1)
+- 10/18/2020 (Version 4.1) (*Minimum DzHTMLText version: 2.04*)
 
    - Implemented DzHTMLText version internal check.
 
