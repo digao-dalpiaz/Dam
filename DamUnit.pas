@@ -1,6 +1,6 @@
 {------------------------------------------------------------------------------
 TDam component
-Developed by Rodrigo Depiné Dalpiaz (digão dalpiaz)
+Developed by Rodrigo Depine Dalpiaz (digao dalpiaz)
 Non visual component to manage message dialogs
 
 https://github.com/digao-dalpiaz/Dam
@@ -20,6 +20,8 @@ uses
 {$ELSE}
   System.Classes, System.SysUtils, Vcl.Graphics, Vcl.ImgList;
 {$ENDIF}
+
+const DZHTMLTEXT_MINIMUM_VERSION = 204; //DzHTMLText minimum required version
 
 type
   TDamLanguage = (dgEnglish, dgPortuguese, dgSpanish, dgGerman, dgItalian,
@@ -147,7 +149,7 @@ function DamParams(const Params: array of Variant): TDamParams; //compatibility 
 implementation
 
 uses
-  DamDialog,
+  DamDialog, DzHTMLText,
 {$IFDEF FPC}
   Forms, StrUtils, Windows;
 {$ELSE}
@@ -383,7 +385,7 @@ constructor TDam.Create(AOwner: TComponent);
 begin
   inherited;
 
-  FAbout := 'Digao Dalpiaz / Version 4.0';
+  FAbout := 'Digao Dalpiaz / Version 4.1';
 
   FFont := TFont.Create;
   FFont.Name := 'Segoe UI';
@@ -506,5 +508,8 @@ end;
 
 initialization
   {$IFNDEF FPC}System.{$ENDIF}Classes.RegisterClass(TDamMsg);
+
+  if TDzHTMLText.Version < DZHTMLTEXT_MINIMUM_VERSION then
+    raise Exception.Create('Please, update DzHTMLText component.');
 
 end.

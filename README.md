@@ -29,6 +29,10 @@
 
 ## What's New
 
+- 10/18/2020 (Version 4.1)
+
+   - Implemented DzHTMLText version internal check.
+
 - 10/14/2020 (Version 4.0)
 
    - **Lazarus support**. :smile:
