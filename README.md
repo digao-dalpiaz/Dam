@@ -30,6 +30,10 @@
 
 ## What's New
 
+- 10/26/2020 (Version 4.2)
+
+   - Updated CompInstall to version 2.0 (now supports GitHub auto-update)
+
 - 10/18/2020 (Version 4.1) (*Minimum DzHTMLText version: 2.04*)
 
    - Implemented DzHTMLText version internal check.
