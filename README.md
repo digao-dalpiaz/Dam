@@ -1,4 +1,4 @@
-![Preview](images/dam_preview.png)
+![Preview](images/dam_preview.gif)
 
 # Dam
 
