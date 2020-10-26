@@ -1,3 +1,4 @@
+![Preview](images/dam_preview.png)
 
 # Dam
 
