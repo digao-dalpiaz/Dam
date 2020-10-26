@@ -21,8 +21,6 @@ uses
   System.Classes, System.SysUtils, Vcl.Graphics, Vcl.ImgList;
 {$ENDIF}
 
-const DZHTMLTEXT_MINIMUM_VERSION = 204; //DzHTMLText minimum required version
-
 type
   TDamLanguage = (dgEnglish, dgPortuguese, dgSpanish, dgGerman, dgItalian,
     dgChinese, dgJapanese, dgGreek, dgRussian, dgFrench, dgPolish, dgDutch);
@@ -385,7 +383,7 @@ constructor TDam.Create(AOwner: TComponent);
 begin
   inherited;
 
-  FAbout := 'Digao Dalpiaz / Version 4.2';
+  FAbout := 'Digao Dalpiaz / Version 4.3';
 
   FFont := TFont.Create;
   FFont.Name := 'Segoe UI';
@@ -509,7 +507,7 @@ end;
 initialization
   {$IFNDEF FPC}System.{$ENDIF}Classes.RegisterClass(TDamMsg);
 
-  if TDzHTMLText.Version < DZHTMLTEXT_MINIMUM_VERSION then
+  if DZHTMLTEXT_INTERNAL_VERSION <> 701 then
     raise Exception.Create('Please, update DzHTMLText component.');
 
 end.
