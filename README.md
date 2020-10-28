@@ -216,6 +216,8 @@ The Message Dialog: :stuck_out_tongue:
 
 Close Delphi IDE and run **CompInstall.exe** app to auto install component into Delphi.
 
+> If you are installing DzHTMLText and Dam at once, using Component Installer utility, after installing DzHTMLText you gonna need to open and close Delphi before installing Dam (this is needed just to update Library Path file used by MSBUILD).
+
 ### Delphi manual installation
 
 1. Open **Dam.groupproj** in the Delphi.
