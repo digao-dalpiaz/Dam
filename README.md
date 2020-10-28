@@ -20,6 +20,7 @@
 - [How to install](#how-to-install)
 - [Supported Languages](#supported-languages)
 - [How to use](#how-to-use)
+- [Message parameters](#message-parameters)
 - [TDam properties](#tdam-properties)
 - [TDam events](#tdam-events)
 - [TDamMsg properties](#tdammsg-properties)
@@ -172,7 +173,7 @@ end;
 
 So, I think this is really ugly, don't you think? :persevere:
 
-**And if I tell you this can be written much more beautiful:** :smile:
+**With Dam you can write this same message like this:** :smile:
 
 ```delphi
 begin
@@ -275,7 +276,7 @@ The TDam has a property called `DamUnitName`. Here you define a unit name to con
 
 So, at any unit, you just add a uses to this unit, and call the message you want by message name. If the message has parameters, the method will be declared automatically asking for parameters in an array.
 
-**Yeah, but if I am at the same unit that is the TDam and TDamMsg messages, if I call method by message name, the Delphi think I'm referring the object of message!**
+**Yeah, but if I am at the same class (TForm/TDataModule) that is the TDam and TDamMsg messages, if I call method by message name, the Delphi think I'm referring the object of message!**
 
 This is true, and because of that, the component has a object hidden function. You only need to name the message starting with `_`. So the unit builder will remove this character to name the method and the Delphi will not confuse the two things.
 
@@ -303,7 +304,7 @@ If you are using more than one TDam, I recommend you to set the same `DamUnitNam
 
 If you call message by method of message name, the method will be a procedure if message has only one button.
 
-If message has two or three buttons, the method will be a function. When it has two buttons, the function will always return boolean value, retuning true if first button on the left was clicked, or returning false if second button (last button on the right) was clicked.
+If message has two or three buttons, the method will be a function. When it has two buttons, the function will always return boolean value, returning true if first button on the left was clicked, or returning false if second button (last button on the right) was clicked.
 
 When message has three button, the function returns integer value 1, 2 or 3, depending on which button was pressed in the message dialog. The first button is the left one; the second is the middle button; the third button is the right button.
 
@@ -315,6 +316,20 @@ case QuestionSaveFile([aFileName]) of
   2: {continue}; //No button
   3: Abort; //Cancel button
 end;
+```
+
+## Message parameters
+
+If you want to use replaceable parameters in the message, just type `%p`. You can specify multiple parameters in the same message. When you are calling message, the parameters array are sequentially in the same order they are typed in the message.
+
+The parameters array are variant type, so they don't need conversions.
+
+Example:
+```delphi
+//TDamMsg Message property = 'This is a %p message number %p at time %p'
+MyCustomMessage(['test', 123, Now]);
+//or
+MsgInfo('This is a %p message number %p at time %p', ['test', 123, Now]);
 ```
 
 ## TDam properties
