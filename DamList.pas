@@ -12,7 +12,8 @@ uses
 {$ELSE}
   DesignWindows, System.Classes, System.Actions, Vcl.ActnList,
   Vcl.ImgList, Vcl.Controls, Vcl.ComCtrls, Vcl.StdCtrls,
-  Vcl.Buttons, Vcl.ExtCtrls, System.ImageList,
+  Vcl.Buttons, Vcl.ExtCtrls, 
+  {$IF CompilerVersion >= 29}System.ImageList, {$IFEND}
   //
   System.UITypes, System.Types, Vcl.Forms, Winapi.Messages,
   DesignIntf, System.Generics.Collections,

@@ -30,6 +30,12 @@
 
 ## What's New
 
+- 10/27/2020 (Version 4.4)
+
+   - Fixed previous Delphi versions (at least on XE2, XE3, XE4 and XE5) package tag. It was causing package compilation error.
+   - Fixed the use of System.ImageList unit because it's only available from XE8.
+   - Fixed .ToString conversion because is not available in some Delphi versions.
+
 - 10/26/2020 (Version 4.3) (*Minimum DzHTMLText version: 2.6*)
 
    - Changed TDzHTMLText version dependency check to use new internal version control.

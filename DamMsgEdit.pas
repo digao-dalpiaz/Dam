@@ -113,7 +113,7 @@ var A: String;
     V: Boolean;
 begin
   EdFont.Text := Dam.MessageFont.Name;
-  EdSize.Text := Dam.MessageFont.Size.ToString;
+  EdSize.Text := IntToStr(Dam.MessageFont.Size);
 
   Box.Color := Dam.MessageColor;
   LbMsg.Font.Assign(Dam.MessageFont);
