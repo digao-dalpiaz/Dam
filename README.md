@@ -8,7 +8,6 @@
 ![Platforms](https://img.shields.io/badge/Platforms-Win32%20and%20Win64-red.svg)
 ![Auto Install](https://img.shields.io/badge/-Auto%20Install%20App-orange.svg)
 ![Lazarus support](https://img.shields.io/badge/-Lazarus%20support-green.svg)
-![Dam Version](https://img.shields.io/badge/Dam%20Version-4.0-green.svg)
 ![Languages](https://img.shields.io/badge/Languages-12-brightgreen.svg)
 
 ![Dam Super Print](images/dam_super_print.png)
