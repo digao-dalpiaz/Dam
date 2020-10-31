@@ -4,7 +4,7 @@
 
 ## Delphi and Lazarus Message Dialogs with Formatted Text
 
-![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-XE2..10.3%20Rio-blue.svg)
+![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-XE2..10.4-blue.svg)
 ![Platforms](https://img.shields.io/badge/Platforms-Win32%20and%20Win64-red.svg)
 ![Auto Install](https://img.shields.io/badge/-Auto%20Install%20App-orange.svg)
 ![Lazarus support](https://img.shields.io/badge/-Lazarus%20support-green.svg)
@@ -30,6 +30,10 @@
 - [History](#history)
 
 ## What's New
+
+- 10/31/2020 (Version 4.5)
+
+   - Included Delphi 10.4 auto-install support.
 
 - 10/27/2020 (Version 4.4)
 
@@ -235,7 +239,7 @@ Close Delphi IDE and run **CompInstall.exe** app to auto install component into 
 
 7. Run **AfterBuild.bat** to publish DFM and RES to Release folders.
 
-> Supports Delphi XE2..Delphi 10.3 Rio
+> Supports Delphi XE2..Delphi 10.4
 
 ### Lazarus installation
 

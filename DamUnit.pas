@@ -154,6 +154,8 @@ uses
   Vcl.Forms, Winapi.Windows, System.UITypes, System.StrUtils;
 {$ENDIF}
 
+const STR_VERSION = '4.5';
+
 var ObjDefault: TDam = nil;
 
 type EDamException = class(Exception)
@@ -383,7 +385,7 @@ constructor TDam.Create(AOwner: TComponent);
 begin
   inherited;
 
-  FAbout := 'Digao Dalpiaz / Version 4.4';
+  FAbout := 'Digao Dalpiaz / Version '+STR_VERSION;
 
   FFont := TFont.Create;
   FFont.Name := 'Segoe UI';
