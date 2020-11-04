@@ -160,10 +160,10 @@ var ObjDefault: TDam = nil;
 
 type EDamException = class(Exception)
   DamMsg: TDamMsg;
-  constructor Create(const aText: String; aDamMsg: TDamMsg);
+  constructor Create(aDamMsg: TDamMsg; const aText: String);
 end;
 
-constructor EDamException.Create(const aText: String; aDamMsg: TDamMsg);
+constructor EDamException.Create(aDamMsg: TDamMsg; const aText: String);
 begin
   inherited Create(aText);
   DamMsg := aDamMsg;
@@ -241,43 +241,45 @@ begin
   Result := QuickMsg(Msg, Params, diQuest);
 end;
 
-procedure ParseParams(var A: String; const Params: TDamParams);
-const PARAM_EXCEPTION = '{except}';
-      PARAM_ID = '%p';
-var OffSet, I, IdxPar: Integer;
-    aPar: String;
+function ParseParams(const Msg: String; const Params: TDamParams): String;
+const
+  PARAM_EXCEPTION = '{except}';
+  PARAM_ID = '%p';
+var
+  OffSet, I, IdxPar: Integer;
+  A, aPar: String;
 begin
-  IdxPar := 0;
+  A := Msg;
+
+  IdxPar := -1;
   OffSet := 1;
 
-  repeat
+  while True do
+  begin
     I := PosEx(PARAM_ID, A, OffSet);
-    if I>0 then
-    begin
-      Delete(A, I, Length(PARAM_ID));
+    if I=0 then Break;
 
-      if IdxPar>High(Params) then
-        raise Exception.CreateFmt('DAM: Parameter index %d not found', [IdxPar]);
+    Inc(IdxPar);
+    if IdxPar>High(Params) then
+      raise Exception.CreateFmt('DAM: Parameter index %d not found', [IdxPar]);
 
-      aPar := Params[IdxPar];
-      Inc(IdxPar);
+    Delete(A, I, Length(PARAM_ID));
 
-      Insert(aPar, A, I);
-      OffSet := I+Length(aPar);
-    end;
-  until I=0;
+    aPar := TDzHTMLText.EscapeTextToHTML(Params[IdxPar]);
+
+    Insert(aPar, A, I);
+    OffSet := I+Length(aPar);
+  end;
 
   if A.Contains(PARAM_EXCEPTION) then
-    A := StringReplace(A, PARAM_EXCEPTION, CaptureErrorMsg, [rfReplaceAll]);
+    A := StringReplace(A, PARAM_EXCEPTION, TDzHTMLText.EscapeTextToHTML(CaptureErrorMsg), [rfReplaceAll]);
+
+  Result := A;
 end;
 
 procedure MsgRaise(const Msg: String; const Params: TDamParams);
-var newMsg: String;
 begin
-  newMsg := Msg;
-  ParseParams(newMsg, Params);
-
-  raise Exception.Create(newMsg);
+  raise Exception.Create(ParseParams(Msg, Params));
 end;
 
 // -- TDamMsg
@@ -311,8 +313,7 @@ var
   newMsg: String;
   Handled: Boolean; HndRes: TDamMsgRes;
 begin
-  newMsg := FMessage;
-  ParseParams(newMsg, Params);
+  newMsg := ParseParams(FMessage, Params);
 
   if Assigned(FDam.FShowEvent) then
   begin
@@ -323,7 +324,7 @@ begin
   end;
 
   if FRaise then
-    raise EDamException.Create(newMsg, Self);
+    raise EDamException.Create(Self, newMsg);
   //else
   Result := RunDamDialog(Self, newMsg);
 end;
@@ -484,7 +485,7 @@ begin
     try
       Msg.Dam := Self;
       Msg.Icon := diError;
-      Msg.Message := E.Message;
+      Msg.Message := TDzHTMLText.EscapeTextToHTML(E.Message);
       Msg.Run;
     finally
       Msg.Free;
