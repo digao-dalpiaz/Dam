@@ -24,11 +24,17 @@
 - [TDam events](#tdam-events)
 - [TDamMsg properties](#tdammsg-properties)
 - [Quick Messages](#quick-messages)
+- [Escaping HTML tags and parameters](#escaping-html-tags-and-parameters)
 - [How to change Language file](#how-to-change-language-file)
 - [Delphi versions below XE8 remark](#delphi-versions-below-xe8-remark)
 - [History](#history)
 
 ## What's New
+
+- 11/11/2020 (Version 4.6)
+
+   - New EDam exception class.
+   - Implemented HTML tags escape and parameter/exception constant bypass.
 
 - 10/31/2020 (Version 4.5)
 
@@ -478,9 +484,35 @@ You can also re-raise an exception:
 try
   DoSaveFile;
 except
-  MsgRaise('Fatal error saving file: {except}'); //re-raise a new exception with better text message
+  raise EDam.Create('Fatal error saving file: {except}'); //re-raise a new exception with better text message
 end;
 ```
+
+## Escaping HTML tags and parameters
+
+All message parameters are automatically "escaped" by component.
+
+Example:
+
+```delphi
+procedure Test;
+begin
+  MyCustomMessage(['This will display <b> literal string', 'This will display "%p" literal string']);
+end;
+
+procedure Test2;
+begin
+  MsgInfo('<b>First message parameter</b>: %p', ['Here I want to display literal <> characters']);
+end;
+```
+
+- The message fixed part is always HTML notation with parameter constant support.
+- The parameters array is always auto-escaped allowing any string literal character.
+
+If you want to display HTML literal characters in fixed message part, please use the following escape constants:
+- `&amp;` = `&`
+- `&lt;` = `<`
+- `&gt;` = `>`
 
 ## How to change Language file
 
