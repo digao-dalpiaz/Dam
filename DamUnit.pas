@@ -139,6 +139,16 @@ type
     property Dam: TDam read FDam write FDam;
   end;
 
+  EDam = class(Exception)
+  private
+    FDamMsg: TDamMsg;
+  public
+    property DamMsg: TDamMsg read FDamMsg;
+
+    constructor Create(const Msg: String; const Params: TDamParams = nil); overload;
+    constructor Create(DamMsg: TDamMsg; const Params: TDamParams = nil); overload;
+  end;
+
 procedure MsgInfo(const Msg: String; const Params: TDamParams = nil);
 procedure MsgWarn(const Msg: String; const Params: TDamParams = nil);
 procedure MsgError(const Msg: String; const Params: TDamParams = nil);
@@ -162,17 +172,6 @@ uses
 const STR_VERSION = '4.5';
 
 var ObjDefault: TDam = nil;
-
-type EDamException = class(Exception)
-  DamMsg: TDamMsg;
-  constructor Create(aDamMsg: TDamMsg; const aText: String);
-end;
-
-constructor EDamException.Create(aDamMsg: TDamMsg; const aText: String);
-begin
-  inherited Create(aText);
-  DamMsg := aDamMsg;
-end;
 
 procedure CheckExceptObject;
 begin
@@ -209,8 +208,7 @@ begin
     Result[I] := Params[I];
 end;
 
-function QuickMsg(const Msg: String; const Params: TDamParams; Kind: TDamMsgIcon;
-  RaiseExcept: Boolean = False): Boolean;
+function QuickMsg(const Msg: String; const Params: TDamParams; Kind: TDamMsgIcon): Boolean;
 var M: TDamMsg;
 begin
   CheckDamDefault;
@@ -221,7 +219,6 @@ begin
     M.Message := Msg;
     M.Icon := Kind;
     if Kind = diQuest then M.Buttons := dbYesNo;
-    M.RaiseExcept := RaiseExcept;
     Result := M.RunAsBool(Params);
   finally
     M.Free;
@@ -250,40 +247,63 @@ end;
 
 procedure MsgRaise(const Msg: String; const Params: TDamParams);
 begin
-  QuickMsg(Msg, Params, diError, True);
+  raise EDam.Create(Msg, Params);
 end;
 
 //
 
-function ParseParams(const Msg: String; const Params: TDamParams): String;
+function PosOfAnyString(const Args: array of String; const Text: String; Offset: Integer;
+  out ArgIdx: Integer; out iPos: Integer): Boolean;
 var
-  OffSet, I, IdxPar: Integer;
+  I, J: Integer;
+begin
+  for I := Offset to Length(Text) do
+  begin
+    for J := Low(Args) to High(Args) do
+    begin
+      if Copy(Text, I, Length(Args[J]))=Args[J] then
+      begin
+        ArgIdx := J;
+        iPos := I;
+        Exit(True);
+      end;
+    end;
+  end;
+
+  Exit(False);
+end;
+
+function ParseParams(const Msg: String; const Params: TDamParams): String;
+const ARGS: array of String = [DAM_PARAM_IDENT, DAM_PARAM_EXCEPTION];
+var
   A, aPar: String;
+  I, Offset, IdxPar, ArgIdx: Integer;
 begin
   A := Msg;
 
   IdxPar := -1;
-  OffSet := 1;
+  Offset := 1;
 
-  while True do
+  while PosOfAnyString(ARGS, A, Offset, ArgIdx, I) do
   begin
-    I := PosEx(DAM_PARAM_IDENT, A, OffSet);
-    if I=0 then Break;
+    if ArgIdx=0 then
+    begin
+      Inc(IdxPar);
+      if IdxPar>High(Params) then
+        raise Exception.CreateFmt('DAM: Parameter index %d not found', [IdxPar]);
+    end;
 
-    Inc(IdxPar);
-    if IdxPar>High(Params) then
-      raise Exception.CreateFmt('DAM: Parameter index %d not found', [IdxPar]);
+    Delete(A, I, Length(ARGS[ArgIdx]));
 
-    Delete(A, I, Length(DAM_PARAM_IDENT));
-
-    aPar := TDzHTMLText.EscapeTextToHTML(Params[IdxPar]);
+    case ArgIdx of
+      0: aPar := Params[IdxPar];
+      1: aPar := CaptureErrorMsg;
+    end;
+    aPar := TDzHTMLText.EscapeTextToHTML(aPar);
 
     Insert(aPar, A, I);
-    OffSet := I+Length(aPar);
+    Offset := I+Length(aPar);
   end;
-
-  if A.Contains(DAM_PARAM_EXCEPTION) then
-    A := StringReplace(A, DAM_PARAM_EXCEPTION, TDzHTMLText.EscapeTextToHTML(CaptureErrorMsg), [rfReplaceAll]);
 
   Result := A;
 end;
@@ -315,15 +335,11 @@ begin
 end;
 
 function TDamMsg.Run(const Params: TDamParams): TDamMsgRes;
-var
-  newMsg: String;
 begin
-  newMsg := ParseParams(FMessage, Params);
-
   if FRaise then
-    raise EDamException.Create(Self, newMsg);
+    raise EDam.Create(Self, Params);
   //else
-  Result := Dam.ShowDialog(Self, newMsg);
+  Result := Dam.ShowDialog(Self, ParseParams(FMessage, Params));
 end;
 
 function TDamMsg.RunAsBool(const Params: TDamParams): Boolean;
@@ -470,6 +486,20 @@ begin
   FFont.Assign(Value);
 end;
 
+function TDam.GetFontStored: Boolean;
+begin
+  Result := not (
+   (FFont.Charset = DEFAULT_CHARSET) and
+   (FFont.Color = clWindowText) and
+   (FFont.Name = 'Segoe UI') and
+   (FFont.Orientation = 0) and
+   (FFont.Pitch = fpDefault) and
+   (FFont.Size = 10) and
+   (FFont.Style = []) and
+   (FFont.Quality = fqDefault)
+  );
+end;
+
 function TDam.ShowDialog(Msg: TDamMsg; const Text: String): TDamMsgRes;
 var
   newMsg: String;
@@ -489,36 +519,40 @@ begin
 end;
 
 procedure TDam.OnError(Sender: TObject; E: Exception);
-var Msg: TDamMsg;
+var
+  Msg: TDamMsg;
+  Text: String;
 begin
-  if E is EDamException then
+  if (E is EDam) and (EDam(E).DamMsg<>nil) then
   begin
-    ShowDialog(EDamException(E).DamMsg, EDamException(E).Message);
+    ShowDialog(EDam(E).DamMsg, E.Message);
   end else
   begin
+    if E is EDam then
+      Text := E.Message
+    else
+      Text := TDzHTMLText.EscapeTextToHTML(E.Message);
+
     Msg := TDamMsg.Create(nil);
     try
       Msg.Dam := Self;
       Msg.Icon := diError;
-      ShowDialog(Msg, TDzHTMLText.EscapeTextToHTML(E.Message));
+      ShowDialog(Msg, Text);
     finally
       Msg.Free;
     end;
   end;
 end;
 
-function TDam.GetFontStored: Boolean;
+constructor EDam.Create(const Msg: String; const Params: TDamParams);
 begin
-  Result := not (
-   (FFont.Charset = DEFAULT_CHARSET) and
-   (FFont.Color = clWindowText) and
-   (FFont.Name = 'Segoe UI') and
-   (FFont.Orientation = 0) and
-   (FFont.Pitch = fpDefault) and
-   (FFont.Size = 10) and
-   (FFont.Style = []) and
-   (FFont.Quality = fqDefault)
-  );
+  inherited Create(ParseParams(Msg, Params));
+end;
+
+constructor EDam.Create(DamMsg: TDamMsg; const Params: TDamParams);
+begin
+  inherited Create(ParseParams(DamMsg.Message, Params));
+  FDamMsg := DamMsg;
 end;
 
 initialization
