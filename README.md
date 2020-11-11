@@ -23,8 +23,9 @@
 - [TDam properties](#tdam-properties)
 - [TDam events](#tdam-events)
 - [TDamMsg properties](#tdammsg-properties)
-- [Quick Messages](#quick-messages)
 - [Escaping HTML tags and parameters](#escaping-html-tags-and-parameters)
+- [Quick Messages](#quick-messages)
+- [Raising exceptions](#raising-exceptions)
 - [How to change Language file](#how-to-change-language-file)
 - [Delphi versions below XE8 remark](#delphi-versions-below-xe8-remark)
 - [History](#history)
@@ -425,6 +426,32 @@ Fires before a Dam Message is displayed, allowing you to intercept messages and 
 - dtByIcon: The title is defined by Icon property (this uses language resource)
 - dtCustom: The title is defined by CustomTitle property
 
+## Escaping HTML tags and parameters
+
+All message parameters are automatically "escaped" by component.
+
+Examples:
+
+```delphi
+procedure Test1;
+begin
+  MyCustomMessage(['This will display <b> literal string', 'This will display "%p" literal string']);
+end;
+
+procedure Test2;
+begin
+  MsgInfo('<b>First message parameter</b>: %p', ['Here I want to display literal <> characters']);
+end;
+```
+
+- The message fixed part is always HTML notation with parameter constant support.
+- The parameters array is always auto-escaped allowing any string literal character.
+
+If you want to display HTML literal characters in fixed message part, please use the following escape constants:
+- `&amp;` = `&`
+- `&lt;` = `<`
+- `&gt;` = `>`
+
 ## Quick Messages
 
 ```delphi
@@ -488,31 +515,47 @@ except
 end;
 ```
 
-## Escaping HTML tags and parameters
+## Raising exceptions
 
-All message parameters are automatically "escaped" by component.
+You can set `RaiseExcept` parameter on a Dam Message object, so when the message is called, an exception will be raised.
 
-Example:
+**Remember:** to take advantage of Dam resources, you need to set `HandleExceptions` on Dam container object. When an exception is raised, Dam will intercept this exception and display custom dialog.
+
+Examples:
 
 ```delphi
-procedure Test;
+procedure TestException_Generic;
 begin
-  MyCustomMessage(['This will display <b> literal string', 'This will display "%p" literal string']);
+  raise Exception.Create('This is my generic exception');     
+  //HTML tags are NOT allowed when using generic exception
 end;
 
-procedure Test2;
+procedure TestException_DamRunTimeCreation;
 begin
-  MsgInfo('<b>First message parameter</b>: %p', ['Here I want to display literal <> characters']);
+  raise EDam.Create('This is my <b>exception</b> with parameter %p', ['First parameter']);
+end;
+
+procedure TestException_DamDesignTimeCreation;
+begin
+  raise EDam.Create(MyCustomMessage, ['First parameter']);
+  //MyCustomMessage represents a TDamMsg object created at design-time
+end;
+
+procedure TestException_DamDesignTimeCreation_ByProperty;
+begin
+  _MyCustomMessage.Run(['First parameter']);
+  //or
+  MyCustomMessage(['First parameter']);
+  
+  //MyCustomMessage represents a TDamMsg object created at design-time with property RaiseExcept=True
+end;
+
+procedure TestException_Quick;
+begin
+  MsgRaise('This is my <b>exception</b> with parameter %p', ['First parameter']);
+  //This method is for compatibility, but I recommend you to use "raise EDam.Create" instead.
 end;
 ```
-
-- The message fixed part is always HTML notation with parameter constant support.
-- The parameters array is always auto-escaped allowing any string literal character.
-
-If you want to display HTML literal characters in fixed message part, please use the following escape constants:
-- `&amp;` = `&`
-- `&lt;` = `<`
-- `&gt;` = `>`
 
 ## How to change Language file
 
