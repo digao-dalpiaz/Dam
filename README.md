@@ -34,8 +34,8 @@
 
 - 11/11/2020 (Version 4.6)
 
-   - New EDam exception class.
-   - Implemented HTML tags escape and parameter/exception constant bypass.
+   - New EDam exception class (read [Raising exceptions](#raising-exceptions)).
+   - Implemented HTML tags escape and parameter/exception constant bypass (read [Escaping HTML tags and parameters](#escaping-html-tags-and-parameters)).
 
 - 10/31/2020 (Version 4.5)
 
