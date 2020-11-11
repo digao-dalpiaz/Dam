@@ -21,6 +21,10 @@ uses
   System.Classes, System.SysUtils, Vcl.Graphics, Vcl.ImgList;
 {$ENDIF}
 
+const
+  DAM_PARAM_EXCEPTION = '{except}';
+  DAM_PARAM_IDENT = '%p';
+
 type
   TDamLanguage = (dgEnglish, dgPortuguese, dgSpanish, dgGerman, dgItalian,
     dgChinese, dgJapanese, dgGreek, dgRussian, dgFrench, dgPolish, dgDutch);
@@ -56,6 +60,7 @@ type
     procedure SetFont(const Value: TFont);
     function GetFontStored: Boolean;
 
+    function ShowDialog(Msg: TDamMsg; const Text: String): TDamMsgRes;
     procedure OnError(Sender: TObject; E: Exception);
   public
     constructor Create(AOwner: TComponent); override;
@@ -204,7 +209,8 @@ begin
     Result[I] := Params[I];
 end;
 
-function QuickMsg(const Msg: String; const Params: TDamParams; Kind: TDamMsgIcon): Boolean;
+function QuickMsg(const Msg: String; const Params: TDamParams; Kind: TDamMsgIcon;
+  RaiseExcept: Boolean = False): Boolean;
 var M: TDamMsg;
 begin
   CheckDamDefault;
@@ -212,9 +218,10 @@ begin
   M := TDamMsg.Create(nil);
   try
     M.Dam := ObjDefault;
-    M.Icon := Kind;
     M.Message := Msg;
+    M.Icon := Kind;
     if Kind = diQuest then M.Buttons := dbYesNo;
+    M.RaiseExcept := RaiseExcept;
     Result := M.RunAsBool(Params);
   finally
     M.Free;
@@ -241,10 +248,14 @@ begin
   Result := QuickMsg(Msg, Params, diQuest);
 end;
 
+procedure MsgRaise(const Msg: String; const Params: TDamParams);
+begin
+  QuickMsg(Msg, Params, diError, True);
+end;
+
+//
+
 function ParseParams(const Msg: String; const Params: TDamParams): String;
-const
-  PARAM_EXCEPTION = '{except}';
-  PARAM_ID = '%p';
 var
   OffSet, I, IdxPar: Integer;
   A, aPar: String;
@@ -256,14 +267,14 @@ begin
 
   while True do
   begin
-    I := PosEx(PARAM_ID, A, OffSet);
+    I := PosEx(DAM_PARAM_IDENT, A, OffSet);
     if I=0 then Break;
 
     Inc(IdxPar);
     if IdxPar>High(Params) then
       raise Exception.CreateFmt('DAM: Parameter index %d not found', [IdxPar]);
 
-    Delete(A, I, Length(PARAM_ID));
+    Delete(A, I, Length(DAM_PARAM_IDENT));
 
     aPar := TDzHTMLText.EscapeTextToHTML(Params[IdxPar]);
 
@@ -271,15 +282,10 @@ begin
     OffSet := I+Length(aPar);
   end;
 
-  if A.Contains(PARAM_EXCEPTION) then
-    A := StringReplace(A, PARAM_EXCEPTION, TDzHTMLText.EscapeTextToHTML(CaptureErrorMsg), [rfReplaceAll]);
+  if A.Contains(DAM_PARAM_EXCEPTION) then
+    A := StringReplace(A, DAM_PARAM_EXCEPTION, TDzHTMLText.EscapeTextToHTML(CaptureErrorMsg), [rfReplaceAll]);
 
   Result := A;
-end;
-
-procedure MsgRaise(const Msg: String; const Params: TDamParams);
-begin
-  raise Exception.Create(ParseParams(Msg, Params));
 end;
 
 // -- TDamMsg
@@ -311,22 +317,13 @@ end;
 function TDamMsg.Run(const Params: TDamParams): TDamMsgRes;
 var
   newMsg: String;
-  Handled: Boolean; HndRes: TDamMsgRes;
 begin
   newMsg := ParseParams(FMessage, Params);
-
-  if Assigned(FDam.FShowEvent) then
-  begin
-    Handled := False;
-    HndRes := 1; //default
-    FDam.FShowEvent(FDam, Self, newMsg, Handled, HndRes);
-    if Handled then Exit(HndRes);
-  end;
 
   if FRaise then
     raise EDamException.Create(Self, newMsg);
   //else
-  Result := RunDamDialog(Self, newMsg);
+  Result := Dam.ShowDialog(Self, newMsg);
 end;
 
 function TDamMsg.RunAsBool(const Params: TDamParams): Boolean;
@@ -473,20 +470,37 @@ begin
   FFont.Assign(Value);
 end;
 
+function TDam.ShowDialog(Msg: TDamMsg; const Text: String): TDamMsgRes;
+var
+  newMsg: String;
+  Handled: Boolean; HndRes: TDamMsgRes;
+begin
+  newMsg := Text;
+
+  if Assigned(FShowEvent) then
+  begin
+    Handled := False;
+    HndRes := 1; //default
+    FShowEvent(Self, Msg, newMsg, Handled, HndRes);
+    if Handled then Exit(HndRes);
+  end;
+
+  Result := RunDamDialog(Msg, newMsg);
+end;
+
 procedure TDam.OnError(Sender: TObject; E: Exception);
 var Msg: TDamMsg;
 begin
   if E is EDamException then
   begin
-    RunDamDialog(EDamException(E).DamMsg, EDamException(E).Message);
+    ShowDialog(EDamException(E).DamMsg, EDamException(E).Message);
   end else
   begin
     Msg := TDamMsg.Create(nil);
     try
       Msg.Dam := Self;
       Msg.Icon := diError;
-      Msg.Message := TDzHTMLText.EscapeTextToHTML(E.Message);
-      Msg.Run;
+      ShowDialog(Msg, TDzHTMLText.EscapeTextToHTML(E.Message));
     finally
       Msg.Free;
     end;
