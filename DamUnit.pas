@@ -164,9 +164,9 @@ implementation
 uses
   DamDialog, DzHTMLText,
 {$IFDEF FPC}
-  Forms, StrUtils, Windows;
+  Forms, Windows;
 {$ELSE}
-  Vcl.Forms, Winapi.Windows, System.UITypes, System.StrUtils;
+  Vcl.Forms, Winapi.Windows, System.UITypes;
 {$ENDIF}
 
 const STR_VERSION = '4.5';
