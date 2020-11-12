@@ -447,10 +447,7 @@ end;
 - The message fixed part is always HTML notation with parameter constant support.
 - The parameters array is always auto-escaped allowing any string literal character.
 
-If you want to display HTML literal characters in fixed message part, please use the following escape constants:
-- `&amp;` = `&`
-- `&lt;` = `<`
-- `&gt;` = `>`
+If you want to display HTML literal characters in fixed message part, please check escape constants at [DzHTMLText documentation](https://github.com/digao-dalpiaz/DzHTMLText#literal-tag-character).
 
 ## Quick Messages
 
