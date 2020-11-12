@@ -248,12 +248,12 @@ end;
 
 procedure TFrmDamMsgEdit.BtnParameterClick(Sender: TObject);
 begin
-  M.SelText := '%p';
+  M.SelText := DAM_PARAM_IDENT;
 end;
 
 procedure TFrmDamMsgEdit.BtnExceptParClick(Sender: TObject);
 begin
-  M.SelText := '{except}';
+  M.SelText := DAM_PARAM_EXCEPTION;
 end;
 
 procedure ClearMsg(Msg: TDamMsg);
