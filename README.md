@@ -448,8 +448,8 @@ begin
 end;
 ```
 
-- The message fixed part is always HTML notation with parameter constant support.
-- The parameters array is always auto-escaped allowing any string literal character.
+- The message fixed part is **always HTML notation** with parameter and exception identifiers support (`%p` and `{except}`).
+- The parameters array is **always auto-escaped** allowing any string literal character (**HTML notation are NOT allowed in parameters array**).
 
 If you want to display HTML literal characters in fixed message part, please check escape constants at [DzHTMLText documentation](https://github.com/digao-dalpiaz/DzHTMLText#literal-tag-character).
 
