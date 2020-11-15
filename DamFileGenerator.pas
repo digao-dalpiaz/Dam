@@ -22,14 +22,14 @@ var
   Module: IOTAModule;
 {$ENDIF}
   C: TComponent;
-  Dir: String;
-  aFile: String;
-  StmUnit: String;
+  Dir: string;
+  aFile: string;
+  StmUnit: string;
   Msg: TDamMsg;
   S: TStringList;
-  A, aFuncName, aFuncKind, aResFunc, aPreCmd, aCmd, aEv, aPar1, aPar2, aCab, aTxt: String;
-  aDecs, Func: String;
-  aTime: String;
+  A, aFuncName, aFuncKind, aResFunc, aPreCmd, aCmd, aEv, aPar1, aPar2, aCab, aTxt: string;
+  aDecs, Func: string;
+  aTime: string;
 const ENTER = #13#10;
 begin
 {$IFDEF FPC}

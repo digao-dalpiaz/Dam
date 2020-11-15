@@ -84,7 +84,7 @@ type
     DamMsg: TDamMsg;
     procedure StoreComp(Target: TDamMsg);
   private
-    procedure PutSelText(TagOpen: String; TagClose: String='');
+    procedure PutSelText(TagOpen: string; TagClose: string='');
     procedure SetBtn(C: TDamMsg);
   end;
 
@@ -109,7 +109,7 @@ begin
 end;
 
 procedure TFrmDamMsgEdit.FormShow(Sender: TObject);
-var A: String;
+var A: string;
     V: Boolean;
 begin
   EdFont.Text := Dam.MessageFont.Name;
@@ -173,13 +173,13 @@ begin
   LbMsg.Text := M.Text;
 end;
 
-function CorToStr(C: TColor): String;
+function CorToStr(C: TColor): string;
 begin
   Result := ColorToString(C);
   if Result.StartsWith('$00') then Delete(Result, 2, 2);
 end;
 
-procedure TFrmDamMsgEdit.PutSelText(TagOpen: String; TagClose: String='');
+procedure TFrmDamMsgEdit.PutSelText(TagOpen: string; TagClose: string='');
 begin
   if TagClose='' then TagClose := TagOpen;
 
@@ -259,7 +259,7 @@ end;
 procedure ClearMsg(Msg: TDamMsg);
 var Def: TDamMsg;
     FocoInvertido: Boolean;
-    AMsg: String;
+    AMsg: string;
 begin
   Def := TDamMsg.Create(nil);
   try
@@ -276,11 +276,11 @@ begin
 end;
 
 procedure TFrmDamMsgEdit.tInfoClick(Sender: TObject);
-var aTipo: String;
-    aNome: String;
+var aTipo: string;
+    aNome: string;
 
   function CheckStartWith(Btn: TSpeedButton): Boolean;
-  var Prefix: String;
+  var Prefix: string;
   begin
     Result := False;
 
@@ -359,7 +359,7 @@ begin
 end;
 
 procedure TFrmDamMsgEdit.BtnOKClick(Sender: TObject);
-var A: String;
+var A: string;
 begin
   EdNome.Text := Trim(EdNome.Text);
 

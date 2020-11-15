@@ -38,19 +38,19 @@ type
   TDamParams = TArray<Variant>;
 
   TDamMsg = class;
-  TDamMsgShowEvent = procedure(Sender: TObject; Msg: TDamMsg; var MsgText: String;
+  TDamMsgShowEvent = procedure(Sender: TObject; Msg: TDamMsg; var MsgText: string;
     var Handled: Boolean; var MsgResult: TDamMsgRes) of object;
 
   TDam = class(TComponent)
   private
-    FAbout: String;
+    FAbout: string;
     FLanguage: TDamLanguage;
     FRaises: Boolean;
     FSounds: Boolean;
     FImages: TCustomImageList;
     FFont: TFont;
     FDefault: Boolean;
-    FUnit: String;
+    FUnit: string;
     FColorMsg, FColorBtn: TColor;
     FCenterButtons: Boolean;
     FDialogPosition: TDamDlgPosition;
@@ -60,7 +60,7 @@ type
     procedure SetFont(const Value: TFont);
     function GetFontStored: Boolean;
 
-    function ShowDialog(Msg: TDamMsg; const Text: String): TDamMsgRes;
+    function ShowDialog(Msg: TDamMsg; const Text: string): TDamMsgRes;
     procedure OnError(Sender: TObject; E: Exception);
   public
     constructor Create(AOwner: TComponent); override;
@@ -70,13 +70,13 @@ type
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   published
-    property About: String read FAbout;
+    property About: string read FAbout;
     property Language: TDamLanguage read FLanguage write FLanguage;
     property HandleExceptions: Boolean read FRaises write FRaises default False;
     property Images: TCustomImageList read FImages write SetImages;
     property MessageFont: TFont read FFont write SetFont stored GetFontStored;
     property DamDefault: Boolean read FDefault write FDefault default False;
-    property DamUnitName: String read FUnit write FUnit;
+    property DamUnitName: string read FUnit write FUnit;
     property PlaySounds: Boolean read FSounds write FSounds default True;
     property MessageColor: TColor read FColorMsg write FColorMsg default clWhite;
     property ButtonsColor: TColor read FColorBtn write FColorBtn default clBtnFace;
@@ -88,20 +88,20 @@ type
 
   TDamMsg = class(TComponent)
   private
-    FCustomTitle: String;
+    FCustomTitle: string;
     FCustomIcon: TIcon;
     FTitle: TDamMsgTitle;
     FIcon: TDamMsgIcon;
-    FMessage: String;
-    FButton1: String;
-    FButton2: String;
-    FButton3: String;
+    FMessage: string;
+    FButton1: string;
+    FButton2: string;
+    FButton3: string;
     FButtons: TDamMsgButtons;
     FSwapFocus: Boolean;
     FRaise: Boolean;
     FFixedWidth: Integer;
     FHelpContext: THelpContext;
-    FHelpKeyword: String;
+    FHelpKeyword: string;
 
     FDam: TDam;
 
@@ -121,20 +121,20 @@ type
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   published
-    property CustomTitle: String read FCustomTitle write FCustomTitle;
+    property CustomTitle: string read FCustomTitle write FCustomTitle;
     property CustomIcon: TIcon read FCustomIcon write SetIcon;
     property Title: TDamMsgTitle read FTitle write FTitle default dtByIcon;
     property Icon: TDamMsgIcon read FIcon write FIcon default diInfo;
-    property Message: String read FMessage write FMessage;
-    property Button1: String read FButton1 write FButton1;
-    property Button2: String read FButton2 write FButton2;
-    property Button3: String read FButton3 write FButton3;
+    property Message: string read FMessage write FMessage;
+    property Button1: string read FButton1 write FButton1;
+    property Button2: string read FButton2 write FButton2;
+    property Button3: string read FButton3 write FButton3;
     property Buttons: TDamMsgButtons read FButtons write FButtons default dbOK;
     property SwapFocus: Boolean read FSwapFocus write FSwapFocus default False;
     property RaiseExcept: Boolean read FRaise write FRaise default False;
     property FixedWidth: Integer read FFixedWidth write FFixedWidth default 0;
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
-    property HelpKeyword: String read FHelpKeyword write FHelpKeyword;
+    property HelpKeyword: string read FHelpKeyword write FHelpKeyword;
 
     property Dam: TDam read FDam write FDam;
   end;
@@ -145,17 +145,17 @@ type
   public
     property DamMsg: TDamMsg read FDamMsg;
 
-    constructor Create(const Msg: String; const Params: TDamParams = nil); overload;
+    constructor Create(const Msg: string; const Params: TDamParams = nil); overload;
     constructor Create(DamMsg: TDamMsg; const Params: TDamParams = nil); overload;
   end;
 
-procedure MsgInfo(const Msg: String; const Params: TDamParams = nil);
-procedure MsgWarn(const Msg: String; const Params: TDamParams = nil);
-procedure MsgError(const Msg: String; const Params: TDamParams = nil);
-function MsgQuest(const Msg: String; const Params: TDamParams = nil): Boolean;
+procedure MsgInfo(const Msg: string; const Params: TDamParams = nil);
+procedure MsgWarn(const Msg: string; const Params: TDamParams = nil);
+procedure MsgError(const Msg: string; const Params: TDamParams = nil);
+function MsgQuest(const Msg: string; const Params: TDamParams = nil): Boolean;
 procedure ShowErrorMsg;
-function CaptureErrorMsg: String;
-procedure MsgRaise(const Msg: String; const Params: TDamParams = nil);
+function CaptureErrorMsg: string;
+procedure MsgRaise(const Msg: string; const Params: TDamParams = nil);
 
 function DamParams(const Params: array of Variant): TDamParams; //compatibility with old dynamic array
 
@@ -185,7 +185,7 @@ begin
     raise Exception.Create('DAM: Default TDam not found');
 end;
 
-function CaptureErrorMsg: String;
+function CaptureErrorMsg: string;
 begin
   CheckExceptObject;
 
@@ -208,7 +208,7 @@ begin
     Result[I] := Params[I];
 end;
 
-function QuickMsg(const Msg: String; const Params: TDamParams; Kind: TDamMsgIcon): Boolean;
+function QuickMsg(const Msg: string; const Params: TDamParams; Kind: TDamMsgIcon): Boolean;
 var M: TDamMsg;
 begin
   CheckDamDefault;
@@ -225,34 +225,34 @@ begin
   end;
 end;
 
-procedure MsgInfo(const Msg: String; const Params: TDamParams);
+procedure MsgInfo(const Msg: string; const Params: TDamParams);
 begin
   QuickMsg(Msg, Params, diInfo);
 end;
 
-procedure MsgWarn(const Msg: String; const Params: TDamParams);
+procedure MsgWarn(const Msg: string; const Params: TDamParams);
 begin
   QuickMsg(Msg, Params, diWarn);
 end;
 
-procedure MsgError(const Msg: String; const Params: TDamParams);
+procedure MsgError(const Msg: string; const Params: TDamParams);
 begin
   QuickMsg(Msg, Params, diError);
 end;
 
-function MsgQuest(const Msg: String; const Params: TDamParams): Boolean;
+function MsgQuest(const Msg: string; const Params: TDamParams): Boolean;
 begin
   Result := QuickMsg(Msg, Params, diQuest);
 end;
 
-procedure MsgRaise(const Msg: String; const Params: TDamParams);
+procedure MsgRaise(const Msg: string; const Params: TDamParams);
 begin
   raise EDam.Create(Msg, Params);
 end;
 
 //
 
-function PosOfAnyString(const Args: array of String; const Text: String; Offset: Integer;
+function PosOfAnyString(const Args: array of string; const Text: string; Offset: Integer;
   out ArgIdx: Integer; out iPos: Integer): Boolean;
 var
   I, J: Integer;
@@ -273,10 +273,10 @@ begin
   Exit(False);
 end;
 
-function ParseParams(const Msg: String; const Params: TDamParams): String;
-const ARGS: array of String = [DAM_PARAM_IDENT, DAM_PARAM_EXCEPTION];
+function ParseParams(const Msg: string; const Params: TDamParams): string;
+const ARGS: array of string = [DAM_PARAM_IDENT, DAM_PARAM_EXCEPTION];
 var
-  A, aPar: String;
+  A, aPar: string;
   I, Offset, IdxPar, ArgIdx: Integer;
 begin
   A := Msg;
@@ -500,9 +500,9 @@ begin
   );
 end;
 
-function TDam.ShowDialog(Msg: TDamMsg; const Text: String): TDamMsgRes;
+function TDam.ShowDialog(Msg: TDamMsg; const Text: string): TDamMsgRes;
 var
-  newMsg: String;
+  newMsg: string;
   Handled: Boolean; HndRes: TDamMsgRes;
 begin
   newMsg := Text;
@@ -521,7 +521,7 @@ end;
 procedure TDam.OnError(Sender: TObject; E: Exception);
 var
   Msg: TDamMsg;
-  Text: String;
+  Text: string;
 begin
   if (E is EDam) and (EDam(E).DamMsg<>nil) then
   begin
@@ -544,7 +544,7 @@ begin
   end;
 end;
 
-constructor EDam.Create(const Msg: String; const Params: TDamParams);
+constructor EDam.Create(const Msg: string; const Params: TDamParams);
 begin
   inherited Create(ParseParams(Msg, Params));
 end;

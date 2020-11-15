@@ -509,7 +509,7 @@ procedure TFrmDamList.LDrawItem(Control: TWinControl; Index: Integer; Rect: TRec
 
 var B: {$IFNDEF FPC}Vcl.{$ENDIF}Graphics.TBitmap;
     ObjMsg: TDamMsg;
-    A: String;
+    A: string;
     X: Integer;
 begin
   B := {$IFNDEF FPC}Vcl.{$ENDIF}Graphics.TBitmap.Create;
@@ -700,7 +700,7 @@ end;
 procedure TFrmDamList.BtnHideClick(Sender: TObject);
 var Comp: TComponent;
     I: Integer;
-    A: String;
+    A: string;
     bClear, Mudou: Boolean;
 begin
   bClear := GetFirstSel.Name[1] = '_';

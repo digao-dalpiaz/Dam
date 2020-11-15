@@ -72,7 +72,7 @@ procedure TFrmDamFind.EdTextChange(Sender: TObject);
 var
   C: TComponent;
   Msg: TDamMsg;
-  FindText, MsgName: String;
+  FindText, MsgName: string;
 begin
   L.Items.BeginUpdate;
   try

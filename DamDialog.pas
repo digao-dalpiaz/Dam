@@ -41,23 +41,23 @@ type
     NumButtons: Byte;
 
     LangStrs: record
-      OK, Yes, No, Info, Quest, Warn, Error, Msg: String;
+      OK, Yes, No, Info, Quest, Warn, Error, Msg: string;
     end;
 
-    procedure LoadText(const aText: String);
-    procedure CalcWidth(const aText: String);
+    procedure LoadText(const aText: string);
+    procedure CalcWidth(const aText: string);
     procedure CalcHeight;
     procedure RealignButtons;
     procedure LoadLanguage;
 
-    function GetIconTitle(I: TDamMsgIcon): String;
+    function GetIconTitle(I: TDamMsgIcon): string;
     procedure DoSound;
 
     procedure SetFormCustomization;
     procedure LoadHelp;
   end;
 
-function RunDamDialog(aDamMsg: TDamMsg; const aText: String): TDamMsgRes;
+function RunDamDialog(aDamMsg: TDamMsg; const aText: string): TDamMsgRes;
 
 implementation
 
@@ -91,7 +91,7 @@ const
   IDI_INFORMATION = IDI_ASTERISK;
 {$ENDIF}
 
-function RunDamDialog(aDamMsg: TDamMsg; const aText: String): TDamMsgRes;
+function RunDamDialog(aDamMsg: TDamMsg; const aText: string): TDamMsgRes;
 var F: TFrmDamDialog;
 begin
   F := TFrmDamDialog.Create(Application);
@@ -123,7 +123,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TFrmDamDialog.LoadText(const aText: String);
+procedure TFrmDamDialog.LoadText(const aText: string);
 begin
   LbMsg.Images := DamMsg.Dam.Images;
   LbMsg.Font.Assign(DamMsg.Dam.MessageFont);
@@ -131,7 +131,7 @@ begin
   CalcHeight;
 end;
 
-procedure TFrmDamDialog.CalcWidth(const aText: String);
+procedure TFrmDamDialog.CalcWidth(const aText: string);
 const MinSize=300;
 begin
   if DamMsg.FixedWidth=0 then
@@ -189,7 +189,7 @@ end;
 
 //
 
-function TFrmDamDialog.GetIconTitle(I: TDamMsgIcon): String;
+function TFrmDamDialog.GetIconTitle(I: TDamMsgIcon): string;
 begin
   case I of
     diApp   : Result := Application.Title;
@@ -308,7 +308,7 @@ begin
 end;
 
 procedure TFrmDamDialog.LoadLanguage;
-var aLang: String;
+var aLang: string;
     R: TResourceStream;
     S: TStringList;
     Ini: TMemIniFile;

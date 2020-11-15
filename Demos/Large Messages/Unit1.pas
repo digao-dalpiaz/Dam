@@ -40,7 +40,7 @@ begin
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
-var A: String;
+var A: string;
 
   procedure AddLine(Cod: Integer; Value: Double);
   begin
