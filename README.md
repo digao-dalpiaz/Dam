@@ -32,6 +32,10 @@
 
 ## What's New
 
+- 11/15/2020
+
+   - Included EDam exception shortcut in Dam file generated unit (When using Build button in Dam Messages Manager form).
+
 - 11/11/2020 (Version 4.6)
 
    - New EDam exception class (read [Raising exceptions](#raising-exceptions)).
