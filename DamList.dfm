@@ -889,6 +889,8 @@ object FrmDamList: TFrmDamList
       ''
       'uses DamUnit;'
       ''
+      'type EDam = DamUnit.EDam;'
+      ''
       'function DamParams(const Params: array of Variant): TDamParams;'
       ''
       
