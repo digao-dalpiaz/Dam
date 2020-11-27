@@ -32,7 +32,7 @@
 
 ## What's New
 
-- 11/15/2020
+- 11/27/2020 (Version 4.7)
 
    - Included EDam exception shortcut in Dam file generated unit (When using Build button in Dam Messages Manager form).
 
