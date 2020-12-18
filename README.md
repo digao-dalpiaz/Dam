@@ -33,6 +33,10 @@
 
 ## What's New
 
+- 12/18/2020 (Version 4.8)
+
+   - Updated Component Installer app (Fixed call to rsvars.bat when Delphi is installed in a path containing spaces characters).
+
 - 11/27/2020 (Version 4.7)
 
    - Included EDam exception shortcut in Dam file generated unit (When using Build button in Dam Messages Manager form).

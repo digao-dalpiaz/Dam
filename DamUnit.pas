@@ -169,7 +169,7 @@ uses
   Vcl.Forms, Winapi.Windows, System.UITypes;
 {$ENDIF}
 
-const STR_VERSION = '4.7';
+const STR_VERSION = '4.8';
 
 var ObjDefault: TDam = nil;
 
