@@ -33,6 +33,10 @@
 
 ## What's New
 
+- nn/nn/2021 (Version 4.9)
+
+   - Compatibility with new DzHTMLText component version (now DzHTMLText supports FMX).
+
 - 12/18/2020 (Version 4.8)
 
    - Updated Component Installer app (Fixed call to rsvars.bat when Delphi is installed in a path containing spaces characters).
