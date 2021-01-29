@@ -10,7 +10,7 @@ uses
   Vcl.Buttons, System.Classes,
 {$ENDIF}
   //
-  DamUnit, DzHTMLText;
+  DamUnit, Vcl.DzHTMLText;
 
 type
   TFrmDamMsgEdit = class(TForm)

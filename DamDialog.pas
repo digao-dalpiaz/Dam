@@ -12,7 +12,7 @@ uses
   Vcl.Buttons, Vcl.Controls, Vcl.ExtCtrls,
 {$ENDIF}
   //
-  DamUnit, DzHTMLText;
+  DamUnit, Vcl.DzHTMLText;
 
 {$R Dam_Resource.res}
 
