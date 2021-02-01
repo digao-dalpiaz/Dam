@@ -89,7 +89,7 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
-        <DCCReference Include="DzHTMLText.dcp"/>
+        <DCCReference Include="DzHTMLText_VCL.dcp"/>
         <DCCReference Include="DamDialog.pas">
             <Form>FrmDamDialog</Form>
         </DCCReference>
@@ -140,7 +140,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\19.0\Bpl\DamPackage.bpl" Configuration="Release" Class="ProjectOutput">
+                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\20.0\Bpl\DamPackage.bpl" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>DamPackage.bpl</RemoteName>
                         <Overwrite>true</Overwrite>
