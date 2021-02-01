@@ -274,7 +274,7 @@ begin
 end;
 
 function ParseParams(const Msg: string; const Params: TDamParams): string;
-const ARGS: array of string = [DAM_PARAM_IDENT, DAM_PARAM_EXCEPTION];
+const ARGS: array[0..1] of string = (DAM_PARAM_IDENT, DAM_PARAM_EXCEPTION);
 var
   A, aPar: string;
   I, Offset, IdxPar, ArgIdx: Integer;
