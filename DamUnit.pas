@@ -162,7 +162,7 @@ function DamParams(const Params: array of Variant): TDamParams; //compatibility 
 implementation
 
 uses
-  DamDialog, DzHTMLText,
+  DamDialog, Vcl.DzHTMLText,
 {$IFDEF FPC}
   Forms, Windows;
 {$ELSE}
