@@ -11,6 +11,8 @@
 ![Lazarus support](https://img.shields.io/badge/-Lazarus%20support-green.svg)
 ![Languages](https://img.shields.io/badge/Languages-12-brightgreen.svg)
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/C0C53LVFN)
+
 ![Dam Super Print](images/dam_super_print.png)
 ![Dam Super Print 2](images/dam_super_print2.png)
 
