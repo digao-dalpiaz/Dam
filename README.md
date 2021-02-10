@@ -4,7 +4,7 @@
 
 ## Delphi and Lazarus Message Dialogs with Formatted Text
 
-![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-XE2..10.4-blue.svg)
+![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-XE3..10.4-blue.svg)
 ![Platforms](https://img.shields.io/badge/Platforms-Win32%20and%20Win64-red.svg)
 ![Auto Install](https://img.shields.io/badge/-Auto%20Install%20App-orange.svg)
 ![VCL](https://img.shields.io/badge/-VCL-lightgrey.svg)
@@ -32,6 +32,12 @@
 - [History](#history)
 
 ## What's New
+
+- 02/10/2021 (Version 4.9)
+
+   - Compatibility with new DzHTMLText component version (now DzHTMLText supports FMX).
+   - Removed Delphi XE2 from the list of environments as it was never possible to compile in this version.
+   - Fixed Delphi XE3 compatibility.
 
 - 12/18/2020 (Version 4.8)
 
@@ -254,7 +260,7 @@ Close Delphi IDE and run **CompInstall.exe** app to auto install component into 
 
 7. Run **AfterBuild.bat** to publish DFM and RES to Release folders.
 
-> Supports Delphi XE2..Delphi 10.4
+> Supports Delphi XE3..Delphi 10.4
 
 ### Lazarus installation
 

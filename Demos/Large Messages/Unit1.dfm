@@ -11646,10 +11646,10 @@ object Form1: TForm1
       Icon = diQuest
       Message = 
         'Please, review the values to continue:'#13#10#13#10'<fn:Times New Roman><f' +
-        's:12><b><t:20>Sector #<t:120>Value</b><t:200>'#13#10'%p</fs></fn>'#13#10'<i>' +
-        'Click on section number to open details.</i>'#13#10#13#10'<b>Do you want t' +
-        'o continue?</b>'#13#10#13#10'<fc:clRed>Please check all values before writ' +
-        'e them on database.</fc>'
+        's:12><b><t:20>Sector #<t:120>Value</b><t:200>'#13#10'%TABLE%</fs></fn>' +
+        #13#10'<i>Click on section number to open details.</i>'#13#10#13#10'<b>Do you w' +
+        'ant to continue?</b>'#13#10#13#10'<fc:clRed>Please check all values before' +
+        ' write them on database.</fc>'
       Buttons = dbYesNo
       FixedWidth = 380
       Dam = Dam1

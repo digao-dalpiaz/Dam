@@ -30,7 +30,7 @@ package DamPackage;
 
 requires
   rtl,
-  DzHTMLText;
+  DzHTMLText_VCL;
 
 contains
   DamDialog in 'DamDialog.pas' {FrmDamDialog},

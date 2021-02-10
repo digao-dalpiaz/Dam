@@ -26,10 +26,6 @@ implementation
 
 uses DamMessages, System.SysUtils;
 
-{$IF CompilerVersion < 29} //below Delphi XE8
-  {$DEFINE USE_ARRAY}
-{$ENDIF}
-
 procedure TForm1.Button1Click(Sender: TObject);
 begin
   case QuestionSaveFile of
@@ -48,19 +44,24 @@ var A: string;
       [FormatFloat('0000', Cod), FormatFloat('#,##0.00', Value)])+'<BR>';
   end;
 
+var Msg: TDamMsg;
 begin
   AddLine(1, 1000);
   AddLine(2, 2500);
   AddLine(3, 150500);
 
-{$IFDEF USE_ARRAY}
-  if QuestionConfirmValues(DamParams([A])) then
-{$ELSE}
-  if QuestionConfirmValues([A]) then
-{$ENDIF}
-    EdResult.Text := 'TRUE'
-  else
-    EdResult.Text := 'FALSE';
+  Msg := TDamMsg.Create(nil);
+  try
+    Msg.Dam := Dam1;
+    Msg.Assign(_QuestionConfirmValues);
+    Msg.Message := Msg.Message.Replace('%TABLE%', A);
+    if Msg.RunAsBool then
+      EdResult.Text := 'TRUE'
+    else
+      EdResult.Text := 'FALSE';
+  finally
+    Msg.Free;
+  end;
 end;
 
 end.

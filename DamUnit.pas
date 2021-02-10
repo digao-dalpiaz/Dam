@@ -162,14 +162,14 @@ function DamParams(const Params: array of Variant): TDamParams; //compatibility 
 implementation
 
 uses
-  DamDialog, DzHTMLText,
+  DamDialog, Vcl.DzHTMLText,
 {$IFDEF FPC}
   Forms, Windows;
 {$ELSE}
   Vcl.Forms, Winapi.Windows, System.UITypes;
 {$ENDIF}
 
-const STR_VERSION = '4.8';
+const STR_VERSION = '4.9';
 
 var ObjDefault: TDam = nil;
 
@@ -274,7 +274,7 @@ begin
 end;
 
 function ParseParams(const Msg: string; const Params: TDamParams): string;
-const ARGS: array of string = [DAM_PARAM_IDENT, DAM_PARAM_EXCEPTION];
+const ARGS: array[0..1] of string = (DAM_PARAM_IDENT, DAM_PARAM_EXCEPTION);
 var
   A, aPar: string;
   I, Offset, IdxPar, ArgIdx: Integer;
@@ -558,7 +558,7 @@ end;
 initialization
   {$IFNDEF FPC}System.{$ENDIF}Classes.RegisterClass(TDamMsg);
 
-  if DZHTMLTEXT_INTERNAL_VERSION <> 701 then
+  if DZHTMLTEXT_INTERNAL_VERSION <> 702 then
     raise Exception.Create('Please, update DzHTMLText component.');
 
 end.
