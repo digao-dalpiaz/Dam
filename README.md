@@ -33,7 +33,7 @@
 
 ## What's New
 
-- nn/nn/2021 (Version 4.9)
+- 02/10/2021 (Version 4.9)
 
    - Compatibility with new DzHTMLText component version (now DzHTMLText supports FMX).
    - Removed Delphi XE2 from the list of environments as it was never possible to compile in this version.
