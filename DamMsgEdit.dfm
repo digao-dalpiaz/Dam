@@ -706,6 +706,13 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     ShowHint = True
     OnClick = BtnExceptParClick
   end
+  object WPreview: TShape
+    Left = 8
+    Top = 216
+    Width = 481
+    Height = 121
+    Pen.Color = clBtnShadow
+  end
   object BtnOK: TBitBtn
     Left = 496
     Top = 216
@@ -771,10 +778,10 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
       '50')
   end
   object Box: TScrollBox
-    Left = 8
-    Top = 216
-    Width = 481
-    Height = 121
+    Left = 9
+    Top = 217
+    Width = 479
+    Height = 119
     VertScrollBar.Smooth = True
     VertScrollBar.Tracking = True
     BorderStyle = bsNone
@@ -783,7 +790,7 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     TabOrder = 6
     object LbMsg: TDzHTMLText
       Left = 4
-      Top = 4
+      Top = 2
       Width = 453
       Height = 13
       Lines.Strings = (

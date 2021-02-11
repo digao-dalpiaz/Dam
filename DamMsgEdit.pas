@@ -57,6 +57,7 @@ type
     BtnParameter: TSpeedButton;
     BtnExceptPar: TSpeedButton;
     M: TMemo;
+    WPreview: TShape;
     procedure MChange(Sender: TObject);
     procedure BtnBoldClick(Sender: TObject);
     procedure BtnItalicClick(Sender: TObject);
