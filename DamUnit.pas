@@ -562,7 +562,7 @@ end;
 initialization
   {$IFNDEF FPC}System.{$ENDIF}Classes.RegisterClass(TDamMsg);
 
-  if DZHTMLTEXT_INTERNAL_VERSION <> 702 then
+  if DZHTMLTEXT_INTERNAL_VERSION <> 703 then
     raise Exception.Create('Please, update DzHTMLText component.');
 
 end.
