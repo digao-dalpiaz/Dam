@@ -38,8 +38,10 @@ type
   TDamParams = TArray<Variant>;
 
   TDamMsg = class;
-  TDamMsgShowEvent = procedure(Sender: TObject; Msg: TDamMsg; var MsgText: string;
+  TDamShowEvent = procedure(Sender: TObject; Msg: TDamMsg; var MsgText: string;
     var Handled: Boolean; var MsgResult: TDamMsgRes) of object;
+  TDamLinkClickEvent = procedure(Sender: TObject; Msg: TDamMsg;
+    const Target: string; var Handled: Boolean) of object;
 
   TDam = class(TComponent)
   private
@@ -55,7 +57,8 @@ type
     FCenterButtons: Boolean;
     FDialogPosition: TDamDlgPosition;
     FDialogBorder: Boolean;
-    FShowEvent: TDamMsgShowEvent;
+    FShowEvent: TDamShowEvent;
+    FLinkClick: TDamLinkClickEvent;
     procedure SetImages(const Value: TCustomImageList);
     procedure SetFont(const Value: TFont);
     function GetFontStored: Boolean;
@@ -83,7 +86,8 @@ type
     property CenterButtons: Boolean read FCenterButtons write FCenterButtons default False;
     property DialogPosition: TDamDlgPosition read FDialogPosition write FDialogPosition default dpScreenCenter;
     property DialogBorder: Boolean read FDialogBorder write FDialogBorder default True;
-    property OnShowMessage: TDamMsgShowEvent read FShowEvent write FShowEvent;
+    property OnShowMessage: TDamShowEvent read FShowEvent write FShowEvent;
+    property OnLinkClick: TDamLinkClickEvent read FLinkClick write FLinkClick;
   end;
 
   TDamMsg = class(TComponent)

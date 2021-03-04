@@ -35,6 +35,8 @@ type
     procedure Action_CopyExecute(Sender: TObject);
     procedure BtnHelpClick(Sender: TObject);
     procedure Action_HelpExecute(Sender: TObject);
+    procedure LbMsgLinkClick(Sender: TObject; Link: TDHBaseLink;
+      var Handled: Boolean);
   private
     DamMsg: TDamMsg;
     DamResult: Byte;
@@ -387,6 +389,14 @@ procedure TFrmDamDialog.Action_HelpExecute(Sender: TObject);
 begin
   if BtnHelp.Visible then
     BtnHelp.Click;
+end;
+
+procedure TFrmDamDialog.LbMsgLinkClick(Sender: TObject; Link: TDHBaseLink;
+  var Handled: Boolean);
+begin
+  if Link.Kind = lkLinkRef then
+    if Assigned(DamMsg.Dam.OnLinkClick) then
+      DamMsg.Dam.OnLinkClick(DamMsg.Dam, DamMsg, Link.LinkRef.Target, Handled);
 end;
 
 end.
