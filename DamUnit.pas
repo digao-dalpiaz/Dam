@@ -174,7 +174,7 @@ uses
   Vcl.Forms, Winapi.Windows, System.UITypes;
 {$ENDIF}
 
-const STR_VERSION = '4.9';
+const STR_VERSION = '4.10';
 
 var ObjDefault: TDam = nil;
 
