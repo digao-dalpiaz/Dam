@@ -41,7 +41,8 @@ type
   TDamShowEvent = procedure(Sender: TObject; Msg: TDamMsg; var MsgText: string;
     var Handled: Boolean; var MsgResult: TDamMsgRes) of object;
   TDamLinkClickEvent = procedure(Sender: TObject; Msg: TDamMsg;
-    const Target: string; var Handled: Boolean) of object;
+    const Target: string; var Handled: Boolean;
+    var CloseMsg: Boolean; var MsgResult: TDamMsgRes) of object;
 
   TDam = class(TComponent)
   private

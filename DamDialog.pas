@@ -53,6 +53,7 @@ type
     procedure LoadLanguage;
 
     function GetIconTitle(I: TDamMsgIcon): string;
+    function GetButtonFromNumber(Number: Byte): TBitBtn;
     procedure DoSound;
 
     procedure SetFormCustomization;
@@ -93,6 +94,11 @@ const
   IDI_INFORMATION = IDI_ASTERISK;
 {$ENDIF}
 
+const
+  ID_MODALRESULT_1 = 101;
+  ID_MODALRESULT_2 = 102;
+  ID_MODALRESULT_3 = 103;
+
 function RunDamDialog(aDamMsg: TDamMsg; const aText: string): TDamMsgRes;
 var F: TFrmDamDialog;
 begin
@@ -114,9 +120,9 @@ end;
 
 procedure TFrmDamDialog.FormCreate(Sender: TObject);
 begin
-  Btn1.ModalResult := 101;
-  Btn2.ModalResult := 102;
-  Btn3.ModalResult := 103;
+  Btn1.ModalResult := ID_MODALRESULT_1;
+  Btn2.ModalResult := ID_MODALRESULT_2;
+  Btn3.ModalResult := ID_MODALRESULT_3;
 
   {$IFNDEF FPC}
   //when using app custom style theme, the DzHTMLText doesn't get theme backgound color
@@ -204,6 +210,16 @@ begin
   end;
 end;
 
+function TFrmDamDialog.GetButtonFromNumber(Number: Byte): TBitBtn;
+begin
+  case Number of
+    1: Result := Btn1;
+    2: Result := Btn2;
+    3: Result := Btn3;
+    else raise Exception.Create('Invalid button number');
+  end;
+end;
+
 function GetNumButtons(B: TDamMsgButtons): Byte;
 begin
   case B of
@@ -277,12 +293,7 @@ begin
   Btn2.Visible := NumButtons>1;
   Btn3.Visible := NumButtons>2;
 
-  LastBtn := nil;
-  case NumButtons of
-    1: LastBtn := Btn1;
-    2: LastBtn := Btn2;
-    3: LastBtn := Btn3;
-  end;
+  LastBtn := GetButtonFromNumber(NumButtons);
 
   BoxFloatBtns.Width := LastBtn.Left+LastBtn.Width+8;
   if DamMsg.Dam.CenterButtons then
@@ -297,9 +308,9 @@ end;
 procedure TFrmDamDialog.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   case ModalResult of
-    101: DamResult := 1;
-    102: DamResult := 2;
-    103: DamResult := 3;
+    ID_MODALRESULT_1: DamResult := 1;
+    ID_MODALRESULT_2: DamResult := 2;
+    ID_MODALRESULT_3: DamResult := 3;
     else DamResult := NumButtons; //** last button
   end;
 end;
@@ -393,10 +404,21 @@ end;
 
 procedure TFrmDamDialog.LbMsgLinkClick(Sender: TObject; Link: TDHBaseLink;
   var Handled: Boolean);
+var
+  CloseMsg: Boolean;
+  MsgRes: TDamMsgRes;
 begin
-  if Link.Kind = lkLinkRef then
-    if Assigned(DamMsg.Dam.OnLinkClick) then
-      DamMsg.Dam.OnLinkClick(DamMsg.Dam, DamMsg, Link.LinkRef.Target, Handled);
+  if (Link.Kind = lkLinkRef) and Assigned(DamMsg.Dam.OnLinkClick) then
+  begin
+    CloseMsg := False;
+    MsgRes := NumButtons; //last button by default
+
+    DamMsg.Dam.OnLinkClick(DamMsg.Dam, DamMsg,
+      Link.LinkRef.Target, Handled, CloseMsg, MsgRes);
+
+    if CloseMsg then
+      GetButtonFromNumber(MsgRes).Click;
+  end;
 end;
 
 end.
