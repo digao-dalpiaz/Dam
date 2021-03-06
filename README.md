@@ -35,6 +35,10 @@
 
 ## What's New
 
+- 03/05/2021 (Version 4.10)
+
+   - New OnLinkClick event.
+
 - 02/10/2021 (Version 4.9)
 
    - Compatibility with new DzHTMLText component version (now DzHTMLText supports FMX).
@@ -389,6 +393,13 @@ MsgInfo('This is a %p message number %p at time %p', ['test', 123, Now]);
 `ButtonsColor: TColor` = Define background color of buttons area on message dialog.
 
 ## TDam events
+
+`OnLinkClick(Sender: TObject; Msg: TDamMsg; const Target: string; var Handled: Boolean; var CloseMsg: Boolean; var MsgResult: TDamMsgRes)`
+This event will be triggered when clicked on a link contained in the message.
+
+By default the link target will be automatically opened using ShellExecute from Windows API, so if the target is a web link, the default browser will open the link, or if the target is a system file, the path will be executed/opened by Windows.
+
+If you want to bypass this behavior, use this event and set `Handled` to True. You can also set `CloseMsg` to True and `MsgResult` flag when you want to close the message window.
 
 `OnShowMessage(Sender: TObject; Msg: TDamMsg; var MsgText: String; var Handled: Boolean; var MsgResult: TDamMsgRes)`
 Fires before a Dam Message is displayed, allowing you to intercept messages and even bypass message display, by using Handled parameter.

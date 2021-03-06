@@ -38,8 +38,11 @@ type
   TDamParams = TArray<Variant>;
 
   TDamMsg = class;
-  TDamMsgShowEvent = procedure(Sender: TObject; Msg: TDamMsg; var MsgText: string;
+  TDamShowEvent = procedure(Sender: TObject; Msg: TDamMsg; var MsgText: string;
     var Handled: Boolean; var MsgResult: TDamMsgRes) of object;
+  TDamLinkClickEvent = procedure(Sender: TObject; Msg: TDamMsg;
+    const Target: string; var Handled: Boolean;
+    var CloseMsg: Boolean; var MsgResult: TDamMsgRes) of object;
 
   TDam = class(TComponent)
   private
@@ -55,7 +58,8 @@ type
     FCenterButtons: Boolean;
     FDialogPosition: TDamDlgPosition;
     FDialogBorder: Boolean;
-    FShowEvent: TDamMsgShowEvent;
+    FShowEvent: TDamShowEvent;
+    FLinkClick: TDamLinkClickEvent;
     procedure SetImages(const Value: TCustomImageList);
     procedure SetFont(const Value: TFont);
     function GetFontStored: Boolean;
@@ -83,7 +87,8 @@ type
     property CenterButtons: Boolean read FCenterButtons write FCenterButtons default False;
     property DialogPosition: TDamDlgPosition read FDialogPosition write FDialogPosition default dpScreenCenter;
     property DialogBorder: Boolean read FDialogBorder write FDialogBorder default True;
-    property OnShowMessage: TDamMsgShowEvent read FShowEvent write FShowEvent;
+    property OnShowMessage: TDamShowEvent read FShowEvent write FShowEvent;
+    property OnLinkClick: TDamLinkClickEvent read FLinkClick write FLinkClick;
   end;
 
   TDamMsg = class(TComponent)
@@ -169,7 +174,7 @@ uses
   Vcl.Forms, Winapi.Windows, System.UITypes;
 {$ENDIF}
 
-const STR_VERSION = '4.9';
+const STR_VERSION = '4.10';
 
 var ObjDefault: TDam = nil;
 
@@ -558,7 +563,7 @@ end;
 initialization
   {$IFNDEF FPC}System.{$ENDIF}Classes.RegisterClass(TDamMsg);
 
-  if DZHTMLTEXT_INTERNAL_VERSION <> 702 then
+  if DZHTMLTEXT_INTERNAL_VERSION <> 703 then
     raise Exception.Create('Please, update DzHTMLText component.');
 
 end.

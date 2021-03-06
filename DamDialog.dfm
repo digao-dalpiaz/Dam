@@ -28,6 +28,7 @@ object FrmDamDialog: TFrmDamDialog
     Top = 8
     Width = 353
     Height = 73
+    OnLinkClick = LbMsgLinkClick
   end
   object BoxButtons: TPanel
     Left = 0
