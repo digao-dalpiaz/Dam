@@ -64,7 +64,7 @@ implementation
 
 uses
 {$IFDEF FPC}
-  Windows, SysUtils, Clipbrd, IniFiles, MMSystem;
+  Windows, SysUtils, Clipbrd, IniFiles, MMSystem, Graphics;
 {$ELSE}
   Winapi.Windows, System.SysUtils, Vcl.Clipbrd, System.IniFiles,
   Winapi.MMSystem, System.Math, Vcl.Themes, Vcl.Graphics;
@@ -186,9 +186,9 @@ end;
 
 function GetButtonWidth(Btn: TBitBtn): Integer;
 var
-  B: Vcl.Graphics.TBitmap;
+  B: {$IFNDEF FPC}Vcl.{$ENDIF}Graphics.TBitmap;
 begin
-  B := Vcl.Graphics.TBitmap.Create;
+  B := {$IFNDEF FPC}Vcl.{$ENDIF}Graphics.TBitmap.Create;
   try
     B.Canvas.Font.Assign(Btn.Font);
     Result := Max(B.Canvas.TextWidth(Btn.Caption)+20, 75);
