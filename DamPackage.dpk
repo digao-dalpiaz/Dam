@@ -34,6 +34,7 @@ requires
 
 contains
   DamDialog in 'DamDialog.pas' {FrmDamDialog},
-  DamUnit in 'DamUnit.pas';
+  DamUnit in 'DamUnit.pas',
+  DamLanguage in 'DamLanguage.pas';
 
 end.
