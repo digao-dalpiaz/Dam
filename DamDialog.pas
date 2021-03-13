@@ -101,7 +101,6 @@ begin
     F.LoadLanguage;
     F.BuildButtons;
     F.LoadText(aText);
-    F.AlignButtonsPanel;
     F.SetFormCustomization;
     F.SetTitleAndIcon;
     F.LoadHelp;
@@ -391,6 +390,8 @@ end;
 
 procedure TFrmDamDialog.FormShow(Sender: TObject);
 begin
+  AlignButtonsPanel;
+
   if DamMsg.Dam.PlaySounds then
     DoSound;
 end;
