@@ -12,9 +12,7 @@ uses
   Vcl.Buttons, Vcl.Controls, Vcl.ExtCtrls,
 {$ENDIF}
   //
-  DamUnit, Vcl.DzHTMLText;
-
-{$R Dam_Resource.res}
+  DamUnit, DamLanguage, Vcl.DzHTMLText;
 
 type
   TFrmDamDialog = class(TForm)
@@ -36,14 +34,10 @@ type
   private
     DamMsg: TDamMsg;
     DamResult: TDamMsgRes;
-
-    LangStrs: record
-      OK, Yes, No, Info, Quest, Warn, Error, Msg: string;
-    end;
+    LangStrs: TDamLanguageDefinition;
 
     procedure OnBtnClick(Sender: TObject);
 
-    procedure LoadLanguage;
     procedure BuildButtons;
     procedure LoadText(const aText: string);
     procedure CalcWidth(const aText: string);
@@ -56,7 +50,7 @@ type
     procedure DoSound;
   end;
 
-function RunDamDialog(aDamMsg: TDamMsg; const aText: string): TDamMsgRes;
+function RunDamDialog(DamMsg: TDamMsg; const aText: string): TDamMsgRes;
 
 implementation
 
@@ -64,11 +58,11 @@ implementation
 
 uses
 {$IFDEF FPC}
-  Windows, SysUtils, Clipbrd, IniFiles, MMSystem, Graphics;
+  Windows, SysUtils, Clipbrd, MMSystem, Graphics
 {$ELSE}
-  Winapi.Windows, System.SysUtils, Vcl.Clipbrd, System.IniFiles,
-  Winapi.MMSystem, System.Math, Vcl.Themes, Vcl.Graphics;
-{$ENDIF}
+  Winapi.Windows, System.SysUtils, Vcl.Clipbrd,
+  Winapi.MMSystem, Vcl.Graphics, System.Math, Vcl.Themes
+{$ENDIF};
 
 {$IFDEF FPC}
 const
@@ -90,15 +84,16 @@ const
   IDI_INFORMATION = IDI_ASTERISK;
 {$ENDIF}
 
-function RunDamDialog(aDamMsg: TDamMsg; const aText: string): TDamMsgRes;
+function RunDamDialog(DamMsg: TDamMsg; const aText: string): TDamMsgRes;
 var
   F: TFrmDamDialog;
 begin
   F := TFrmDamDialog.Create(Application);
   try
-    F.DamMsg := aDamMsg;
+    F.DamMsg := DamMsg;
 
-    F.LoadLanguage;
+    F.LangStrs := LoadLanguage(DamMsg.Dam.Language);
+
     F.BuildButtons;
     F.LoadText(aText);
     F.SetFormCustomization;
@@ -121,66 +116,6 @@ begin
   if TStyleManager.IsCustomStyleActive then
     LbMsg.Color := TStyleManager.ActiveStyle.GetStyleColor(TStyleColor.scWindow);
   {$ENDIF}
-end;
-
-procedure TFrmDamDialog.LoadLanguage;
-var aLang: string;
-    R: TResourceStream;
-    S: TStringList;
-    Ini: TMemIniFile;
-begin
-  case DamMsg.Dam.Language of
-    dgEnglish: aLang := 'English';
-    dgPortuguese: aLang := 'Portuguese';
-    dgSpanish: aLang := 'Spanish';
-    dgGerman: aLang := 'German';
-    dgItalian: aLang := 'Italian';
-    dgChinese: aLang := 'Chinese';
-    dgJapanese: aLang := 'Japanese';
-    dgGreek: aLang := 'Greek';
-    dgRussian: aLang := 'Russian';
-    dgFrench: aLang := 'French';
-    dgPolish: aLang := 'Polish';
-    dgDutch: aLang := 'Dutch';
-    else raise Exception.Create('Unknown language');
-  end;
-
-  S := TStringList.Create;
-  try
-    R := TResourceStream.Create({$IFDEF FPC}HInstance{$ELSE}FindClassHInstance(TDam){$ENDIF}, 'DAM_LANG', RT_RCDATA);
-    try
-      S.LoadFromStream(R, TEncoding.UTF8);
-    finally
-      R.Free;
-    end;
-
-    Ini := TMemIniFile.Create('');
-    try
-      Ini.SetStrings(S);
-      S.Clear;
-      Ini.ReadSectionValues(aLang, S);
-    finally
-      Ini.Free;
-    end;
-
-    if S.Count=0 then
-      raise Exception.CreateFmt('Language "%s" not found in resource', [aLang]);
-
-    with LangStrs do
-    begin
-      OK := S.Values['OK'];
-      Yes := S.Values['Yes'];
-      No := S.Values['No'];
-      Info := S.Values['Info'];
-      Quest := S.Values['Quest'];
-      Warn := S.Values['Warn'];
-      Error := S.Values['Error'];
-      Msg := S.Values['Msg'];
-    end;
-
-  finally
-    S.Free;
-  end;
 end;
 
 function GetButtonWidth(Btn: TBitBtn): Integer;
