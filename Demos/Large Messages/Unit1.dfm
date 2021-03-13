@@ -11631,8 +11631,8 @@ object Form1: TForm1
         'st, and the program will be terminate</fc>.'#13#10#13#10'<tf:20>If you cho' +
         'ose <u>More Info</u>, <fc:clPurple>a window will be open with al' +
         'l information about the modifications, and you will can select w' +
-        'hich modifications you want to apply</fc>.'#13#10'</fs>'#13#10'<i><a>Click h' +
-        'ere</a> to open help page.</i>'
+        'hich modifications you want to apply</fc>.'#13#10'</fs>'#13#10'<i><a:www.goo' +
+        'gle.com.br>Click here</a> to open help page.</i>'
       Button1 = 'Yes, save'
       Button2 = 'No'
       Button3 = 'More Info'
