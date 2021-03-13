@@ -35,6 +35,10 @@
 
 ## What's New
 
+- 03/13/2021 (Version 4.11)
+
+   - Removed CompInstall.exe from component sources due to AV false positive warning (now you can get it directly from CompInstall repository).
+
 - 03/05/2021 (Version 4.10)
 
    - New OnLinkClick event.
@@ -246,7 +250,9 @@ The Message Dialog: :stuck_out_tongue:
 
 ### Delphi auto installation
 
-Close Delphi IDE and run **CompInstall.exe** app to auto install component into Delphi.
+1. Download Component Installer from: https://github.com/digao-dalpiaz/CompInstall/releases/latest
+2. Put **CompInstall.exe** into the component repository sources folder.
+3. Close Delphi IDE and run **CompInstall.exe** app.
 
 > If you are installing DzHTMLText and Dam at once, using Component Installer utility, after installing DzHTMLText you gonna need to open and close Delphi before installing Dam (this is needed just to update Library Path file used by MSBUILD).
 
