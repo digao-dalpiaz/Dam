@@ -12,7 +12,6 @@ object FrmDamDialog: TFrmDamDialog
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
@@ -48,34 +47,13 @@ object FrmDamDialog: TFrmDamDialog
       OnClick = BtnHelpClick
     end
     object BoxFloatBtns: TPanel
-      Left = 40
-      Top = 0
-      Width = 249
-      Height = 39
+      Left = 52
+      Top = 8
+      Width = 285
+      Height = 25
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 0
-      object Btn1: TBitBtn
-        Left = 8
-        Top = 8
-        Width = 73
-        Height = 25
-        TabOrder = 0
-      end
-      object Btn2: TBitBtn
-        Left = 88
-        Top = 8
-        Width = 73
-        Height = 25
-        TabOrder = 1
-      end
-      object Btn3: TBitBtn
-        Left = 168
-        Top = 8
-        Width = 73
-        Height = 25
-        TabOrder = 2
-      end
     end
   end
   object AL: TActionList

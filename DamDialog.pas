@@ -24,14 +24,10 @@ type
     Action_Copy: TAction;
     LbMsg: TDzHTMLText;
     BoxFloatBtns: TPanel;
-    Btn1: TBitBtn;
-    Btn2: TBitBtn;
-    Btn3: TBitBtn;
     BtnHelp: TSpeedButton;
     Action_Help: TAction;
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Action_CopyExecute(Sender: TObject);
     procedure BtnHelpClick(Sender: TObject);
     procedure Action_HelpExecute(Sender: TObject);
@@ -39,25 +35,25 @@ type
       var Handled: Boolean);
   private
     DamMsg: TDamMsg;
-    DamResult: Byte;
-    NumButtons: Byte;
+    DamResult: TDamMsgRes;
 
     LangStrs: record
       OK, Yes, No, Info, Quest, Warn, Error, Msg: string;
     end;
 
+    procedure OnBtnClick(Sender: TObject);
+
+    procedure LoadLanguage;
+    procedure BuildButtons;
     procedure LoadText(const aText: string);
     procedure CalcWidth(const aText: string);
     procedure CalcHeight;
-    procedure RealignButtons;
-    procedure LoadLanguage;
-
-    function GetIconTitle(I: TDamMsgIcon): string;
-    function GetButtonFromNumber(Number: Byte): TBitBtn;
-    procedure DoSound;
-
+    procedure AlignButtonsPanel;
     procedure SetFormCustomization;
+    procedure SetTitleAndIcon;
     procedure LoadHelp;
+
+    procedure DoSound;
   end;
 
 function RunDamDialog(aDamMsg: TDamMsg; const aText: string): TDamMsgRes;
@@ -71,7 +67,7 @@ uses
   Windows, SysUtils, Clipbrd, IniFiles, MMSystem;
 {$ELSE}
   Winapi.Windows, System.SysUtils, Vcl.Clipbrd, System.IniFiles,
-  Winapi.MMSystem, System.Math, Vcl.Themes;
+  Winapi.MMSystem, System.Math, Vcl.Themes, Vcl.Graphics;
 {$ENDIF}
 
 {$IFDEF FPC}
@@ -94,20 +90,21 @@ const
   IDI_INFORMATION = IDI_ASTERISK;
 {$ENDIF}
 
-const
-  ID_MODALRESULT_1 = 101;
-  ID_MODALRESULT_2 = 102;
-  ID_MODALRESULT_3 = 103;
-
 function RunDamDialog(aDamMsg: TDamMsg; const aText: string): TDamMsgRes;
-var F: TFrmDamDialog;
+var
+  F: TFrmDamDialog;
 begin
   F := TFrmDamDialog.Create(Application);
   try
     F.DamMsg := aDamMsg;
 
+    F.LoadLanguage;
+    F.BuildButtons;
     F.LoadText(aText);
+    F.AlignButtonsPanel;
     F.SetFormCustomization;
+    F.SetTitleAndIcon;
+    F.LoadHelp;
 
     F.ShowModal;
     Result := F.DamResult;
@@ -120,204 +117,11 @@ end;
 
 procedure TFrmDamDialog.FormCreate(Sender: TObject);
 begin
-  Btn1.ModalResult := ID_MODALRESULT_1;
-  Btn2.ModalResult := ID_MODALRESULT_2;
-  Btn3.ModalResult := ID_MODALRESULT_3;
-
   {$IFNDEF FPC}
   //when using app custom style theme, the DzHTMLText doesn't get theme backgound color
   if TStyleManager.IsCustomStyleActive then
     LbMsg.Color := TStyleManager.ActiveStyle.GetStyleColor(TStyleColor.scWindow);
   {$ENDIF}
-end;
-
-procedure TFrmDamDialog.LoadText(const aText: string);
-begin
-  LbMsg.Images := DamMsg.Dam.Images;
-  LbMsg.Font.Assign(DamMsg.Dam.MessageFont);
-  CalcWidth(aText);
-  CalcHeight;
-end;
-
-procedure TFrmDamDialog.CalcWidth(const aText: string);
-const MinSize=300;
-begin
-  if DamMsg.FixedWidth=0 then
-    LbMsg.Width := Trunc(Monitor.Width * 0.75) //max width
-  else
-    LbMsg.Width := DamMsg.FixedWidth;
-
-  LbMsg.Text := aText; //set MESSAGE TEXT
-
-  if (DamMsg.FixedWidth=0) and (LbMsg.TextWidth < LbMsg.Width) then
-    LbMsg.Width := Max(LbMsg.TextWidth, MinSize);
-
-  ClientWidth := LbMsg.Left+LbMsg.Width+8;
-end;
-
-procedure TFrmDamDialog.CalcHeight;
-var Dif: Integer;
-begin
-  Dif := ClientHeight-LbMsg.Height;
-
-  LbMsg.Height := LbMsg.TextHeight;
-  ClientHeight := Max(LbMsg.Height, Ico.Height)+Dif;
-
-  if LbMsg.Height<Ico.Height then //text smaller than icon
-    LbMsg.Top := LbMsg.Top + ((Ico.Height-LbMsg.Height) div 2);
-end;
-
-procedure TFrmDamDialog.SetFormCustomization;
-var F: TForm;
-  R: TRect;
-begin
-  if not DamMsg.Dam.DialogBorder then
-    BorderStyle := bsNone;
-
-  case DamMsg.Dam.DialogPosition of
-    dpScreenCenter: {Position := poScreenCenter}; //default
-    dpActiveFormCenter:
-      begin
-        F := Screen.ActiveForm;
-        if Assigned(F) then
-        begin
-          Position := poDesigned;
-
-          if not GetWindowRect(F.Handle, R) then
-            raise Exception.Create('Error getting window rect');
-
-          Left := R.Left + ((R.Width - Width) div 2);
-          Top := R.Top + ((R.Height - Height) div 2);
-        end;
-      end;
-    dpMainFormCenter: Position := poMainFormCenter;
-    else raise Exception.Create('Invalid dialog position property');
-  end;
-end;
-
-//
-
-function TFrmDamDialog.GetIconTitle(I: TDamMsgIcon): string;
-begin
-  case I of
-    diApp   : Result := Application.Title;
-    diInfo  : Result := LangStrs.Info;
-    diQuest : Result := LangStrs.Quest;
-    diWarn  : Result := LangStrs.Warn;
-    diError : Result := LangStrs.Error;
-    diCustom: Result := LangStrs.Msg;
-    else raise Exception.Create('Unknown icon kind property');
-  end;
-end;
-
-function TFrmDamDialog.GetButtonFromNumber(Number: Byte): TBitBtn;
-begin
-  case Number of
-    1: Result := Btn1;
-    2: Result := Btn2;
-    3: Result := Btn3;
-    else raise Exception.Create('Invalid button number');
-  end;
-end;
-
-function GetNumButtons(B: TDamMsgButtons): Byte;
-begin
-  case B of
-    dbOne, dbOK: Result := 1;
-    dbTwo, dbYesNo: Result := 2;
-    dbThree: Result := 3;
-    else raise Exception.Create('Unknown buttons kind property');
-  end;
-end;
-
-procedure TFrmDamDialog.DoSound;
-begin
-  case DamMsg.Icon of
-    diQuest: PlaySound('SYSTEMQUESTION', 0, SND_ASYNC);
-    diWarn: PlaySound('SYSTEMEXCLAMATION', 0, SND_ASYNC);
-    diError: PlaySound('SYSTEMHAND', 0, SND_ASYNC);
-  end;
-end;
-
-//
-
-procedure TFrmDamDialog.FormShow(Sender: TObject);
-begin
-  LoadLanguage;
-  //
-
-  if DamMsg.Dam.PlaySounds then DoSound;
-
-  Color := DamMsg.Dam.MessageColor;
-  BoxButtons.Color := DamMsg.Dam.ButtonsColor;
-
-  case DamMsg.Title of
-    dtApp       : Caption := Application.Title;
-    dtParentForm: Caption := TForm(DamMsg.Dam.Owner).Caption;
-    dtMainForm  : Caption := Application.MainForm.Caption;
-    dtByIcon    : Caption := GetIconTitle(DamMsg.Icon);
-    dtCustom    : Caption := DamMsg.CustomTitle;
-  end;
-
-  case DamMsg.Icon of
-    diApp   : Ico.Picture.Icon := Application.Icon;
-    diInfo  : Ico.Picture.Icon.Handle := LoadIcon(0, IDI_INFORMATION);
-    diQuest : Ico.Picture.Icon.Handle := LoadIcon(0, IDI_QUESTION);
-    diWarn  : Ico.Picture.Icon.Handle := LoadIcon(0, IDI_WARNING);
-    diError : Ico.Picture.Icon.Handle := LoadIcon(0, IDI_ERROR);
-    diCustom: Ico.Picture.Icon := DamMsg.CustomIcon;
-  end;
-
-  Btn1.Caption := DamMsg.Button1;
-  Btn2.Caption := DamMsg.Button2;
-  Btn3.Caption := DamMsg.Button3;
-
-  case DamMsg.Buttons of
-    dbOK: Btn1.Caption := LangStrs.OK;
-    dbYesNo:
-      begin
-        Btn1.Caption := '&'+LangStrs.Yes;
-        Btn2.Caption := '&'+LangStrs.No;
-      end;
-  end;
-
-  NumButtons := GetNumButtons(DamMsg.Buttons);
-
-  LoadHelp;
-  RealignButtons;
-end;
-
-procedure TFrmDamDialog.RealignButtons;
-var LastBtn: TBitBtn;
-begin
-  Btn2.Visible := NumButtons>1;
-  Btn3.Visible := NumButtons>2;
-
-  LastBtn := GetButtonFromNumber(NumButtons);
-
-  BoxFloatBtns.Width := LastBtn.Left+LastBtn.Width+8;
-  if DamMsg.Dam.CenterButtons then
-    BoxFloatBtns.Left := (BoxButtons.Width-BoxFloatBtns.Width) div 2 //center
-  else
-    BoxFloatBtns.Left := BoxButtons.Width-BoxFloatBtns.Width; //right
-
-  LastBtn.Cancel := True; //set last button as cancel (esc) button
-  if DamMsg.SwapFocus then ActiveControl := LastBtn; //set last button as start focus button
-end;
-
-procedure TFrmDamDialog.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  case ModalResult of
-    ID_MODALRESULT_1: DamResult := 1;
-    ID_MODALRESULT_2: DamResult := 2;
-    ID_MODALRESULT_3: DamResult := 3;
-    else DamResult := NumButtons; //** last button
-  end;
-end;
-
-procedure TFrmDamDialog.Action_CopyExecute(Sender: TObject);
-begin
-  Clipboard.AsText := LbMsg.Text;
 end;
 
 procedure TFrmDamDialog.LoadLanguage;
@@ -380,9 +184,226 @@ begin
   end;
 end;
 
+function GetButtonWidth(Btn: TBitBtn): Integer;
+var
+  B: Vcl.Graphics.TBitmap;
+begin
+  B := Vcl.Graphics.TBitmap.Create;
+  try
+    B.Canvas.Font.Assign(Btn.Font);
+    Result := Max(B.Canvas.TextWidth(Btn.Caption)+20, 75);
+  finally
+    B.Free;
+  end;
+end;
+
+procedure TFrmDamDialog.BuildButtons;
+var
+  NumButtons: Byte;
+  I, X: Integer;
+  Btn: TBitBtn;
+  Names: array[1..3] of string;
+begin
+  case DamMsg.Buttons of
+    dbOne, dbOK: NumButtons := 1;
+    dbTwo, dbYesNo: NumButtons := 2;
+    dbThree: NumButtons := 3;
+    else raise Exception.Create('Unknown buttons kind property');
+  end;
+
+  DamResult := NumButtons; //default result - last button
+
+  Names[1] := DamMsg.Button1;
+  Names[2] := DamMsg.Button2;
+  Names[3] := DamMsg.Button3;
+
+  case DamMsg.Buttons of
+    dbOK: Names[1] := LangStrs.OK;
+    dbYesNo:
+      begin
+        Names[1] := '&'+LangStrs.Yes;
+        Names[2] := '&'+LangStrs.No;
+      end;
+  end;
+
+  Btn := nil;
+
+  X := 0;
+  for I := 1 to NumButtons do
+  begin
+    Btn := TBitBtn.Create(Self);
+    Btn.Parent := BoxFloatBtns;
+    Btn.Caption := Names[I];
+    Btn.SetBounds(X, 0, GetButtonWidth(Btn), BoxFloatBtns.Height);
+    Btn.OnClick := OnBtnClick;
+    Btn.Tag := I;
+
+    Inc(X, Btn.Width+8);
+  end;
+
+  //here btn contains last button reference
+
+  Btn.Cancel := True; //set last button as cancel (esc) button
+  if DamMsg.SwapFocus then ActiveControl := Btn; //set last button as start focus button
+
+  BoxFloatBtns.Width := Btn.BoundsRect.Right;
+end;
+
+procedure TFrmDamDialog.LoadText(const aText: string);
+begin
+  LbMsg.Images := DamMsg.Dam.Images;
+  LbMsg.Font.Assign(DamMsg.Dam.MessageFont);
+  CalcWidth(aText);
+  CalcHeight;
+end;
+
+procedure TFrmDamDialog.CalcWidth(const aText: string);
+var
+  MinSize: Integer;
+begin
+  if DamMsg.FixedWidth=0 then
+    LbMsg.Width := Trunc(Monitor.Width * 0.75) //max width
+  else
+    LbMsg.Width := DamMsg.FixedWidth;
+
+  LbMsg.Text := aText; //set MESSAGE TEXT
+
+  if (DamMsg.FixedWidth=0) and (LbMsg.TextWidth < LbMsg.Width) then
+  begin
+    MinSize := Max(300, BoxFloatBtns.Width);
+    LbMsg.Width := Max(LbMsg.TextWidth, MinSize);
+  end;
+
+  ClientWidth := LbMsg.BoundsRect.Right+8;
+end;
+
+procedure TFrmDamDialog.CalcHeight;
+var
+  Dif: Integer;
+begin
+  Dif := ClientHeight-LbMsg.Height;
+
+  LbMsg.Height := LbMsg.TextHeight;
+  ClientHeight := Max(LbMsg.Height, Ico.Height)+Dif;
+
+  if LbMsg.Height<Ico.Height then //text smaller than icon
+    LbMsg.Top := LbMsg.Top + ((Ico.Height-LbMsg.Height) div 2);
+end;
+
+procedure TFrmDamDialog.AlignButtonsPanel;
+begin
+  if DamMsg.Dam.CenterButtons then
+    BoxFloatBtns.Left := (BoxButtons.Width-BoxFloatBtns.Width) div 2 //center
+  else
+    BoxFloatBtns.Left := BoxButtons.Width-BoxFloatBtns.Width-8; //right
+end;
+
+procedure TFrmDamDialog.SetFormCustomization;
+var
+  F: TForm;
+  R: TRect;
+begin
+  //form border
+  if not DamMsg.Dam.DialogBorder then
+    BorderStyle := bsNone;
+
+  //form screen position
+  case DamMsg.Dam.DialogPosition of
+    dpScreenCenter: {Position := poScreenCenter}; //default
+    dpActiveFormCenter:
+      begin
+        F := Screen.ActiveForm;
+        if Assigned(F) then
+        begin
+          Position := poDesigned;
+
+          if not GetWindowRect(F.Handle, R) then
+            raise Exception.Create('Error getting window rect');
+
+          Left := R.Left + ((R.Width - Width) div 2);
+          Top := R.Top + ((R.Height - Height) div 2);
+        end;
+      end;
+    dpMainFormCenter: Position := poMainFormCenter;
+    else raise Exception.Create('Invalid dialog position property');
+  end;
+
+  //form theme colors
+  Color := DamMsg.Dam.MessageColor;
+  BoxButtons.Color := DamMsg.Dam.ButtonsColor;
+end;
+
+procedure TFrmDamDialog.SetTitleAndIcon;
+
+  function GetIconTitle: string;
+  begin
+    case DamMsg.Icon of
+      diApp   : Result := Application.Title;
+      diInfo  : Result := LangStrs.Info;
+      diQuest : Result := LangStrs.Quest;
+      diWarn  : Result := LangStrs.Warn;
+      diError : Result := LangStrs.Error;
+      diCustom: Result := LangStrs.Msg;
+      else raise Exception.Create('Unknown icon kind property');
+    end;
+  end;
+
+begin
+  case DamMsg.Title of
+    dtApp       : Caption := Application.Title;
+    dtParentForm: Caption := TForm(DamMsg.Dam.Owner).Caption;
+    dtMainForm  : Caption := Application.MainForm.Caption;
+    dtByIcon    : Caption := GetIconTitle;
+    dtCustom    : Caption := DamMsg.CustomTitle;
+    else raise Exception.Create('Unknown title kind property');
+  end;
+
+  case DamMsg.Icon of
+    diApp   : Ico.Picture.Icon := Application.Icon;
+    diInfo  : Ico.Picture.Icon.Handle := LoadIcon(0, IDI_INFORMATION);
+    diQuest : Ico.Picture.Icon.Handle := LoadIcon(0, IDI_QUESTION);
+    diWarn  : Ico.Picture.Icon.Handle := LoadIcon(0, IDI_WARNING);
+    diError : Ico.Picture.Icon.Handle := LoadIcon(0, IDI_ERROR);
+    diCustom: Ico.Picture.Icon := DamMsg.CustomIcon;
+    else raise Exception.Create('Unknown icon kind property');
+  end;
+end;
+
 procedure TFrmDamDialog.LoadHelp;
 begin
   BtnHelp.Visible := (DamMsg.HelpContext<>0) or (DamMsg.HelpKeyword<>EmptyStr);
+end;
+
+procedure TFrmDamDialog.DoSound;
+
+  procedure Play(const aSound: string);
+  begin
+    PlaySound(PChar(aSound), 0, SND_ASYNC);
+  end;
+
+begin
+  case DamMsg.Icon of
+    diQuest: Play('SYSTEMQUESTION');
+    diWarn: Play('SYSTEMEXCLAMATION');
+    diError: Play('SYSTEMHAND');
+  end;
+end;
+
+procedure TFrmDamDialog.FormShow(Sender: TObject);
+begin
+  if DamMsg.Dam.PlaySounds then
+    DoSound;
+end;
+
+procedure TFrmDamDialog.Action_CopyExecute(Sender: TObject);
+begin
+  Clipboard.AsText := LbMsg.Text;
+end;
+
+procedure TFrmDamDialog.Action_HelpExecute(Sender: TObject);
+begin
+  if BtnHelp.Visible then
+    BtnHelp.Click;
 end;
 
 procedure TFrmDamDialog.BtnHelpClick(Sender: TObject);
@@ -396,29 +417,32 @@ begin
     raise Exception.Create('Unknown help property');
 end;
 
-procedure TFrmDamDialog.Action_HelpExecute(Sender: TObject);
-begin
-  if BtnHelp.Visible then
-    BtnHelp.Click;
-end;
-
 procedure TFrmDamDialog.LbMsgLinkClick(Sender: TObject; Link: TDHBaseLink;
   var Handled: Boolean);
 var
   CloseMsg: Boolean;
-  MsgRes: TDamMsgRes;
+  ImmediateRes: TDamMsgRes;
 begin
   if (Link.Kind = lkLinkRef) and Assigned(DamMsg.Dam.OnLinkClick) then
   begin
     CloseMsg := False;
-    MsgRes := NumButtons; //last button by default
+    ImmediateRes := DamResult;
 
     DamMsg.Dam.OnLinkClick(DamMsg.Dam, DamMsg,
-      Link.LinkRef.Target, Handled, CloseMsg, MsgRes);
+      Link.LinkRef.Target, Handled, CloseMsg, ImmediateRes);
 
     if CloseMsg then
-      GetButtonFromNumber(MsgRes).Click;
+    begin
+      DamResult := ImmediateRes;
+      Close;
+    end;
   end;
+end;
+
+procedure TFrmDamDialog.OnBtnClick(Sender: TObject);
+begin
+  DamResult := TBitBtn(Sender).Tag;
+  Close;
 end;
 
 end.
