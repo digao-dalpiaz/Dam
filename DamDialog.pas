@@ -48,11 +48,11 @@ type
     procedure LoadText(const aText: string);
     procedure CalcWidth(const aText: string);
     procedure CalcHeight;
-    procedure AlignButtonsPanel;
     procedure SetFormCustomization;
     procedure SetTitleAndIcon;
     procedure LoadHelp;
 
+    procedure AlignButtonsPanel;
     procedure DoSound;
   end;
 
@@ -289,14 +289,6 @@ begin
     LbMsg.Top := LbMsg.Top + ((Ico.Height-LbMsg.Height) div 2);
 end;
 
-procedure TFrmDamDialog.AlignButtonsPanel;
-begin
-  if DamMsg.Dam.CenterButtons then
-    BoxFloatBtns.Left := (BoxButtons.Width-BoxFloatBtns.Width) div 2 //center
-  else
-    BoxFloatBtns.Left := BoxButtons.Width-BoxFloatBtns.Width-8; //right
-end;
-
 procedure TFrmDamDialog.SetFormCustomization;
 var
   F: TForm;
@@ -371,6 +363,14 @@ end;
 procedure TFrmDamDialog.LoadHelp;
 begin
   BtnHelp.Visible := (DamMsg.HelpContext<>0) or (DamMsg.HelpKeyword<>EmptyStr);
+end;
+
+procedure TFrmDamDialog.AlignButtonsPanel;
+begin
+  if DamMsg.Dam.CenterButtons then
+    BoxFloatBtns.Left := (BoxButtons.Width-BoxFloatBtns.Width) div 2 //center
+  else
+    BoxFloatBtns.Left := BoxButtons.Width-BoxFloatBtns.Width-8; //right
 end;
 
 procedure TFrmDamDialog.DoSound;
