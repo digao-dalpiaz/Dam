@@ -37,6 +37,7 @@
 
 - 03/13/2021 (Version 4.11)
 
+   - Supporting message buttons caption with any length, automatically increasing button width.
    - Removed CompInstall.exe from component sources due to AV false positive warning (now you can get it directly from CompInstall repository).
 
 - 03/05/2021 (Version 4.10)
