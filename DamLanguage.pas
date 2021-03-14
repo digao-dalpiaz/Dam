@@ -13,6 +13,7 @@ type
     OK, Yes, No, Info, Quest, Warn, Error, Msg: string;
   end;
 
+procedure SetDamLangBySysLang(var DamLang: TDamLanguage);
 function LoadLanguage(Language: TDamLanguage): TDamLanguageDefinition;
 
 implementation
@@ -24,6 +25,54 @@ uses
   System.Classes, System.SysUtils, System.IniFiles, Winapi.Windows
 {$ENDIF};
 
+type
+  TLanguageParams = record
+    Name: string;
+    DamLang: TDamLanguage;
+    SysLang: ShortInt;
+  end;
+
+const
+  LANGUAGES_PARAMS: array[0..12] of TLanguageParams = (
+    (Name: 'English'   ; DamLang: dgEnglish   ; SysLang: LANG_ENGLISH   ),
+    (Name: 'Portuguese'; DamLang: dgPortuguese; SysLang: LANG_PORTUGUESE),
+    (Name: 'Spanish'   ; DamLang: dgSpanish   ; SysLang: LANG_SPANISH   ),
+    (Name: 'German'    ; DamLang: dgGerman    ; SysLang: LANG_GERMAN    ),
+    (Name: 'Italian'   ; DamLang: dgItalian   ; SysLang: LANG_ITALIAN   ),
+    (Name: 'Chinese'   ; DamLang: dgChinese   ; SysLang: LANG_CHINESE   ),
+    (Name: 'Japanese'  ; DamLang: dgJapanese  ; SysLang: LANG_JAPANESE  ),
+    (Name: 'Greek'     ; DamLang: dgGreek     ; SysLang: LANG_GREEK     ),
+    (Name: 'Russian'   ; DamLang: dgRussian   ; SysLang: LANG_RUSSIAN   ),
+    (Name: 'French'    ; DamLang: dgFrench    ; SysLang: LANG_FRENCH    ),
+    (Name: 'Polish'    ; DamLang: dgPolish    ; SysLang: LANG_POLISH    ),
+    (Name: 'Dutch'     ; DamLang: dgDutch     ; SysLang: LANG_DUTCH     ),
+    (Name: 'Turkish'   ; DamLang: dgTurkish   ; SysLang: LANG_TURKISH   )
+  );
+
+procedure SetDamLangBySysLang(var DamLang: TDamLanguage);
+var
+  P: TLanguageParams;
+begin
+  for P in LANGUAGES_PARAMS do
+    if P.SysLang = SysLocale.PriLangID then
+    begin
+      DamLang := P.DamLang;
+      Break;
+    end;
+
+  //if not found, it's another unsupported language - leave initial language
+end;
+
+function GetLangNameByDamLang(DamLang: TDamLanguage): string;
+var
+  P: TLanguageParams;
+begin
+  for P in LANGUAGES_PARAMS do
+    if P.DamLang = DamLang then Exit(P.Name);
+
+  raise Exception.Create('Invalid language');
+end;
+
 function LoadLanguage(Language: TDamLanguage): TDamLanguageDefinition;
 var
   aLang: string;
@@ -31,21 +80,7 @@ var
   S: TStringList;
   Ini: TMemIniFile;
 begin
-  case Language of
-    dgEnglish: aLang := 'English';
-    dgPortuguese: aLang := 'Portuguese';
-    dgSpanish: aLang := 'Spanish';
-    dgGerman: aLang := 'German';
-    dgItalian: aLang := 'Italian';
-    dgChinese: aLang := 'Chinese';
-    dgJapanese: aLang := 'Japanese';
-    dgGreek: aLang := 'Greek';
-    dgRussian: aLang := 'Russian';
-    dgFrench: aLang := 'French';
-    dgPolish: aLang := 'Polish';
-    dgDutch: aLang := 'Dutch';
-    else raise Exception.Create('Unknown language');
-  end;
+  aLang := GetLangNameByDamLang(Language);
 
   S := TStringList.Create;
   try

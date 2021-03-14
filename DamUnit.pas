@@ -27,7 +27,8 @@ const
 
 type
   TDamLanguage = (dgEnglish, dgPortuguese, dgSpanish, dgGerman, dgItalian,
-    dgChinese, dgJapanese, dgGreek, dgRussian, dgFrench, dgPolish, dgDutch);
+    dgChinese, dgJapanese, dgGreek, dgRussian, dgFrench, dgPolish, dgDutch,
+    dgTurkish);
 
   TDamDlgPosition = (dpScreenCenter, dpActiveFormCenter, dpMainFormCenter);
 
@@ -167,7 +168,7 @@ function DamParams(const Params: array of Variant): TDamParams; //compatibility 
 implementation
 
 uses
-  DamDialog, Vcl.DzHTMLText,
+  DamDialog, DamLanguage, Vcl.DzHTMLText,
 {$IFDEF FPC}
   Forms, Windows;
 {$ELSE}
@@ -417,20 +418,7 @@ begin
 
   FDialogBorder := True;
 
-  case SysLocale.PriLangID of
-    LANG_ENGLISH: FLanguage := dgEnglish;
-    LANG_PORTUGUESE: FLanguage := dgPortuguese;
-    LANG_SPANISH: FLanguage := dgSpanish;
-    LANG_GERMAN: FLanguage := dgGerman;
-    LANG_ITALIAN: FLanguage := dgItalian;
-    LANG_CHINESE: FLanguage := dgChinese;
-    LANG_JAPANESE: FLanguage := dgJapanese;
-    LANG_GREEK: FLanguage := dgGreek;
-    LANG_RUSSIAN: FLanguage := dgRussian;
-    LANG_FRENCH: FLanguage := dgFrench;
-    LANG_POLISH: FLanguage := dgPolish;
-    LANG_DUTCH: FLanguage := dgDutch;
-  end;
+  SetDamLangBySysLang(FLanguage);
 end;
 
 destructor TDam.Destroy;
