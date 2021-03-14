@@ -9,7 +9,7 @@
 ![Auto Install](https://img.shields.io/badge/-Auto%20Install%20App-orange.svg)
 ![VCL](https://img.shields.io/badge/-VCL-lightgrey.svg)
 ![Lazarus support](https://img.shields.io/badge/-Lazarus%20support-green.svg)
-![Languages](https://img.shields.io/badge/Languages-12-brightgreen.svg)
+![Languages](https://img.shields.io/badge/Languages-13-brightgreen.svg)
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/C0C53LVFN)
 
@@ -34,6 +34,10 @@
 - [History](#history)
 
 ## What's New
+
+- 03/14/2021 (Version 4.12)
+
+   - Included Turkish language support.
 
 - 03/13/2021 (Version 4.11)
 
@@ -297,6 +301,7 @@ At this time, the following languages are available for messages:
 - French
 - Polish
 - Dutch
+- Turkish
 
 The language set the caption of buttons in the message dialogs, like OK, Cancel, Yes, No, and the title of the form, when Information, Question, Warning, Error and Message (custom). The form title can be changed in the message properties and can be automatically set by other objects, like parent form title, main form title and application title.
 
