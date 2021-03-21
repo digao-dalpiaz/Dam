@@ -25,7 +25,6 @@ type
     BtnHelp: TSpeedButton;
     Action_Help: TAction;
     procedure FormShow(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure Action_CopyExecute(Sender: TObject);
     procedure BtnHelpClick(Sender: TObject);
     procedure Action_HelpExecute(Sender: TObject);
@@ -61,7 +60,7 @@ uses
   Windows, SysUtils, Clipbrd, MMSystem, Graphics
 {$ELSE}
   Winapi.Windows, System.SysUtils, Vcl.Clipbrd,
-  Winapi.MMSystem, Vcl.Graphics, System.Math, Vcl.Themes
+  Winapi.MMSystem, Vcl.Graphics, System.Math
 {$ENDIF};
 
 {$IFDEF FPC}
@@ -108,15 +107,6 @@ begin
 end;
 
 //
-
-procedure TFrmDamDialog.FormCreate(Sender: TObject);
-begin
-  {$IFNDEF FPC}
-  //when using app custom style theme, the DzHTMLText doesn't get theme backgound color
-  if TStyleManager.IsCustomStyleActive then
-    LbMsg.Color := TStyleManager.ActiveStyle.GetStyleColor(TStyleColor.scWindow);
-  {$ENDIF}
-end;
 
 function GetButtonWidth(Btn: TBitBtn): Integer;
 var
