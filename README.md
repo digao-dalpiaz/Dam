@@ -35,6 +35,13 @@
 
 ## What's New
 
+- 03/21/2021 (Version 4.13)
+
+   - Full VCL custom theme supporting (changes made in DzHTMLText).
+
+<details>
+  <summary>Click here to view the entire changelog</summary>
+
 - 03/14/2021 (Version 4.12)
 
    - Included Turkish language support.
@@ -187,6 +194,8 @@
 - 02/05/2019
 
    Add new properties MessageColor and ButtonsColor on TDam component, to allow message dialog customization.
+
+</details>
 
 ## Introduction
 
