@@ -35,12 +35,16 @@
 
 ## What's New
 
-- 03/21/2021 (Version 4.13)
+- 06/13/2021 (Version 4.14)
 
-   - Full VCL custom theme supporting (changes made in DzHTMLText).
+   - Fixed CTRL+C action in message dialog to copy message as plain text. It was copying the HTML syntax. **Need to update DzHTMLText!**
 
 <details>
   <summary>Click here to view the entire changelog</summary>
+
+- 03/21/2021 (Version 4.13)
+
+   - Full VCL custom theme supporting (changes made in DzHTMLText).
 
 - 03/14/2021 (Version 4.12)
 
