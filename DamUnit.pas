@@ -175,7 +175,7 @@ uses
   Vcl.Forms, Winapi.Windows, System.UITypes;
 {$ENDIF}
 
-const STR_VERSION = '4.13';
+const STR_VERSION = '4.14';
 
 var ObjDefault: TDam = nil;
 
@@ -551,7 +551,7 @@ end;
 initialization
   {$IFNDEF FPC}System.{$ENDIF}Classes.RegisterClass(TDamMsg);
 
-  if DZHTMLTEXT_INTERNAL_VERSION <> 704 then
+  if DZHTMLTEXT_INTERNAL_VERSION <> 705 then
     raise Exception.Create('Please, update DzHTMLText component.');
 
 end.

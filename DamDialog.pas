@@ -323,7 +323,7 @@ end;
 
 procedure TFrmDamDialog.Action_CopyExecute(Sender: TObject);
 begin
-  Clipboard.AsText := LbMsg.Text;
+  Clipboard.AsText := TDzHTMLText.HTMLToPlainText(LbMsg.Text);
 end;
 
 procedure TFrmDamDialog.Action_HelpExecute(Sender: TObject);
