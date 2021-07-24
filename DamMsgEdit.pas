@@ -106,6 +106,7 @@ uses
 
 procedure TFrmDamMsgEdit.FormCreate(Sender: TObject);
 begin
+  LbMsg.StyleElements := []; //do not use themes in Delphi IDE
   LbMsg.Text := '';
 end;
 
