@@ -89,6 +89,8 @@ var
 begin
   F := TFrmDamDialog.Create(Application);
   try
+    if (csDesigning in DamMsg.ComponentState) then F.LbMsg.StyleElements := []; //do not use themes in Delphi IDE
+
     F.DamMsg := DamMsg;
 
     F.LangStrs := LoadLanguage(DamMsg.Dam.Language);
