@@ -35,12 +35,16 @@
 
 ## What's New
 
-- 06/13/2021 (Version 4.14)
+- 07/24/2021 (Version 4.15)
 
-   - Fixed CTRL+C action in message dialog to copy message as plain text. It was copying the HTML syntax. **Need to update DzHTMLText!**
+   - Fixed incorrect custom theme behavior in Message Preview and Message Wizard dialogs when in Delphi 10.4 IDE.
 
 <details>
   <summary>Click here to view the entire changelog</summary>
+
+- 06/13/2021 (Version 4.14)
+
+   - Fixed CTRL+C action in message dialog to copy message as plain text. It was copying the HTML syntax. **Need to update DzHTMLText!**
 
 - 03/21/2021 (Version 4.13)
 
