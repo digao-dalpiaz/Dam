@@ -35,12 +35,16 @@
 
 ## What's New
 
-- 07/24/2021 (Version 4.15)
+- 09/12/2021 (Version 4.16)
 
-   - Fixed incorrect custom theme behavior in Message Preview and Message Wizard dialogs when in Delphi 10.4 IDE.
+   - Delphi 11 auto-install support.
 
 <details>
   <summary>Click here to view the entire changelog</summary>
+
+- 07/24/2021 (Version 4.15)
+
+   - Fixed incorrect custom theme behavior in Message Preview and Message Wizard dialogs when in Delphi 10.4 IDE.
 
 - 06/13/2021 (Version 4.14)
 
