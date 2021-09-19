@@ -298,7 +298,7 @@ The Message Dialog: :stuck_out_tongue:
 
 7. Run **AfterBuild.bat** to publish DFM and RES to Release folders.
 
-> Supports Delphi XE3..Delphi 10.4
+> Supports Delphi XE3..Delphi 11
 
 ### Lazarus installation
 
