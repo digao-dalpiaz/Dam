@@ -46,15 +46,13 @@ begin
 
   StmUnit := Dam.DamUnitName;
 
-  aFile := StmUnit + '.pas';
-
   aTime := DateTimeToStr(Now);
 
   for C in Dam.Owner do
   if C is TDamMsg then
   begin
     Msg := TDamMsg(C);
-    if (Msg.Dam.DamUnitName = StmUnit) then
+    if SameText(Msg.Dam.DamUnitName, StmUnit) then
     begin
       A := Msg.Name;
       if A[1] = '_' then Delete(A, 1, 1);
@@ -103,7 +101,7 @@ begin
   end;
 
   A := Template;
-  A := StringReplace(A, '<UNIT>', StmUnit, []);
+  A := StringReplace(A, '<UNIT>', ExtractFileName(StmUnit), []);
   A := StringReplace(A, '<TIMESTAMP>', aTime, []);
   A := StringReplace(A, '<USES>', Dam.Owner.UnitName, []);
   A := StringReplace(A, '<DECLARATIONS>', aDecs, []);
@@ -112,7 +110,7 @@ begin
   S := TStringList.Create;
   try
     S.Text := A;
-    S.SaveToFile(Dir + aFile);
+    S.SaveToFile(Dir + StmUnit + '.pas');
   finally
     S.Free;
   end;
