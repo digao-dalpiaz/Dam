@@ -23,7 +23,6 @@ var
 {$ENDIF}
   C: TComponent;
   Dir: string;
-  aFile: string;
   StmUnit: string;
   Msg: TDamMsg;
   S: TStringList;
