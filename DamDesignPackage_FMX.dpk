@@ -1,0 +1,47 @@
+package DamDesignPackage_FMX;
+
+{$R *.res}
+{$R 'Dam.dcr'}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DEFINE RELEASE}
+{$DEFINE DESIGN_FMX}
+{$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'Digao Dalpiaz - Dam Component - FMX Designtime'}
+{$DESIGNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  designide,
+  DamPackage_FMX,
+  DzHTMLText_VCL;
+
+contains
+  FMX.DamFileGenerator in 'Design\FMX.DamFileGenerator.pas',
+  FMX.DamFind in 'Design\FMX.DamFind.pas',
+  FMX.DamList in 'Design\FMX.DamList.pas',
+  FMX.DamMsgEdit in 'Design\FMX.DamMsgEdit.pas',
+  FMX.DamReg in 'Design\FMX.DamReg.pas';
+
+end.

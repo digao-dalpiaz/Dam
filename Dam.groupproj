@@ -3,10 +3,19 @@
         <ProjectGuid>{9CD3ADD8-609E-4B79-BA8C-2A5ED9D8F64A}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="DamPackage.dproj">
+        <Projects Include="DamCommonPackage.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="DamDesignPackage.dproj">
+        <Projects Include="DamPackage_VCL.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="DamPackage_FMX.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="DamDesignPackage_VCL.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="DamDesignPackage_FMX.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -17,32 +26,59 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="DamPackage">
-        <MSBuild Projects="DamPackage.dproj"/>
+    <Target Name="DamCommonPackage">
+        <MSBuild Projects="DamCommonPackage.dproj"/>
     </Target>
-    <Target Name="DamPackage:Clean">
-        <MSBuild Projects="DamPackage.dproj" Targets="Clean"/>
+    <Target Name="DamCommonPackage:Clean">
+        <MSBuild Projects="DamCommonPackage.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="DamPackage:Make">
-        <MSBuild Projects="DamPackage.dproj" Targets="Make"/>
+    <Target Name="DamCommonPackage:Make">
+        <MSBuild Projects="DamCommonPackage.dproj" Targets="Make"/>
     </Target>
-    <Target Name="DamDesignPackage">
-        <MSBuild Projects="DamDesignPackage.dproj"/>
+    <Target Name="DamPackage_VCL">
+        <MSBuild Projects="DamPackage_VCL.dproj"/>
     </Target>
-    <Target Name="DamDesignPackage:Clean">
-        <MSBuild Projects="DamDesignPackage.dproj" Targets="Clean"/>
+    <Target Name="DamPackage_VCL:Clean">
+        <MSBuild Projects="DamPackage_VCL.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="DamDesignPackage:Make">
-        <MSBuild Projects="DamDesignPackage.dproj" Targets="Make"/>
+    <Target Name="DamPackage_VCL:Make">
+        <MSBuild Projects="DamPackage_VCL.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="DamPackage_FMX">
+        <MSBuild Projects="DamPackage_FMX.dproj"/>
+    </Target>
+    <Target Name="DamPackage_FMX:Clean">
+        <MSBuild Projects="DamPackage_FMX.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DamPackage_FMX:Make">
+        <MSBuild Projects="DamPackage_FMX.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="DamDesignPackage_VCL">
+        <MSBuild Projects="DamDesignPackage_VCL.dproj"/>
+    </Target>
+    <Target Name="DamDesignPackage_VCL:Clean">
+        <MSBuild Projects="DamDesignPackage_VCL.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DamDesignPackage_VCL:Make">
+        <MSBuild Projects="DamDesignPackage_VCL.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="DamDesignPackage_FMX">
+        <MSBuild Projects="DamDesignPackage_FMX.dproj"/>
+    </Target>
+    <Target Name="DamDesignPackage_FMX:Clean">
+        <MSBuild Projects="DamDesignPackage_FMX.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DamDesignPackage_FMX:Make">
+        <MSBuild Projects="DamDesignPackage_FMX.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="DamPackage;DamDesignPackage"/>
+        <CallTarget Targets="DamCommonPackage;DamPackage_VCL;DamPackage_FMX;DamDesignPackage_VCL;DamDesignPackage_FMX"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="DamPackage:Clean;DamDesignPackage:Clean"/>
+        <CallTarget Targets="DamCommonPackage:Clean;DamPackage_VCL:Clean;DamPackage_FMX:Clean;DamDesignPackage_VCL:Clean;DamDesignPackage_FMX:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="DamPackage:Make;DamDesignPackage:Make"/>
+        <CallTarget Targets="DamCommonPackage:Make;DamPackage_VCL:Make;DamPackage_FMX:Make;DamDesignPackage_VCL:Make;DamDesignPackage_FMX:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
