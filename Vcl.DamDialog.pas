@@ -5,21 +5,11 @@
 interface
 
 uses
-{$IFDEF FPC}
-  Forms, Classes, ActnList, Buttons, Controls, ExtCtrls,
-{$ELSE}
-  System.Math, System.SysUtils, System.Types,
   {$IFDEF FMX}
-  FMX.DamUnit, FMX.DzHTMLText,
-  FMX.Forms, FMX.Objects, FMX.StdCtrls, FMX.ActnList, FMX.Types, FMX.Graphics, FMX.Controls,
+  FMX.DamUnit
   {$ELSE}
-  Vcl.DamUnit, Vcl.DzHTMLText,
-  Vcl.Forms, System.Classes, System.Actions, Vcl.ActnList, Vcl.StdCtrls,
-  Vcl.Buttons, Vcl.Controls, Vcl.ExtCtrls, Vcl.Graphics,
-  {$ENDIF}
-{$ENDIF}
-  //
-  DamLanguage;
+  Vcl.DamUnit
+  {$ENDIF};
 
 function RunDamDialog(DamMsg: TDamMsg; const aText: string): TDamMsgRes;
 
@@ -32,6 +22,24 @@ implementation
 //  Winapi.Windows, System.SysUtils, Vcl.Clipbrd,
 //  Winapi.MMSystem, Vcl.Graphics, System.Math
 //{$ENDIF};
+
+uses
+{$IFDEF FPC}
+  Forms, Classes, ActnList, Buttons, Controls, ExtCtrls,
+{$ELSE}
+  System.Math, System.SysUtils, System.Types,
+  {$IFDEF FMX}
+  FMX.DzHTMLText,
+  FMX.Forms, FMX.Objects, FMX.StdCtrls, FMX.ActnList, FMX.Types,
+  FMX.Graphics, FMX.Controls,
+  {$ELSE}
+  Vcl.DzHTMLText,
+  Vcl.Forms, System.Classes, System.Actions, Vcl.ActnList, Vcl.StdCtrls,
+  Vcl.Buttons, Vcl.Controls, Vcl.ExtCtrls, Vcl.Graphics,
+  {$ENDIF}
+{$ENDIF}
+  //
+  DamLanguage;
 
 {$IFDEF FPC}
 const
@@ -97,15 +105,18 @@ begin
   inherited CreateNew(Application);
 
   OnShow := FormShow;
+  {$IFDEF FMX}
+  BorderIcons := [];
+  {$ENDIF}
 
   ActionList := TActionList.Create(Self);
 
   Action := TAction.Create(ActionList);
-  Action.ShortCut := 16451;
+  Action.ShortCut := 16451; //CTRL+C
   Action.OnExecute := Action_CopyExecute;
 
   Action := TAction.Create(ActionList);
-  Action.ShortCut := 112;
+  Action.ShortCut := 112; //F1
   Action.OnExecute := Action_HelpExecute;
 
   Icon := TImage.Create(Self);
@@ -116,6 +127,9 @@ begin
   LbMsg.Parent := Self;
   LbMsg.SetBounds(48, 8, 0, 0);
   LbMsg.OnLinkClick := LbMsgLinkClick;
+  {$IFNDEF FMX}
+  LbMsg.ParentColor := True;
+  {$ENDIF}
 
   BoxButtons := TPanel.Create(Self);
   BoxButtons.Parent := Self;
@@ -150,7 +164,7 @@ var
 begin
   F := TFrmDamDialogDyn.Create;
   try
-    {$IFDEF VCL}
+    {$IFNDEF FMX}
     if (csDesigning in DamMsg.ComponentState) then F.LbMsg.StyleElements := []; //do not use themes in Delphi IDE
     {$ENDIF}
 
@@ -290,10 +304,8 @@ procedure TFrmDamDialogDyn.CalcHeight;
 var
   Dif: TPixels;
 begin
-  Dif := ClientHeight-LbMsg.Height;
-
   LbMsg.Height := LbMsg.TextHeight;
-  ClientHeight := Trunc(Max(LbMsg.Height, Icon.Height)+Dif);
+  ClientHeight := Trunc(Max(LbMsg.Height, Icon.Height)+14+BoxButtons.Height);
 
   if LbMsg.Height<Icon.Height then //text smaller than icon
   begin
@@ -327,7 +339,7 @@ begin
         begin
           Position := {$IFDEF FMX}TFormPosition.Designed{$ELSE}poDesigned{$ENDIF};
 
-          {$IFDEF Defined(MSWINDOWS) and Defined(VCL)}
+          {$IFDEF Defined(MSWINDOWS) and !Defined(FMX)}
           if not GetWindowRect(F.Handle, R) then
             raise Exception.Create('Error getting window rect');
           {$ELSE}

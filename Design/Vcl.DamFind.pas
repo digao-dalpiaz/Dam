@@ -35,7 +35,11 @@ function DoFindDamMessage(objDam: TDam; out objMsg: TDamMsg): Boolean;
 
 implementation
 
-{$R Vcl.DamFind.dfm}
+{$IFDEF DESIGN_FMX}
+  {$R Vcl.DamFind.dfm}
+{$ELSE}
+  {$R *.dfm}
+{$ENDIF}
 
 uses
 {$IFDEF FPC}

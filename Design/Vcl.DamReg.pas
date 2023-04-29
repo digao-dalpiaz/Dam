@@ -32,12 +32,20 @@ type
     procedure ExecuteVerb(Index: Integer); override;
   end;
 
+{$IFDEF DCC}
+procedure RegisterEnv(C: TPersistentClass);
+begin
+  GroupDescendentsWith(C, {$IFDEF DESIGN_FMX}FMX{$ELSE}Vcl{$ENDIF}.Controls.TControl);
+end;
+{$ENDIF}
+
 procedure Register;
 begin
   {$IFDEF FPC}
     {$I Dam.lrs}
   {$ELSE}
-    GroupDescendentsWith(TDam, {$IFDEF DESIGN_FMX}FMX{$ELSE}Vcl{$ENDIF}.Controls.TControl);
+    RegisterEnv(TDam);
+    RegisterEnv(TDamMsg);
   {$ENDIF}
 
   RegisterComponents('Digao', [TDam]);

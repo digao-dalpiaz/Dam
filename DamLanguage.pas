@@ -15,6 +15,8 @@ type
     OK, Yes, No, Info, Quest, Warn, Error, Msg: string;
   end;
 
+  TDamResourceAccess = class(TObject);
+
 procedure SetDamLangBySysLang(var DamLang: TDamLanguage);
 function LoadLanguage(Language: TDamLanguage): TDamLanguageDefinition;
 
@@ -76,7 +78,6 @@ begin
 end;
 
 function LoadLanguage(Language: TDamLanguage): TDamLanguageDefinition;
-type TDam = TObject;
 var
   aLang: string;
   R: TResourceStream;
@@ -87,7 +88,7 @@ begin
 
   S := TStringList.Create;
   try
-    R := TResourceStream.Create({$IFDEF FPC}HInstance{$ELSE}FindClassHInstance(TDam){$ENDIF}, 'DAM_LANG', RT_RCDATA);
+    R := TResourceStream.Create({$IFDEF FPC}HInstance{$ELSE}FindClassHInstance(TDamResourceAccess){$ENDIF}, 'DAM_LANG', RT_RCDATA);
     try
       S.LoadFromStream(R, TEncoding.UTF8);
     finally

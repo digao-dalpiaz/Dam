@@ -94,13 +94,17 @@ var
 
 implementation
 
-{$R Vcl.DamMsgEdit.dfm}
+{$IFDEF DESIGN_FMX}
+  {$R Vcl.DamMsgEdit.dfm}
+{$ELSE}
+  {$R *.dfm}
+{$ENDIF}
 
 uses
 {$IFDEF FPC}
   Graphics, SysUtils, LCLIntf;
 {$ELSE}
-  Vcl.Graphics, System.SysUtils,
+  Vcl.Graphics, System.SysUtils, System.UITypes,
   Winapi.Windows, Winapi.Messages, Winapi.ShellAPI;
 {$ENDIF}
 
@@ -110,16 +114,28 @@ begin
   LbMsg.Text := '';
 end;
 
+function ToColor(Color: {$IFDEF DESIGN_FMX}TAlphaColor{$ELSE}TColor{$ENDIF}): TColor;
+begin
+  Result := {$IFDEF DESIGN_FMX}TAlphaColorRec.ColorToRGB(Color){$ELSE}Color{$ENDIF};
+end;
+
 procedure TFrmDamMsgEdit.FormShow(Sender: TObject);
-var A: string;
-    V: Boolean;
+var
+  A: string;
+  V: Boolean;
 begin
   EdFont.Text := Dam.MessageFont.{$IFDEF DESIGN_FMX}Family{$ELSE}Name{$ENDIF};
   EdSize.Text := FloatToStr(Dam.MessageFont.Size); //using Float to compatibilize with FMX
 
-  Box.Color := Dam.MessageColor;
+  Box.Color := ToColor(Dam.MessageColor);
+
+  {$IFDEF DESIGN_FMX}
+  LbMsg.Font.Name := Dam.MessageFont.Family;
+  LbMsg.Font.Size := Trunc(Dam.MessageFont.Size);
+  LbMsg.Font.Style := Dam.MessageFont.Style;
+  LbMsg.Font.Color := ToColor(Dam.MessageFontColor);
+  {$ELSE}
   LbMsg.Font.Assign(Dam.MessageFont);
-  {$IFDEF DESIGN_VCL}
   LbMsg.Images := Dam.Images; //there is no way to read FMX ImageList in VCL design!!!
   {$ENDIF}
 
@@ -136,7 +152,7 @@ begin
        and (DamMsg.Button2 = '')
        and (DamMsg.Button3 = '')
        and (DamMsg.CustomTitle = '')
-       and (DamMsg.CustomIcon.{$IFDEF DESIGN_FMX}IsEmpty{$ELSE}Empty{$ENDIF})
+       and (DamMsg.CustomIcon{$IFDEF DESIGN_FMX}=nil{$ELSE}.Empty{$ENDIF})
        and (DamMsg.Title = dtByIcon);
 
       tRaise.Down := (V)
@@ -261,27 +277,29 @@ begin
 end;
 
 procedure ClearMsg(Msg: TDamMsg);
-var Def: TDamMsg;
-    FocoInvertido: Boolean;
-    AMsg: string;
+var
+  Def: TDamMsg;
+  SwapFocus: Boolean;
+  AMsg: string;
 begin
   Def := TDamMsg.Create(nil);
   try
     AMsg := Msg.Message;
-    FocoInvertido := Msg.SwapFocus;
+    SwapFocus := Msg.SwapFocus;
 
     Msg.Assign(Def); //get default properties
 
     Msg.Message := AMsg;
-    Msg.SwapFocus := FocoInvertido;
+    Msg.SwapFocus := SwapFocus;
   finally
     Def.Free;
   end;
 end;
 
 procedure TFrmDamMsgEdit.tInfoClick(Sender: TObject);
-var aTipo: string;
-    aNome: string;
+var
+  aTipo: string;
+  aNome: string;
 
   function CheckStartWith(Btn: TSpeedButton): Boolean;
   var Prefix: string;
@@ -291,8 +309,8 @@ var aTipo: string;
     Prefix := Btn.Caption;
     if aNome.StartsWith(Prefix) then
     begin
-        Result := True;
-        Delete(aNome, 1, Length(Prefix));
+      Result := True;
+      Delete(aNome, 1, Length(Prefix));
     end;
   end;
 
@@ -345,7 +363,8 @@ begin
 end;
 
 procedure TFrmDamMsgEdit.BtnPreviewClick(Sender: TObject);
-var C: TDamMsg;
+var
+  C: TDamMsg;
 begin
   C := TDamMsg.Create(nil);
   try
@@ -363,7 +382,8 @@ begin
 end;
 
 procedure TFrmDamMsgEdit.BtnOKClick(Sender: TObject);
-var A: string;
+var
+  A: string;
 begin
   EdNome.Text := Trim(EdNome.Text);
 

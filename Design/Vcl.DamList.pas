@@ -123,7 +123,11 @@ type
 
 implementation
 
-{$R Vcl.DamList.dfm}
+{$IFDEF DESIGN_FMX}
+  {$R Vcl.DamList.dfm}
+{$ELSE}
+  {$R *.dfm}
+{$ENDIF}
 
 uses
 {$IFDEF FPC}

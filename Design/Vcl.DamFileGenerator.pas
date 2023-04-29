@@ -100,6 +100,7 @@ begin
   end;
 
   A := Template;
+  A := StringReplace(A, '<ENV>', {$IFDEF DESIGN_FMX}'FMX'{$ELSE}'Vcl'{$ENDIF}, [rfReplaceAll]);
   A := StringReplace(A, '<UNIT>', ExtractFileName(StmUnit), []);
   A := StringReplace(A, '<TIMESTAMP>', aTime, []);
   A := StringReplace(A, '<USES>', Dam.Owner.UnitName, []);
