@@ -115,7 +115,7 @@ type
     property Images: TCustomImageList read FImages write SetImages;
     property MessageFont: TFont read FFont write SetFont stored GetFontStored;
     {$IFDEF FMX}
-    property MessageFontColor: TColor read FFontColor write FFontColor stored TAlphaColors.Black;
+    property MessageFontColor: TColor read FFontColor write FFontColor default TAlphaColors.Black;
     {$ENDIF}
     property DamDefault: Boolean read FDefault write FDefault default False;
     property DamUnitName: string read FUnit write FUnit;

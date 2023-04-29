@@ -77,16 +77,17 @@ type
     procedure OnBtnClick(Sender: TObject);
 
     procedure BuildButtons;
-    procedure LoadText(const aText: string);
-    procedure CalcWidth(const aText: string);
+    procedure LoadText;
+    procedure CalcWidth;
     procedure CalcHeight;
     procedure SetFormCustomization;
     procedure SetTitleAndIcon;
     procedure LoadHelp;
-
+    procedure CenterForm;
     procedure AlignButtonsPanel;
     procedure DoSound;
 
+    function ToScale(Value: TPixels): TPixels;
     function GetCurrentMonitorRect: TRect;
 
     procedure FormShow(Sender: TObject);
@@ -178,10 +179,18 @@ begin
     F.LangStrs := LoadLanguage(DamMsg.Dam.Language);
 
     F.BuildButtons;
-    F.LoadText(aText);
+    F.LoadText;
     F.SetFormCustomization;
     F.SetTitleAndIcon;
     F.LoadHelp;
+
+    {$IFNDEF FMX}
+    F.ScaleForCurrentDpi;
+    {$ENDIF}
+    F.CalcWidth;
+    F.CalcHeight;
+    F.CenterForm;
+    F.AlignButtonsPanel;
 
     F.ShowModal;
     Result := F.DamResult;
@@ -195,16 +204,6 @@ end;
 function GetDiv2(Value: TPixels): TPixels;
 begin
   Result := Value {$IFDEF FMX}/{$ELSE}div{$ENDIF} 2;
-end;
-
-procedure SetLeft(Control: TControl; Left: TPixels);
-begin
-  {$IFDEF FMX}Control.Position.X{$ELSE}Control.Left{$ENDIF} := Left;
-end;
-
-procedure SetTop(Control: TControl; Top: TPixels);
-begin
-  {$IFDEF FMX}Control.Position.Y{$ELSE}Control.Top{$ENDIF} := Top;
 end;
 
 function GetButtonWidth(Btn: TButton): TPixels;
@@ -277,12 +276,16 @@ begin
   BoxFloatBtns.Width := Btn.BoundsRect.Right;
 end;
 
-procedure TFrmDamDialogDyn.LoadText(const aText: string);
+procedure TFrmDamDialogDyn.LoadText;
 begin
   LbMsg.Images := DamMsg.Dam.Images;
   LbMsg.Font.Assign(DamMsg.Dam.MessageFont);
-  CalcWidth(aText);
-  CalcHeight;
+  LbMsg.Text := DamMsg.Message;
+end;
+
+function TFrmDamDialogDyn.ToScale(Value: TPixels): TPixels;
+begin
+  Result := {$IFDEF FMX}Value{$ELSE}ScaleValue(Value){$ENDIF};
 end;
 
 function TFrmDamDialogDyn.GetCurrentMonitorRect: TRect;
@@ -290,48 +293,40 @@ begin
   Result := {$IFDEF FMX}Screen.DisplayFromForm(Self){$ELSE}Monitor{$ENDIF}.BoundsRect;
 end;
 
-procedure TFrmDamDialogDyn.CalcWidth(const aText: string);
+procedure TFrmDamDialogDyn.CalcWidth;
 var
-  MinSize: {$IFDEF FMX}Single{$ELSE}Integer{$ENDIF};
+  MinSize: TPixels;
 begin
   if DamMsg.FixedWidth=0 then
     LbMsg.Width := Trunc(GetCurrentMonitorRect.Width * 0.75) //max width
   else
     LbMsg.Width := DamMsg.FixedWidth;
 
-  LbMsg.Text := aText; //set MESSAGE TEXT
-
   if (DamMsg.FixedWidth=0) and (LbMsg.TextWidth < LbMsg.Width) then
   begin
-    MinSize := Max(300, BoxFloatBtns.Width);
+    MinSize := Max(ToScale(300), BoxFloatBtns.Width);
     LbMsg.Width := Max(LbMsg.TextWidth, MinSize);
   end;
 
-  ClientWidth := Trunc(LbMsg.BoundsRect.Right+8);
+  ClientWidth := Trunc(LbMsg.BoundsRect.Right+ToScale(8));
 end;
 
 procedure TFrmDamDialogDyn.CalcHeight;
-var
-  Dif: TPixels;
 begin
   LbMsg.Height := LbMsg.TextHeight;
-  ClientHeight := Trunc(Max(LbMsg.Height, Icon.Height)+8+BoxButtons.Height);
+  ClientHeight := Trunc(
+    Max(LbMsg.Height, Icon.Height)+
+    (LbMsg.{$IFDEF FMX}Position.Y{$ELSE}Top{$ENDIF}*2)+
+    BoxButtons.Height);
 
   if LbMsg.Height<Icon.Height then //text smaller than icon
   begin
-    Dif := GetDiv2(Icon.Height-LbMsg.Height);
-    {$IFDEF FMX}
-    LbMsg.Position.Y := LbMsg.Position.Y + Dif;
-    {$ELSE}
-    LbMsg.Top := LbMsg.Top + Dif;
-    {$ENDIF}
+    LbMsg.{$IFDEF FMX}Position.Y{$ELSE}Top{$ENDIF} :=
+      LbMsg.{$IFDEF FMX}Position.Y{$ELSE}Top{$ENDIF} + GetDiv2(Icon.Height-LbMsg.Height);
   end;
 end;
 
 procedure TFrmDamDialogDyn.SetFormCustomization;
-var
-  R: TRect;
-  F: {$IFDEF FMX}TCommonCustomForm{$ELSE}TForm{$ENDIF};
 begin
   //form border
   if DamMsg.Dam.DialogBorder then
@@ -339,6 +334,24 @@ begin
   else
     BorderStyle := {$IFDEF FMX}TFmxFormBorderStyle.None{$ELSE}bsNone{$ENDIF};
 
+  //form theme colors
+  {$IFDEF FMX}
+  Fill.Color := DamMsg.Dam.MessageColor;
+  if Fill.Color<>TAlphaColors.Null then Fill.Kind := TBrushKind.Solid;
+
+  if DamMsg.Dam.ButtonsColor<>TAlphaColors.Null then
+    TShape(BoxButtons.Controls[0]).Fill.Color := DamMsg.Dam.ButtonsColor;
+  {$ELSE}
+  Color := DamMsg.Dam.MessageColor;
+  BoxButtons.Color := DamMsg.Dam.ButtonsColor;
+  {$ENDIF}
+end;
+
+procedure TFrmDamDialogDyn.CenterForm;
+var
+  R: TRect;
+  F: {$IFDEF FMX}TCommonCustomForm{$ELSE}TForm{$ENDIF};
+begin
   //form screen position
   R := GetCurrentMonitorRect;
   F := nil;
@@ -353,18 +366,6 @@ begin
 
   Left := Trunc(R.Left + GetDiv2(R.Width - Width));
   Top := Trunc(R.Top + GetDiv2(R.Height - Height));
-
-  //form theme colors
-  {$IFDEF FMX}
-  Fill.Color := DamMsg.Dam.MessageColor;
-  if Fill.Color<>TAlphaColors.Null then Fill.Kind := TBrushKind.Solid;
-
-  if DamMsg.Dam.ButtonsColor<>TAlphaColors.Null then
-    TShape(BoxButtons.Controls[0]).Fill.Color := DamMsg.Dam.ButtonsColor;
-  {$ELSE}
-  Color := DamMsg.Dam.MessageColor;
-  BoxButtons.Color := DamMsg.Dam.ButtonsColor;
-  {$ENDIF}
 end;
 
 procedure TFrmDamDialogDyn.SetTitleAndIcon;
@@ -412,13 +413,12 @@ procedure TFrmDamDialogDyn.AlignButtonsPanel;
 var
   X: TPixels;
 begin
-
   if DamMsg.Dam.CenterButtons then
     X := GetDiv2(BoxButtons.Width-BoxFloatBtns.Width) //center
   else
-    X := BoxButtons.Width-BoxFloatBtns.Width-8; //right
+    X := BoxButtons.Width-BoxFloatBtns.Width-ToScale(8); //right
 
-  SetLeft(BoxFloatBtns, X);
+  BoxFloatBtns.{$IFDEF FMX}Position.X{$ELSE}Left{$ENDIF} := X;
 end;
 
 procedure TFrmDamDialogDyn.DoSound;
@@ -440,8 +440,6 @@ end;
 
 procedure TFrmDamDialogDyn.FormShow(Sender: TObject);
 begin
-  AlignButtonsPanel;
-
   if DamMsg.Dam.PlaySounds then
     DoSound;
 end;
