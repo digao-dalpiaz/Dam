@@ -24,12 +24,14 @@ implementation
 uses
 {$IFDEF VCL}ScalingUtils, {$ENDIF}
 {$IFDEF FPC}
-  Forms, Classes, ActnList, Buttons, Controls, ExtCtrls, Clipbrd, SysUtils, Graphics,
+  Forms, Classes, FGL, ActnList, Buttons, Controls, ExtCtrls, Clipbrd,
+  SysUtils, Graphics,
   {$IFDEF MSWINDOWS}
   Windows, MMSystem,
   {$ENDIF}
 {$ELSE}
   System.Math, System.SysUtils, System.Types, System.UITypes,
+  System.Generics.Collections,
   {$IFDEF MSWINDOWS}
   Winapi.Windows, Winapi.MMSystem,
   {$ENDIF}
@@ -72,6 +74,7 @@ type
     Icon: TImage;
     LbMsg: TDzHTMLText;
     BoxButtons, BoxFloatBtns: TPanel;
+    ButtonsList: TList<TButton>;
     BtnHelp: TSpeedButton;
     ActionList: TActionList;
 
@@ -92,10 +95,11 @@ type
     procedure LoadHelp;
     procedure LoadTextProps;
 
+    procedure AlignButtons;
     procedure CalcWidth;
     procedure CalcHeight;
+
     procedure CenterForm;
-    procedure AlignButtonsPanel;
 
     procedure DoSound;
 
@@ -108,6 +112,7 @@ type
     procedure OnBtnClick(Sender: TObject);
   public
     constructor Create; reintroduce;
+    destructor Destroy; override;
   end;
 
 constructor TFrmDamDialogDyn.Create;
@@ -116,11 +121,14 @@ var
 begin
   inherited CreateNew(Application);
 
+  ButtonsList := TList<TButton>.Create;
+
   OnShow := FormShow;
   {$IFDEF FMX}
   BorderIcons := [];
   {$ELSE}
   Position := poDesigned;
+  PixelsPerInch := 96;
   {$ENDIF}
 
   ActionList := TActionList.Create(Self);
@@ -175,6 +183,12 @@ begin
   BtnHelp.OnClick := BtnHelpClick;
 end;
 
+destructor TFrmDamDialogDyn.Destroy;
+begin
+  ButtonsList.Free;
+  inherited;
+end;
+
 function RunDamDialog(DamMsg: TDamMsg; const aText: string): TDamMsgRes;
 var
   F: TFrmDamDialogDyn;
@@ -197,19 +211,20 @@ begin
 
     {$IFDEF VCL}
     F.ScaleForCurrentDpi; //auto form scaling
-    F.Scaling := TDzFormScaling.Create(F);
+    F.Scaling := TDzFormScaling.Create;
     try
-      //F.Scaling.Update;
+      F.Scaling.Update(F);
     {$ENDIF}
+      F.AlignButtons;
       F.CalcWidth;
       F.CalcHeight;
-      F.CenterForm;
-      F.AlignButtonsPanel;
     {$IFDEF VCL}
     finally
       F.Scaling.Free;
     end;
     {$ENDIF}
+
+    F.CenterForm;
 
     F.ShowModal;
     Result := F.DamResult;
@@ -223,10 +238,10 @@ end;
 procedure TFrmDamDialogDyn.SetFormCustomization;
 begin
   //form border
-  if DamMsg.Dam.DialogBorder then
-    BorderStyle := {$IFDEF FMX}TFmxFormBorderStyle.Single{$ELSE}bsDialog{$ENDIF}
-  else
-    BorderStyle := {$IFDEF FMX}TFmxFormBorderStyle.None{$ELSE}bsNone{$ENDIF};
+  //if DamMsg.Dam.DialogBorder then
+  //  BorderStyle := {$IFDEF FMX}TFmxFormBorderStyle.Single{$ELSE}bsDialog{$ENDIF}
+  //else
+  //  BorderStyle := {$IFDEF FMX}TFmxFormBorderStyle.None{$ELSE}bsNone{$ENDIF};
 
   //form theme colors
   {$IFDEF FMX}
@@ -277,29 +292,11 @@ begin
   end;}
 end;
 
-function GetButtonWidth(Btn: TButton): TPixels;
-var
-  B: {$IFDEF DCC}
-    {$IFDEF FMX}FMX{$ELSE}Vcl{$ENDIF}.
-  {$ENDIF}Graphics.TBitmap;
-begin
-  B := {$IFDEF DCC}
-    {$IFDEF FMX}FMX{$ELSE}Vcl{$ENDIF}.
-  {$ENDIF}Graphics.TBitmap.Create;
-  try
-    B.Canvas.Font.Assign(Btn.Font);
-    Result := Max(B.Canvas.TextWidth(Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF})+20, 75);
-  finally
-    B.Free;
-  end;
-end;
-
 procedure TFrmDamDialogDyn.BuildButtons;
 var
   NumButtons: Byte;
   I: Integer;
   Btn: TButton;
-  X: TPixels;
   Names: array[1..3] of string;
 begin
   case DamMsg.Buttons of
@@ -326,25 +323,21 @@ begin
 
   Btn := nil;
 
-  X := 0;
   for I := 1 to NumButtons do
   begin
     Btn := TButton.Create(Self);
     Btn.Parent := BoxFloatBtns;
     Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF} := Names[I];
-    Btn.SetBounds(X, 0, GetButtonWidth(Btn), BoxFloatBtns.Height);
     Btn.OnClick := OnBtnClick;
     Btn.Tag := I;
 
-    X := X + (Btn.Width+8);
+    ButtonsList.Add(Btn);
   end;
 
   //here btn contains last button reference
 
   Btn.Cancel := True; //set last button as cancel (esc) button
   if DamMsg.SwapFocus then ActiveControl := Btn; //set last button as start focus button
-
-  BoxFloatBtns.Width := Btn.BoundsRect.Right;
 end;
 
 procedure TFrmDamDialogDyn.LoadHelp;
@@ -385,9 +378,36 @@ begin
   Result := Value {$IFDEF FMX}/{$ELSE}div{$ENDIF} 2;
 end;
 
+procedure TFrmDamDialogDyn.AlignButtons;
+type TBmp = {$IFDEF DCC}
+    {$IFDEF FMX}FMX{$ELSE}Vcl{$ENDIF}.
+  {$ENDIF}Graphics.TBitmap;
+var
+  B: TBmp;
+  Btn: TButton;
+  X, W: TPixels;
+begin
+  B := TBmp.Create;
+  try
+    B.Canvas.Font.Assign(ButtonsList.First.Font);
+
+    X := 0;
+    for Btn in ButtonsList do
+    begin
+      W := Max(B.Canvas.TextWidth(Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF})+ToScale(20), ToScale(75));
+      Btn.SetBounds(X, 0, W, BoxFloatBtns.Height);
+      X := X + Btn.Width + ToScale(8);
+    end;
+  finally
+    B.Free;
+  end;
+
+  BoxFloatBtns.Width := ButtonsList.Last.BoundsRect.Right;
+end;
+
 procedure TFrmDamDialogDyn.CalcWidth;
 var
-  MinSize: TPixels;
+  MinSize, X: TPixels;
 begin
   if DamMsg.FixedWidth=0 then
     LbMsg.Width := Trunc(GetCurrentMonitorRect.Width * 0.75) //max width
@@ -403,6 +423,14 @@ begin
   end;
 
   ClientWidth := Trunc(LbMsg.BoundsRect.Right+ToScale(8));
+
+  //align FloatBtns
+  if DamMsg.Dam.CenterButtons then
+    X := GetDiv2(ClientWidth-BoxFloatBtns.Width) //center
+  else
+    X := ClientWidth-BoxFloatBtns.Width-ToScale(8); //right
+
+  BoxFloatBtns.{$IFDEF FMX}Position.X{$ELSE}Left{$ENDIF} := X;
 end;
 
 procedure TFrmDamDialogDyn.CalcHeight;
@@ -437,20 +465,8 @@ begin
   if F<>nil then
     R := F.{$IFDEF FMX}Bounds{$ELSE}BoundsRect{$ENDIF};
 
-  Left := Trunc(R.Left + GetDiv2(R.Width - Width));
-  Top := Trunc(R.Top + GetDiv2(R.Height - Height));
-end;
-
-procedure TFrmDamDialogDyn.AlignButtonsPanel;
-var
-  X: TPixels;
-begin
-  if DamMsg.Dam.CenterButtons then
-    X := GetDiv2(BoxButtons.Width-BoxFloatBtns.Width) //center
-  else
-    X := BoxButtons.Width-BoxFloatBtns.Width-ToScale(8); //right
-
-  BoxFloatBtns.{$IFDEF FMX}Position.X{$ELSE}Left{$ENDIF} := X;
+  Left := Round(R.Left + GetDiv2(R.Width - Width));
+  Top := Round(R.Top + GetDiv2(R.Height - Height));
 end;
 
 procedure TFrmDamDialogDyn.FormShow(Sender: TObject);
