@@ -15,27 +15,25 @@ function RunDamDialog(DamMsg: TDamMsg; const aText: string): TDamMsgRes;
 
 implementation
 
-//uses
-//{$IFDEF FPC}
-//  Windows, SysUtils, Clipbrd, MMSystem, Graphics
-//{$ELSE}
-//  Winapi.Windows, System.SysUtils, Vcl.Clipbrd,
-//  Winapi.MMSystem, Vcl.Graphics, System.Math
-//{$ENDIF};
-
 uses
 {$IFDEF FPC}
-  Forms, Classes, ActnList, Buttons, Controls, ExtCtrls,
+  Forms, Classes, ActnList, Buttons, Controls, ExtCtrls, Clipbrd, SysUtils, Graphics,
+  {$IFDEF MSWINDOWS}
+  Windows, MMSystem,
+  {$ENDIF}
 {$ELSE}
-  System.Math, System.SysUtils, System.Types,
+  System.Math, System.SysUtils, System.Types, System.UITypes,
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows, Winapi.MMSystem,
+  {$ENDIF}
   {$IFDEF FMX}
   FMX.DzHTMLText,
   FMX.Forms, FMX.Objects, FMX.StdCtrls, FMX.ActnList, FMX.Types,
-  FMX.Graphics, FMX.Controls,
+  FMX.Graphics, FMX.Controls, FMX.Platform,
   {$ELSE}
   Vcl.DzHTMLText,
   Vcl.Forms, System.Classes, System.Actions, Vcl.ActnList, Vcl.StdCtrls,
-  Vcl.Buttons, Vcl.Controls, Vcl.ExtCtrls, Vcl.Graphics,
+  Vcl.Buttons, Vcl.Controls, Vcl.ExtCtrls, Vcl.Graphics, Vcl.Clipbrd,
   {$ENDIF}
 {$ENDIF}
   //
@@ -89,6 +87,8 @@ type
     procedure AlignButtonsPanel;
     procedure DoSound;
 
+    function GetCurrentMonitorRect: TRect;
+
     procedure FormShow(Sender: TObject);
     procedure LbMsgLinkClick(Sender: TObject; Link: TDHBaseLink; var Handled: Boolean);
     procedure BtnHelpClick(Sender: TObject);
@@ -107,15 +107,19 @@ begin
   OnShow := FormShow;
   {$IFDEF FMX}
   BorderIcons := [];
+  {$ELSE}
+  Position := poDesigned;
   {$ENDIF}
 
   ActionList := TActionList.Create(Self);
 
-  Action := TAction.Create(ActionList);
+  Action := TAction.Create(Self);
+  Action.ActionList := ActionList;
   Action.ShortCut := 16451; //CTRL+C
   Action.OnExecute := Action_CopyExecute;
 
-  Action := TAction.Create(ActionList);
+  Action := TAction.Create(Self);
+  Action.ActionList := ActionList;
   Action.ShortCut := 112; //F1
   Action.OnExecute := Action_HelpExecute;
 
@@ -136,6 +140,7 @@ begin
   BoxButtons.Height := 39;
   {$IFDEF FMX}
   BoxButtons.Align := TAlignLayout.Bottom;
+  BoxButtons.StyleLookup := 'pushpanel';
   {$ELSE}
   BoxButtons.Align := alBottom;
   BoxButtons.BevelOuter := bvNone;
@@ -146,7 +151,7 @@ begin
   BoxFloatBtns.Parent := BoxButtons;
   BoxFloatBtns.SetBounds(0, 8, 0, 25);
   {$IFDEF FMX}
-
+  BoxFloatBtns.StyleLookup := 'pushpanel';
   {$ELSE}
   BoxFloatBtns.BevelOuter := bvNone;
   {$ENDIF}
@@ -280,12 +285,17 @@ begin
   CalcHeight;
 end;
 
+function TFrmDamDialogDyn.GetCurrentMonitorRect: TRect;
+begin
+  Result := {$IFDEF FMX}Screen.DisplayFromForm(Self){$ELSE}Monitor{$ENDIF}.BoundsRect;
+end;
+
 procedure TFrmDamDialogDyn.CalcWidth(const aText: string);
 var
   MinSize: {$IFDEF FMX}Single{$ELSE}Integer{$ENDIF};
 begin
   if DamMsg.FixedWidth=0 then
-    LbMsg.Width := Trunc({$IFDEF FMX}Screen.DisplayFromForm(Self).BoundsRect.Width{$ELSE}Monitor.Width{$ENDIF} * 0.75) //max width
+    LbMsg.Width := Trunc(GetCurrentMonitorRect.Width * 0.75) //max width
   else
     LbMsg.Width := DamMsg.FixedWidth;
 
@@ -305,7 +315,7 @@ var
   Dif: TPixels;
 begin
   LbMsg.Height := LbMsg.TextHeight;
-  ClientHeight := Trunc(Max(LbMsg.Height, Icon.Height)+14+BoxButtons.Height);
+  ClientHeight := Trunc(Max(LbMsg.Height, Icon.Height)+8+BoxButtons.Height);
 
   if LbMsg.Height<Icon.Height then //text smaller than icon
   begin
@@ -320,8 +330,8 @@ end;
 
 procedure TFrmDamDialogDyn.SetFormCustomization;
 var
-  F: {$IFDEF FMX}TCommonCustomForm{$ELSE}TForm{$ENDIF};
   R: TRect;
+  F: {$IFDEF FMX}TCommonCustomForm{$ELSE}TForm{$ENDIF};
 begin
   //form border
   if DamMsg.Dam.DialogBorder then
@@ -330,35 +340,29 @@ begin
     BorderStyle := {$IFDEF FMX}TFmxFormBorderStyle.None{$ELSE}bsNone{$ENDIF};
 
   //form screen position
+  R := GetCurrentMonitorRect;
+  F := nil;
   case DamMsg.Dam.DialogPosition of
-    dpScreenCenter: Position := {$IFDEF FMX}TFormPosition.ScreenCenter{$ELSE}poScreenCenter{$ENDIF};
-    dpActiveFormCenter:
-      begin
-        F := Screen.ActiveForm;
-        if Assigned(F) then
-        begin
-          Position := {$IFDEF FMX}TFormPosition.Designed{$ELSE}poDesigned{$ENDIF};
-
-          {$IFDEF Defined(MSWINDOWS) and !Defined(FMX)}
-          if not GetWindowRect(F.Handle, R) then
-            raise Exception.Create('Error getting window rect');
-          {$ELSE}
-          R := F.ClientRect;
-          {$ENDIF}
-
-          Left := Trunc(R.Left + GetDiv2(R.Width - Width));
-          Top := Trunc(R.Top + GetDiv2(R.Height - Height));
-        end;
-      end;
-    dpMainFormCenter: Position := {$IFDEF FMX}TFormPosition.MainFormCenter{$ELSE}poMainFormCenter{$ENDIF};
+    dpScreenCenter: {};
+    dpMainFormCenter: F := Application.MainForm;
+    dpActiveFormCenter: F := Screen.ActiveForm;
     else raise Exception.Create('Invalid dialog position property');
   end;
+  if F<>nil then
+    R := F.{$IFDEF FMX}Bounds{$ELSE}BoundsRect{$ENDIF};
+
+  Left := Trunc(R.Left + GetDiv2(R.Width - Width));
+  Top := Trunc(R.Top + GetDiv2(R.Height - Height));
 
   //form theme colors
-  {$IFDEF FMX}Fill.Color{$ELSE}Color{$ENDIF} := DamMsg.Dam.MessageColor;
   {$IFDEF FMX}
+  Fill.Color := DamMsg.Dam.MessageColor;
+  if Fill.Color<>TAlphaColors.Null then Fill.Kind := TBrushKind.Solid;
 
+  if DamMsg.Dam.ButtonsColor<>TAlphaColors.Null then
+    TShape(BoxButtons.Controls[0]).Fill.Color := DamMsg.Dam.ButtonsColor;
   {$ELSE}
+  Color := DamMsg.Dam.MessageColor;
   BoxButtons.Color := DamMsg.Dam.ButtonsColor;
   {$ENDIF}
 end;
@@ -401,7 +405,7 @@ end;
 
 procedure TFrmDamDialogDyn.LoadHelp;
 begin
-//  BtnHelp.Visible := (DamMsg.HelpContext<>0) or (DamMsg.HelpKeyword<>EmptyStr);
+  BtnHelp.Visible := (DamMsg.HelpContext<>0) or (DamMsg.HelpKeyword<>EmptyStr);
 end;
 
 procedure TFrmDamDialogDyn.AlignButtonsPanel;
@@ -421,7 +425,9 @@ procedure TFrmDamDialogDyn.DoSound;
 
   procedure Play(const aSound: string);
   begin
-    //PlaySound(PChar(aSound), 0, SND_ASYNC);
+    {$IFDEF MSWINDOWS}
+    PlaySound(PChar(aSound), 0, SND_ASYNC);
+    {$ENDIF}
   end;
 
 begin
@@ -441,8 +447,20 @@ begin
 end;
 
 procedure TFrmDamDialogDyn.Action_CopyExecute(Sender: TObject);
+var
+  aMsg: string;
+  {$IFDEF FMX}
+  uClipBoard: IFMXClipboardService;
+  {$ENDIF}
 begin
-  //Clipboard.AsText := TDzHTMLText.HTMLToPlainText(LbMsg.Text);
+  aMsg := TDzHTMLText.HTMLToPlainText(LbMsg.Text);
+
+  {$IFDEF FMX}
+  if TPlatformServices.Current.SupportsPlatformService(IFMXClipboardService, uClipBoard) then
+    uClipBoard.SetClipboard(aMsg);
+  {$ELSE}
+  Clipboard.AsText := aMsg;
+  {$ENDIF}
 end;
 
 procedure TFrmDamDialogDyn.Action_HelpExecute(Sender: TObject);
