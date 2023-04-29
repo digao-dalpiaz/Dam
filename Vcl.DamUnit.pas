@@ -599,7 +599,7 @@ begin
 end;
 
 initialization
-  if DZHTMLTEXT_INTERNAL_VERSION <> 706 then
+  if DZHTMLTEXT_INTERNAL_VERSION <> 707 then
     raise Exception.Create('Please, update DzHTMLText component.');
 
 end.

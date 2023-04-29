@@ -1,5 +1,11 @@
 {$IFNDEF FMX}unit Vcl.DamDialog;{$ENDIF}
 
+{$IFDEF FMX}
+  //
+{$ELSE}
+  {$DEFINE VCL}
+{$ENDIF}
+
 {$IFDEF FPC}{$mode delphi}{$ENDIF}
 
 interface
@@ -16,6 +22,7 @@ function RunDamDialog(DamMsg: TDamMsg; const aText: string): TDamMsgRes;
 implementation
 
 uses
+{$IFDEF VCL}ScalingUtils, {$ENDIF}
 {$IFDEF FPC}
   Forms, Classes, ActnList, Buttons, Controls, ExtCtrls, Clipbrd, SysUtils, Graphics,
   {$IFDEF MSWINDOWS}
@@ -60,8 +67,6 @@ const
 {$ENDIF}
 
 type
-  TPixels = {$IFDEF FMX}Single{$ELSE}Integer{$ENDIF};
-
   TFrmDamDialogDyn = class(TForm)
   private
     Icon: TImage;
@@ -74,27 +79,33 @@ type
     DamResult: TDamMsgRes;
     LangStrs: TDamLanguageDefinition;
 
-    procedure OnBtnClick(Sender: TObject);
-
-    procedure BuildButtons;
-    procedure LoadText;
-    procedure CalcWidth;
-    procedure CalcHeight;
-    procedure SetFormCustomization;
-    procedure SetTitleAndIcon;
-    procedure LoadHelp;
-    procedure CenterForm;
-    procedure AlignButtonsPanel;
-    procedure DoSound;
+    {$IFDEF VCL}
+    Scaling: TDzFormScaling;
+    {$ENDIF}
 
     function ToScale(Value: TPixels): TPixels;
     function GetCurrentMonitorRect: TRect;
+
+    procedure SetFormCustomization;
+    procedure SetTitleAndIcon;
+    procedure BuildButtons;
+    procedure LoadHelp;
+    procedure LoadTextProps;
+
+    procedure CalcWidth;
+    procedure CalcHeight;
+    procedure CenterForm;
+    procedure AlignButtonsPanel;
+
+    procedure DoSound;
 
     procedure FormShow(Sender: TObject);
     procedure LbMsgLinkClick(Sender: TObject; Link: TDHBaseLink; var Handled: Boolean);
     procedure BtnHelpClick(Sender: TObject);
     procedure Action_CopyExecute(Sender: TObject);
     procedure Action_HelpExecute(Sender: TObject);
+
+    procedure OnBtnClick(Sender: TObject);
   public
     constructor Create; reintroduce;
   end;
@@ -132,7 +143,7 @@ begin
   LbMsg.Parent := Self;
   LbMsg.SetBounds(48, 8, 0, 0);
   LbMsg.OnLinkClick := LbMsgLinkClick;
-  {$IFNDEF FMX}
+  {$IFDEF VCL}
   LbMsg.ParentColor := True;
   {$ENDIF}
 
@@ -170,7 +181,7 @@ var
 begin
   F := TFrmDamDialogDyn.Create;
   try
-    {$IFNDEF FMX}
+    {$IFDEF VCL}
     if (csDesigning in DamMsg.ComponentState) then F.LbMsg.StyleElements := []; //do not use themes in Delphi IDE
     {$ENDIF}
 
@@ -178,19 +189,27 @@ begin
 
     F.LangStrs := LoadLanguage(DamMsg.Dam.Language);
 
-    F.BuildButtons;
-    F.LoadText;
     F.SetFormCustomization;
     F.SetTitleAndIcon;
+    F.BuildButtons;
     F.LoadHelp;
+    F.LoadTextProps; //required before auto form scaling
 
-    {$IFNDEF FMX}
-    F.ScaleForCurrentDpi;
+    {$IFDEF VCL}
+    F.ScaleForCurrentDpi; //auto form scaling
+    F.Scaling := TDzFormScaling.Create(F);
+    try
+      //F.Scaling.Update;
     {$ENDIF}
-    F.CalcWidth;
-    F.CalcHeight;
-    F.CenterForm;
-    F.AlignButtonsPanel;
+      F.CalcWidth;
+      F.CalcHeight;
+      F.CenterForm;
+      F.AlignButtonsPanel;
+    {$IFDEF VCL}
+    finally
+      F.Scaling.Free;
+    end;
+    {$ENDIF}
 
     F.ShowModal;
     Result := F.DamResult;
@@ -201,9 +220,61 @@ end;
 
 //
 
-function GetDiv2(Value: TPixels): TPixels;
+procedure TFrmDamDialogDyn.SetFormCustomization;
 begin
-  Result := Value {$IFDEF FMX}/{$ELSE}div{$ENDIF} 2;
+  //form border
+  if DamMsg.Dam.DialogBorder then
+    BorderStyle := {$IFDEF FMX}TFmxFormBorderStyle.Single{$ELSE}bsDialog{$ENDIF}
+  else
+    BorderStyle := {$IFDEF FMX}TFmxFormBorderStyle.None{$ELSE}bsNone{$ENDIF};
+
+  //form theme colors
+  {$IFDEF FMX}
+  Fill.Color := DamMsg.Dam.MessageColor;
+  if Fill.Color<>TAlphaColors.Null then Fill.Kind := TBrushKind.Solid;
+
+  if DamMsg.Dam.ButtonsColor<>TAlphaColors.Null then
+    TShape(BoxButtons.Controls[0]).Fill.Color := DamMsg.Dam.ButtonsColor;
+  {$ELSE}
+  Color := DamMsg.Dam.MessageColor;
+  BoxButtons.Color := DamMsg.Dam.ButtonsColor;
+  {$ENDIF}
+end;
+
+procedure TFrmDamDialogDyn.SetTitleAndIcon;
+
+  function GetIconTitle: string;
+  begin
+    case DamMsg.Icon of
+      diApp   : Result := Application.Title;
+      diInfo  : Result := LangStrs.Info;
+      diQuest : Result := LangStrs.Quest;
+      diWarn  : Result := LangStrs.Warn;
+      diError : Result := LangStrs.Error;
+      diCustom: Result := LangStrs.Msg;
+      else raise Exception.Create('Unknown icon kind property');
+    end;
+  end;
+
+begin
+  case DamMsg.Title of
+    dtApp       : Caption := Application.Title;
+    dtParentForm: Caption := TForm(DamMsg.Dam.Owner).Caption;
+    dtMainForm  : Caption := Application.MainForm.Caption;
+    dtByIcon    : Caption := GetIconTitle;
+    dtCustom    : Caption := DamMsg.CustomTitle;
+    else raise Exception.Create('Unknown title kind property');
+  end;
+
+  {case DamMsg.Icon of
+    diApp   : Icon.Picture.Icon := Application.Icon;
+    diInfo  : Icon.Picture.Icon.Handle := LoadIcon(0, IDI_INFORMATION);
+    diQuest : Icon.Picture.Icon.Handle := LoadIcon(0, IDI_QUESTION);
+    diWarn  : Icon.Picture.Icon.Handle := LoadIcon(0, IDI_WARNING);
+    diError : Icon.Picture.Icon.Handle := LoadIcon(0, IDI_ERROR);
+    diCustom: Icon.Picture.Icon := DamMsg.CustomIcon;
+    else raise Exception.Create('Unknown icon kind property');
+  end;}
 end;
 
 function GetButtonWidth(Btn: TButton): TPixels;
@@ -276,21 +347,42 @@ begin
   BoxFloatBtns.Width := Btn.BoundsRect.Right;
 end;
 
-procedure TFrmDamDialogDyn.LoadText;
+procedure TFrmDamDialogDyn.LoadHelp;
+begin
+  BtnHelp.Visible :=
+    {$IFDEF VCL}
+    (DamMsg.HelpContext<>0) or (DamMsg.HelpKeyword<>EmptyStr)
+    {$ELSE}
+    False
+    {$ENDIF};
+end;
+
+procedure TFrmDamDialogDyn.LoadTextProps;
 begin
   LbMsg.Images := DamMsg.Dam.Images;
   LbMsg.Font.Assign(DamMsg.Dam.MessageFont);
-  LbMsg.Text := DamMsg.Message;
+  {$IFDEF FMX}
+  LbMsg.FontColor := DamMsg.Dam.MessageFontColor;
+  {$ENDIF}
 end;
 
 function TFrmDamDialogDyn.ToScale(Value: TPixels): TPixels;
 begin
-  Result := {$IFDEF FMX}Value{$ELSE}ScaleValue(Value){$ENDIF};
+  {$IFDEF VCL}
+  Result := Scaling.Calc(Value);
+  {$ELSE}
+  Result := Value;
+  {$ENDIF}
 end;
 
 function TFrmDamDialogDyn.GetCurrentMonitorRect: TRect;
 begin
   Result := {$IFDEF FMX}Screen.DisplayFromForm(Self){$ELSE}Monitor{$ENDIF}.BoundsRect;
+end;
+
+function GetDiv2(Value: TPixels): TPixels;
+begin
+  Result := Value {$IFDEF FMX}/{$ELSE}div{$ENDIF} 2;
 end;
 
 procedure TFrmDamDialogDyn.CalcWidth;
@@ -300,7 +392,9 @@ begin
   if DamMsg.FixedWidth=0 then
     LbMsg.Width := Trunc(GetCurrentMonitorRect.Width * 0.75) //max width
   else
-    LbMsg.Width := DamMsg.FixedWidth;
+    LbMsg.Width := ToScale(DamMsg.FixedWidth);
+
+  LbMsg.Text := DamMsg.Message; //set TEXT
 
   if (DamMsg.FixedWidth=0) and (LbMsg.TextWidth < LbMsg.Width) then
   begin
@@ -326,27 +420,6 @@ begin
   end;
 end;
 
-procedure TFrmDamDialogDyn.SetFormCustomization;
-begin
-  //form border
-  if DamMsg.Dam.DialogBorder then
-    BorderStyle := {$IFDEF FMX}TFmxFormBorderStyle.Single{$ELSE}bsDialog{$ENDIF}
-  else
-    BorderStyle := {$IFDEF FMX}TFmxFormBorderStyle.None{$ELSE}bsNone{$ENDIF};
-
-  //form theme colors
-  {$IFDEF FMX}
-  Fill.Color := DamMsg.Dam.MessageColor;
-  if Fill.Color<>TAlphaColors.Null then Fill.Kind := TBrushKind.Solid;
-
-  if DamMsg.Dam.ButtonsColor<>TAlphaColors.Null then
-    TShape(BoxButtons.Controls[0]).Fill.Color := DamMsg.Dam.ButtonsColor;
-  {$ELSE}
-  Color := DamMsg.Dam.MessageColor;
-  BoxButtons.Color := DamMsg.Dam.ButtonsColor;
-  {$ENDIF}
-end;
-
 procedure TFrmDamDialogDyn.CenterForm;
 var
   R: TRect;
@@ -368,47 +441,6 @@ begin
   Top := Trunc(R.Top + GetDiv2(R.Height - Height));
 end;
 
-procedure TFrmDamDialogDyn.SetTitleAndIcon;
-
-  function GetIconTitle: string;
-  begin
-    case DamMsg.Icon of
-      diApp   : Result := Application.Title;
-      diInfo  : Result := LangStrs.Info;
-      diQuest : Result := LangStrs.Quest;
-      diWarn  : Result := LangStrs.Warn;
-      diError : Result := LangStrs.Error;
-      diCustom: Result := LangStrs.Msg;
-      else raise Exception.Create('Unknown icon kind property');
-    end;
-  end;
-
-begin
-  case DamMsg.Title of
-    dtApp       : Caption := Application.Title;
-    dtParentForm: Caption := TForm(DamMsg.Dam.Owner).Caption;
-    dtMainForm  : Caption := Application.MainForm.Caption;
-    dtByIcon    : Caption := GetIconTitle;
-    dtCustom    : Caption := DamMsg.CustomTitle;
-    else raise Exception.Create('Unknown title kind property');
-  end;
-
-  {case DamMsg.Icon of
-    diApp   : Icon.Picture.Icon := Application.Icon;
-    diInfo  : Icon.Picture.Icon.Handle := LoadIcon(0, IDI_INFORMATION);
-    diQuest : Icon.Picture.Icon.Handle := LoadIcon(0, IDI_QUESTION);
-    diWarn  : Icon.Picture.Icon.Handle := LoadIcon(0, IDI_WARNING);
-    diError : Icon.Picture.Icon.Handle := LoadIcon(0, IDI_ERROR);
-    diCustom: Icon.Picture.Icon := DamMsg.CustomIcon;
-    else raise Exception.Create('Unknown icon kind property');
-  end;}
-end;
-
-procedure TFrmDamDialogDyn.LoadHelp;
-begin
-  BtnHelp.Visible := (DamMsg.HelpContext<>0) or (DamMsg.HelpKeyword<>EmptyStr);
-end;
-
 procedure TFrmDamDialogDyn.AlignButtonsPanel;
 var
   X: TPixels;
@@ -419,6 +451,12 @@ begin
     X := BoxButtons.Width-BoxFloatBtns.Width-ToScale(8); //right
 
   BoxFloatBtns.{$IFDEF FMX}Position.X{$ELSE}Left{$ENDIF} := X;
+end;
+
+procedure TFrmDamDialogDyn.FormShow(Sender: TObject);
+begin
+  if DamMsg.Dam.PlaySounds then
+    DoSound;
 end;
 
 procedure TFrmDamDialogDyn.DoSound;
@@ -436,12 +474,6 @@ begin
     diWarn: Play('SYSTEMEXCLAMATION');
     diError: Play('SYSTEMHAND');
   end;
-end;
-
-procedure TFrmDamDialogDyn.FormShow(Sender: TObject);
-begin
-  if DamMsg.Dam.PlaySounds then
-    DoSound;
 end;
 
 procedure TFrmDamDialogDyn.Action_CopyExecute(Sender: TObject);
@@ -463,19 +495,21 @@ end;
 
 procedure TFrmDamDialogDyn.Action_HelpExecute(Sender: TObject);
 begin
-  {if BtnHelp.Visible then
-    BtnHelp.Click; }
+  if BtnHelp.Visible then
+    BtnHelpClick(nil);
 end;
 
 procedure TFrmDamDialogDyn.BtnHelpClick(Sender: TObject);
 begin
- { if DamMsg.HelpContext<>0 then
+  {$IFDEF VCL}
+  if DamMsg.HelpContext<>0 then
     Application.HelpContext(DamMsg.HelpContext)
   else
   if DamMsg.HelpKeyword<>EmptyStr then
     Application.HelpKeyword(DamMsg.HelpKeyword)
   else
-    raise Exception.Create('Unknown help property');}
+    raise Exception.Create('Unknown help property');
+  {$ENDIF}
 end;
 
 procedure TFrmDamDialogDyn.LbMsgLinkClick(Sender: TObject; Link: TDHBaseLink;
