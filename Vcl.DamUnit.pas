@@ -50,7 +50,9 @@ const
 type
   {$IFDEF FMX}
   TColor = TAlphaColor;
-  TICon = TBitmap;
+  TDamIconObj = TBitmap;
+  {$ELSE}
+  TDamIconObj = TIcon;
   {$ENDIF}
 
   TDamDlgPosition = (dpScreenCenter, dpActiveFormCenter, dpMainFormCenter);
@@ -134,7 +136,7 @@ type
   TDamMsg = class(TComponent)
   private
     FCustomTitle: string;
-    FCustomIcon: TIcon;
+    FCustomIcon: TDamIconObj;
     FTitle: TDamMsgTitle;
     FIcon: TDamMsgIcon;
     FMessage: string;
@@ -150,7 +152,7 @@ type
 
     FDam: TDam;
 
-    procedure SetIcon(const Value: TIcon);
+    procedure SetIcon(const Value: TDamIconObj);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -167,7 +169,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   published
     property CustomTitle: string read FCustomTitle write FCustomTitle;
-    property CustomIcon: TIcon read FCustomIcon write SetIcon;
+    property CustomIcon: TDamIconObj read FCustomIcon write SetIcon;
     property Title: TDamMsgTitle read FTitle write FTitle default dtByIcon;
     property Icon: TDamMsgIcon read FIcon write FIcon default diInfo;
     property Message: string read FMessage write FMessage;
@@ -363,7 +365,7 @@ constructor TDamMsg.Create(AOwner: TComponent);
 begin
   inherited;
 
-  FCustomIcon := TIcon.Create;
+  FCustomIcon := TDamIconObj.Create;
   FTitle := dtByIcon;
   FIcon := diInfo;
   FButtons := dbOK;
@@ -437,7 +439,7 @@ begin
     if (AComponent = FDam) then Free;
 end;
 
-procedure TDamMsg.SetIcon(const Value: TIcon);
+procedure TDamMsg.SetIcon(const Value: TDamIconObj);
 begin
   FCustomIcon.Assign(Value);
 end;

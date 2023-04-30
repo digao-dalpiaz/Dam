@@ -96,6 +96,7 @@ type
     procedure LoadHelp;
     procedure LoadTextProps;
 
+    procedure OverallAlign;
     procedure AlignButtons;
     procedure CalcWidth;
     procedure CalcHeight;
@@ -110,28 +111,32 @@ type
     procedure Action_CopyExecute(Sender: TObject);
     procedure Action_HelpExecute(Sender: TObject);
 
+    {$IFDEF VCL}
+    procedure OnDpiChanged(Sender: TObject; Old, New: Integer);
+    {$ENDIF}
+
     procedure OnBtnClick(Sender: TObject);
   public
-    constructor CreateNew(aDamMsg: TDamMsg); reintroduce;
+    constructor CreateNew; reintroduce;
     destructor Destroy; override;
   end;
 
-constructor TFrmDamDialogDyn.CreateNew(aDamMsg: TDamMsg);
+constructor TFrmDamDialogDyn.CreateNew;
 var
   Action: TAction;
 begin
-  DamMsg := aDamMsg;
-
   inherited CreateNew(Application);
 
   ButtonsList := TList<TButton>.Create;
 
   OnShow := FormShow;
+
   {$IFDEF FMX}
   BorderIcons := [];
   {$ELSE}
   Position := poDesigned;
   PixelsPerInch := 96;
+  OnAfterMonitorDpiChanged := OnDpiChanged;
   {$ENDIF}
 
   ActionList := TActionList.Create(Self);
@@ -196,12 +201,13 @@ function RunDamDialog(DamMsg: TDamMsg; const aText: string): TDamMsgRes;
 var
   F: TFrmDamDialogDyn;
 begin
-  F := TFrmDamDialogDyn.CreateNew(DamMsg);
+  F := TFrmDamDialogDyn.CreateNew;
   try
     {$IFDEF VCL}
     if (csDesigning in DamMsg.ComponentState) then F.LbMsg.StyleElements := []; //do not use themes in Delphi IDE
     {$ENDIF}
 
+    F.DamMsg := DamMsg;
     F.LangStrs := LoadLanguage(DamMsg.Dam.Language);
 
     F.SetFormCustomization;
@@ -212,17 +218,9 @@ begin
 
     {$IFDEF VCL}
     F.ScaleForCurrentDpi; //auto form scaling
-    F.Scaling := TDzFormScaling.Create;
-    try
-      F.Scaling.Update(F);
-    {$ENDIF}
-      F.AlignButtons;
-      F.CalcWidth;
-      F.CalcHeight;
-    {$IFDEF VCL}
-    finally
-      F.Scaling.Free;
-    end;
+    F.OnDpiChanged(nil, 0, 0);
+    {$ELSE}
+    F.OverallAlign;
     {$ENDIF}
 
     F.CenterForm;
@@ -240,10 +238,10 @@ procedure TFrmDamDialogDyn.SetFormCustomization;
 begin
   //form border
   {$IFDEF FMX}
-  {if DamMsg.Dam.DialogBorder then
-    BorderStyle := TFmxFormBorderStyle.Single
-  else
-    BorderStyle := TFmxFormBorderStyle.None;}
+  //if DamMsg.Dam.DialogBorder then
+  //  BorderStyle := TFmxFormBorderStyle.Single
+  //else
+  //  BorderStyle := TFmxFormBorderStyle.None;
   {$ELSE}
   if DamMsg.Dam.DialogBorder then
     BorderStyle := bsDialog
@@ -438,6 +436,13 @@ begin
   Result := Value {$IFDEF FMX}/{$ELSE}div{$ENDIF} 2;
 end;
 
+procedure TFrmDamDialogDyn.OverallAlign;
+begin
+  AlignButtons;
+  CalcWidth;
+  CalcHeight;
+end;
+
 procedure TFrmDamDialogDyn.AlignButtons;
 type TBmp = {$IFDEF DCC}
     {$IFDEF FMX}FMX{$ELSE}Vcl{$ENDIF}.
@@ -613,6 +618,19 @@ begin
     end;
   end;
 end;
+
+{$IFDEF VCL}
+procedure TFrmDamDialogDyn.OnDpiChanged(Sender: TObject; Old, New: Integer);
+begin
+  Scaling := TDzFormScaling.Create;
+  try
+    Scaling.Update(Self);
+    OverallAlign;
+  finally
+    Scaling.Free;
+  end;
+end;
+{$ENDIF}
 
 procedure TFrmDamDialogDyn.OnBtnClick(Sender: TObject);
 begin
