@@ -26,7 +26,7 @@ uses
 {$IFDEF FPC}
   Vcl.DzHTMLText,
   Forms, Classes, FGL, ActnList, Buttons, Controls, StdCtrls, ExtCtrls, Clipbrd,
-  SysUtils, Math, Graphics,
+  SysUtils, Math, Graphics, LMessages,
   {$IFDEF MSWINDOWS}
   Windows, MMSystem,
   {$ENDIF}
@@ -113,7 +113,11 @@ type
     procedure Action_HelpExecute(Sender: TObject);
 
     {$IFDEF VCL}
-    procedure OnDpiChanged(Sender: TObject; Old, New: Integer);
+      {$IFDEF FPC}
+      procedure WMDPIChanged(var Msg: TLMessage); message LM_DPICHANGED;
+      {$ELSE}
+      procedure OnDpiChanged(Sender: TObject; Old, New: Integer);
+      {$ENDIF}
     {$ENDIF}
 
     procedure OnBtnClick(Sender: TObject);
@@ -219,12 +223,10 @@ begin
     F.LoadHelp;
     F.LoadTextProps; //required before auto form scaling
 
-    {$IF Defined(VCL) and Defined(DCC)}
-    F.ScaleForCurrentDpi; //auto form scaling
-    F.OnDpiChanged(nil, 0, 0);
-    {$ELSE}
-    F.OverallAlign;
+    {$IFDEF VCL}
+    F.{$IFDEF FPC}AutoScale{$ELSE}ScaleForCurrentDpi{$ENDIF}; //auto form scaling
     {$ENDIF}
+    F.OverallAlign;
 
     F.CenterForm;
 
@@ -441,9 +443,19 @@ end;
 
 procedure TFrmDamDialogDyn.OverallAlign;
 begin
-  AlignButtons;
-  CalcWidth;
-  CalcHeight;
+  {$IFDEF VCL}
+  Scaling := TDzFormScaling.Create;
+  try
+    Scaling.Update(Self);
+  {$ENDIF}
+    AlignButtons;
+    CalcWidth;
+    CalcHeight;
+  {$IFDEF VCL}
+  finally
+    Scaling.Free;
+  end;
+  {$ENDIF}
 end;
 
 procedure TFrmDamDialogDyn.AlignButtons;
@@ -623,15 +635,14 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TFrmDamDialogDyn.OnDpiChanged(Sender: TObject; Old, New: Integer);
+procedure TFrmDamDialogDyn.
+  {$IFDEF FPC}
+  WMDPIChanged(var Msg: TLMessage)
+  {$ELSE}
+  OnDpiChanged(Sender: TObject; Old, New: Integer)
+  {$ENDIF};
 begin
-  Scaling := TDzFormScaling.Create;
-  try
-    Scaling.Update(Self);
-    OverallAlign;
-  finally
-    Scaling.Free;
-  end;
+  OverallAlign;
 end;
 {$ENDIF}
 
