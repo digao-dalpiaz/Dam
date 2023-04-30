@@ -3,11 +3,12 @@
 interface
 
 uses
+  Vcl.DzHTMLText,
 {$IFDEF FPC}
   Forms, Buttons, StdCtrls, ExtCtrls, ColorBox, Controls
 {$ELSE}
   Vcl.Forms, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Controls,
-  Vcl.Buttons, System.Classes, Vcl.DzHTMLText
+  Vcl.Buttons, System.Classes
 {$ENDIF}
   , {$INCLUDE 'DamUnitByEnvDesign.inc'};
 
@@ -109,7 +110,9 @@ uses
 
 procedure TFrmDamMsgEdit.FormCreate(Sender: TObject);
 begin
+  {$IFDEF DCC}
   LbMsg.StyleElements := []; //do not use themes in Delphi IDE
+  {$ENDIF}
   LbMsg.Text := '';
 end;
 

@@ -591,8 +591,10 @@ begin
   else
     C := nil;
 
+  {$IFDEF DESIGN_FMX}
   FormStyle := fsNormal; //When FMX, this form is VCL and the preview dialog is FMX, so the preview remains behind this form if stay on top is active
   try
+  {$ENDIF}
     FrmDamMsgEdit := TFrmDamMsgEdit.Create(Application);
     try
       FrmDamMsgEdit.Dam := Dam;
@@ -615,9 +617,11 @@ begin
     finally
       FrmDamMsgEdit.Free;
     end;
+  {$IFDEF DESIGN_FMX}	
   finally
     FormStyle := fsStayOnTop;
   end;
+  {$ENDIF}
 end;
 
 procedure TFrmDamList.BtnDelClick(Sender: TObject);

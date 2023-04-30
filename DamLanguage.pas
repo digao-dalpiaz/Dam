@@ -88,7 +88,11 @@ end;
 
 function GetResource(const Name: string): TResourceStream;
 begin
-  Result := TResourceStream.Create({$IFDEF FPC}HInstance{$ELSE}FindClassHInstance(TDamResourceAccess){$ENDIF}, Name, RT_RCDATA);
+  Result := TResourceStream.Create(
+    {$IFDEF FPC}HInstance{$ELSE}FindClassHInstance(TDamResourceAccess){$ENDIF},
+    Name,
+    {$IFDEF FPC}MAKEINTRESOURCE(10){$ELSE}RT_RCDATA{$ENDIF}
+  );
 end;
 
 function LoadLanguage(Language: TDamLanguage): TDamLanguageDefinition;

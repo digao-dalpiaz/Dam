@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <PathDelim Value="\"/>
     <Name Value="LazDamDesignPackage"/>
     <Type Value="DesignTime"/>
@@ -8,6 +8,7 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
+        <OtherUnitFiles Value="Design"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
@@ -16,55 +17,41 @@
         </CompilerMessages>
       </Other>
     </CompilerOptions>
-    <Files Count="9">
+    <Files Count="6">
       <Item1>
         <Filename Value="Dam.lrs"/>
         <Type Value="LRS"/>
       </Item1>
       <Item2>
-        <Filename Value="DamReg.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="DamReg"/>
+        <Filename Value="Design\Vcl.DamFileGenerator.pas"/>
+        <UnitName Value="Vcl.DamFileGenerator"/>
       </Item2>
       <Item3>
-        <Filename Value="DamMsgEdit.dfm"/>
-        <Type Value="Text"/>
+        <Filename Value="Design\Vcl.DamFind.pas"/>
+        <UnitName Value="Vcl.DamFind"/>
       </Item3>
       <Item4>
-        <Filename Value="DamMsgEdit.pas"/>
-        <UnitName Value="DamMsgEdit"/>
+        <Filename Value="Design\Vcl.DamList.pas"/>
+        <UnitName Value="Vcl.DamList"/>
       </Item4>
       <Item5>
-        <Filename Value="DamFind.dfm"/>
-        <Type Value="Text"/>
+        <Filename Value="Design\Vcl.DamMsgEdit.pas"/>
+        <UnitName Value="Vcl.DamMsgEdit"/>
       </Item5>
       <Item6>
-        <Filename Value="DamFind.pas"/>
-        <UnitName Value="DamFind"/>
+        <Filename Value="Design\Vcl.DamReg.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="Vcl.DamReg"/>
       </Item6>
-      <Item7>
-        <Filename Value="DamList.dfm"/>
-        <Type Value="Text"/>
-      </Item7>
-      <Item8>
-        <Filename Value="DamList.pas"/>
-        <UnitName Value="DamList"/>
-      </Item8>
-      <Item9>
-        <Filename Value="DamFileGenerator.pas"/>
-        <UnitName Value="DamFileGenerator"/>
-      </Item9>
     </Files>
-    <RequiredPkgs Count="3">
+    <CompatibilityMode Value="True"/>
+    <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="IDEIntf"/>
       </Item1>
       <Item2>
         <PackageName Value="LazDamPackage"/>
       </Item2>
-      <Item3>
-        <PackageName Value="FCL"/>
-      </Item3>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

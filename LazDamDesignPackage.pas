@@ -8,13 +8,14 @@ unit LazDamDesignPackage;
 interface
 
 uses
-  DamReg, DamMsgEdit, DamFind, DamList, DamFileGenerator, LazarusPackageIntf;
+  Vcl.DamFileGenerator, Vcl.DamFind, Vcl.DamList, Vcl.DamMsgEdit, Vcl.DamReg, 
+  LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
-  RegisterUnit('DamReg', @DamReg.Register);
+  RegisterUnit('Vcl.DamReg', @Vcl.DamReg.Register);
 end;
 
 initialization

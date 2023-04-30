@@ -24,8 +24,9 @@ implementation
 uses
 {$IFDEF VCL}ScalingUtils, {$ENDIF}
 {$IFDEF FPC}
-  Forms, Classes, FGL, ActnList, Buttons, Controls, ExtCtrls, Clipbrd,
-  SysUtils, Graphics,
+  Vcl.DzHTMLText,
+  Forms, Classes, FGL, ActnList, Buttons, Controls, StdCtrls, ExtCtrls, Clipbrd,
+  SysUtils, Math, Graphics,
   {$IFDEF MSWINDOWS}
   Windows, MMSystem,
   {$ENDIF}
@@ -136,7 +137,9 @@ begin
   {$ELSE}
   Position := poDesigned;
   PixelsPerInch := 96;
-  OnAfterMonitorDpiChanged := OnDpiChanged;
+    {$IFDEF DCC}
+    OnAfterMonitorDpiChanged := OnDpiChanged;
+    {$ENDIF}
   {$ENDIF}
 
   ActionList := TActionList.Create(Self);
@@ -203,7 +206,7 @@ var
 begin
   F := TFrmDamDialogDyn.CreateNew;
   try
-    {$IFDEF VCL}
+    {$IF Defined(VCL) and Defined(DCC)}
     if (csDesigning in DamMsg.ComponentState) then F.LbMsg.StyleElements := []; //do not use themes in Delphi IDE
     {$ENDIF}
 
@@ -216,7 +219,7 @@ begin
     F.LoadHelp;
     F.LoadTextProps; //required before auto form scaling
 
-    {$IFDEF VCL}
+    {$IF Defined(VCL) and Defined(DCC)}
     F.ScaleForCurrentDpi; //auto form scaling
     F.OnDpiChanged(nil, 0, 0);
     {$ELSE}

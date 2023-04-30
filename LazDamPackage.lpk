@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <PathDelim Value="\"/>
     <Name Value="LazDamPackage"/>
     <Type Value="RunAndDesignTime"/>
@@ -18,28 +18,23 @@
     </CompilerOptions>
     <Files Count="3">
       <Item1>
-        <Filename Value="DamUnit.pas"/>
-        <UnitName Value="DamUnit"/>
+        <Filename Value="Vcl.DamUnit.pas"/>
+        <UnitName Value="Vcl.DamUnit"/>
       </Item1>
       <Item2>
-        <Filename Value="DamDialog.dfm"/>
-        <Type Value="Text"/>
+        <Filename Value="Vcl.DamDialog.pas"/>
+        <UnitName Value="Vcl.DamDialog"/>
       </Item2>
       <Item3>
-        <Filename Value="DamDialog.pas"/>
-        <UnitName Value="DamDialog"/>
+        <Filename Value="DamLanguage.pas"/>
+        <UnitName Value="DamLanguage"/>
       </Item3>
     </Files>
-    <RequiredPkgs Count="3">
+    <CompatibilityMode Value="True"/>
+    <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="LazDzHTMLText"/>
       </Item1>
-      <Item2>
-        <PackageName Value="LCLBase"/>
-      </Item2>
-      <Item3>
-        <PackageName Value="FCL"/>
-      </Item3>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
