@@ -1,7 +1,5 @@
 unit DamLanguage;
 
-{$IFDEF FPC}{$mode delphi}{$ENDIF}
-
 interface
 
 uses
