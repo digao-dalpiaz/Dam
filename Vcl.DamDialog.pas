@@ -446,7 +446,7 @@ begin
   {$IFDEF VCL}
   Scaling := TDzFormScaling.Create;
   try
-    Scaling.Update(Self);
+    Scaling.Update(Self, LbMsg.DesignDPI);
   {$ENDIF}
     AlignButtons;
     CalcWidth;
