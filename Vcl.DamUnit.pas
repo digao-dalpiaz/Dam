@@ -74,6 +74,7 @@ type
     FLanguage: TDamLanguage;
     FRaises: Boolean;
     FSounds: Boolean;
+    FHideIcon: Boolean;
 
     {$IFDEF USE_IMGLST}
     FImages: TCustomImageList;
@@ -120,6 +121,7 @@ type
     property DamDefault: Boolean read FDefault write FDefault default False;
     property DamUnitName: string read FUnit write FUnit;
     property PlaySounds: Boolean read FSounds write FSounds default True;
+    property HideIcon: Boolean read FHideIcon write FHideIcon default False;
     property MessageColor: TColor read FColorMsg write FColorMsg default DEF_MSG_BACKGROUND;
     property ButtonsColor: TColor read FColorBtn write FColorBtn default DEF_BTN_BACKGROUND;
     property CenterButtons: Boolean read FCenterButtons write FCenterButtons default False;

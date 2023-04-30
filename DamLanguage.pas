@@ -4,6 +4,13 @@ unit DamLanguage;
 
 interface
 
+uses
+{$IFDEF FPC}
+  Classes
+{$ELSE}
+  System.Classes
+{$ENDIF};
+
 {$R Dam_Resource.res}
 
 type
@@ -17,6 +24,8 @@ type
 
   TDamResourceAccess = class(TObject);
 
+function GetResource(const Name: string): TResourceStream;
+
 procedure SetDamLangBySysLang(var DamLang: TDamLanguage);
 function LoadLanguage(Language: TDamLanguage): TDamLanguageDefinition;
 
@@ -24,9 +33,9 @@ implementation
 
 uses
 {$IFDEF FPC}
-  Classes, SysUtils, IniFiles
+  SysUtils, IniFiles
 {$ELSE}
-  System.Classes, System.SysUtils, System.Types, System.IniFiles
+  System.SysUtils, System.Types, System.IniFiles
 {$ENDIF};
 
 type
@@ -77,6 +86,11 @@ begin
   raise Exception.Create('Invalid language');
 end;
 
+function GetResource(const Name: string): TResourceStream;
+begin
+  Result := TResourceStream.Create({$IFDEF FPC}HInstance{$ELSE}FindClassHInstance(TDamResourceAccess){$ENDIF}, Name, RT_RCDATA);
+end;
+
 function LoadLanguage(Language: TDamLanguage): TDamLanguageDefinition;
 var
   aLang: string;
@@ -88,7 +102,7 @@ begin
 
   S := TStringList.Create;
   try
-    R := TResourceStream.Create({$IFDEF FPC}HInstance{$ELSE}FindClassHInstance(TDamResourceAccess){$ENDIF}, 'DAM_LANG', RT_RCDATA);
+    R := GetResource('DAM_LANG');
     try
       S.LoadFromStream(R, TEncoding.UTF8);
     finally

@@ -4,13 +4,12 @@ interface
 
 uses
 {$IFDEF FPC}
-  Forms, Buttons, StdCtrls, ExtCtrls, ColorBox, Controls,
+  Forms, Buttons, StdCtrls, ExtCtrls, ColorBox, Controls
 {$ELSE}
   Vcl.Forms, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Controls,
-  Vcl.Buttons, System.Classes,
+  Vcl.Buttons, System.Classes, Vcl.DzHTMLText
 {$ENDIF}
-  //
-  {$INCLUDE 'DamUnitByEnvDesign.inc'}, Vcl.DzHTMLText;
+  , {$INCLUDE 'DamUnitByEnvDesign.inc'};
 
 type
   TFrmDamMsgEdit = class(TForm)
@@ -141,44 +140,44 @@ begin
 
   if DamMsg <> nil then
   begin
-      A := DamMsg.Name;
-      if A[1] = '_' then Delete(A, 1, 1);
-      EdNome.Text := A;
+    A := DamMsg.Name;
+    if A[1] = '_' then Delete(A, 1, 1);
+    EdNome.Text := A;
 
-      M.Text := DamMsg.Message;
-      //MChange(nil);
+    M.Text := DamMsg.Message;
+    //MChange(nil);
 
-      V := (DamMsg.Button1 = '')
-       and (DamMsg.Button2 = '')
-       and (DamMsg.Button3 = '')
-       and (DamMsg.CustomTitle = '')
-       and (DamMsg.CustomIcon{$IFDEF DESIGN_FMX}=nil{$ELSE}.Empty{$ENDIF})
-       and (DamMsg.Title = dtByIcon);
+    V := (DamMsg.Button1 = '')
+     and (DamMsg.Button2 = '')
+     and (DamMsg.Button3 = '')
+     and (DamMsg.CustomTitle = '')
+     and (DamMsg.CustomIcon.{$IFDEF DESIGN_FMX}IsEmpty{$ELSE}Empty{$ENDIF})
+     and (DamMsg.Title = dtByIcon);
 
-      tRaise.Down := (V)
-        and (DamMsg.RaiseExcept)
-        and (DamMsg.Icon = diError)
-        and (DamMsg.Buttons = dbOK);
+    tRaise.Down := (V)
+      and (DamMsg.RaiseExcept)
+      and (DamMsg.Icon = diError)
+      and (DamMsg.Buttons = dbOK);
 
-      tInfo.Down := (V)
-        and (not DamMsg.RaiseExcept)
-        and (DamMsg.Icon = diInfo)
-        and (DamMsg.Buttons = dbOK);
+    tInfo.Down := (V)
+      and (not DamMsg.RaiseExcept)
+      and (DamMsg.Icon = diInfo)
+      and (DamMsg.Buttons = dbOK);
 
-      tWarn.Down := (V)
-        and (not DamMsg.RaiseExcept)
-        and (DamMsg.Icon = diWarn)
-        and (DamMsg.Buttons = dbOK);
+    tWarn.Down := (V)
+      and (not DamMsg.RaiseExcept)
+      and (DamMsg.Icon = diWarn)
+      and (DamMsg.Buttons = dbOK);
 
-      tQuest.Down := (V)
-        and (not DamMsg.RaiseExcept)
-        and (DamMsg.Icon = diQuest)
-        and (DamMsg.Buttons = dbYesNo);
+    tQuest.Down := (V)
+      and (not DamMsg.RaiseExcept)
+      and (DamMsg.Icon = diQuest)
+      and (DamMsg.Buttons = dbYesNo);
 
-      tError.Down := (V)
-        and (not DamMsg.RaiseExcept)
-        and (DamMsg.Icon = diError)
-        and (DamMsg.Buttons = dbOK);
+    tError.Down := (V)
+      and (not DamMsg.RaiseExcept)
+      and (DamMsg.Icon = diError)
+      and (DamMsg.Buttons = dbOK);
   end;
 end;
 

@@ -12,7 +12,7 @@ uses
 {$ELSE}
   DesignWindows, System.Classes, System.Actions, Vcl.ActnList,
   Vcl.ImgList, Vcl.Controls, Vcl.ComCtrls, Vcl.StdCtrls,
-  Vcl.Buttons, Vcl.ExtCtrls, 
+  Vcl.Buttons, Vcl.ExtCtrls,
   {$IF CompilerVersion >= 29}System.ImageList, {$ENDIF}
   //
   System.UITypes, System.Types, Vcl.Forms, Winapi.Messages,
@@ -67,7 +67,6 @@ type
     procedure BtnPasteClick(Sender: TObject);
     procedure BtnBuildUnitClick(Sender: TObject);
     procedure BtnHideClick(Sender: TObject);
-    procedure BtnAddWizardClick(Sender: TObject);
     procedure BtnEditClick(Sender: TObject);
     procedure LDblClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -148,7 +147,8 @@ uses
 const REG_PATH = 'Digao\Dam';
 
 procedure SaveFormPos(Reg: TRegistry; F: TForm);
-var WP: TWindowPlacement;
+var
+  WP: TWindowPlacement;
 begin
   WP.Length := SizeOf( TWindowPlacement );
   GetWindowPlacement( F.Handle, @WP );
@@ -260,7 +260,8 @@ end;
 
 procedure TFrmDamList.FormShow(Sender: TObject);
 {$IFNDEF FPC}
-var Reg: TRegistry;
+var
+  Reg: TRegistry;
 {$ENDIF}
 begin
   //Anchors must be defined on show due to Lazarus incorrect form size behavior
@@ -286,7 +287,8 @@ end;
 
 procedure TFrmDamList.FormClose(Sender: TObject; var Action: TCloseAction);
 {$IFNDEF FPC}
-var Reg: TRegistry;
+var
+  Reg: TRegistry;
 {$ENDIF}
 begin
   Action := caFree;
@@ -358,8 +360,9 @@ begin
 end;
 
 procedure TFrmDamList.FillList;
-var C: TComponent;
-    TopIdx: Integer;
+var
+  C: TComponent;
+  TopIdx: Integer;
 begin
   if Freeze then Exit;
   //
@@ -382,7 +385,8 @@ begin
 end;
 
 procedure TFrmDamList.UpdSelection;
-var I: Integer;
+var
+  I: Integer;
 begin
   if Freeze then Exit;
 
@@ -398,7 +402,8 @@ begin
 end;
 
 procedure TFrmDamList.UpdButtons;
-var SelOne, SelVarious: Boolean;
+var
+  SelOne, SelVarious: Boolean;
 begin
   SelOne := (L.SelCount = 1) and (L.SelCount = Sel.Count);
   SelVarious := (L.SelCount > 0) and (L.SelCount = Sel.Count);
@@ -439,7 +444,8 @@ procedure TFrmDamList.OnDeleting(Item: TPersistent);
 {$ELSE}
 procedure TFrmDamList.ItemDeleted(const ADesigner: IDesigner; Item: TPersistent);
 {$ENDIF}
-var Idx: Integer;
+var
+  Idx: Integer;
 begin
   if Item=Dam then Close else
   begin
@@ -464,7 +470,8 @@ procedure TFrmDamList.OnSetSelection(const ASelection: TPersistentSelectionList)
 procedure TFrmDamList.SelectionChanged(const ADesigner: IDesigner;
     const ASelection: IDesignerSelections);
 {$ENDIF}
-var I: Integer;
+var
+  I: Integer;
 begin
   Sel.Clear;
   for I := 0 to ASelection.Count-1 do
@@ -474,8 +481,9 @@ begin
 end;
 
 procedure TFrmDamList.LClick(Sender: TObject);
-var I: Integer;
-    tmpSel: TPersistentSelectionList;
+var
+  I: Integer;
+  tmpSel: TPersistentSelectionList;
 begin
   Sel.Clear;
   for I := 0 to L.Count-1 do
@@ -514,13 +522,13 @@ end;
 
 procedure TFrmDamList.LDrawItem(Control: TWinControl; Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
-
-var B: {$IFNDEF FPC}Vcl.{$ENDIF}Graphics.TBitmap;
-    ObjMsg: TDamMsg;
-    A: string;
-    X: Integer;
+type TBmp = {$IFNDEF FPC}Vcl.{$ENDIF}Graphics.TBitmap;
+var
+  B: TBmp;
+  ObjMsg: TDamMsg;
+  A: string;
 begin
-  B := {$IFNDEF FPC}Vcl.{$ENDIF}Graphics.TBitmap.Create;
+  B := TBmp.Create;
   try
     B.SetSize(Rect.Width, Rect.Height);
 
@@ -530,7 +538,7 @@ begin
 
     ObjMsg := TDamMsg(L.Items.Objects[Index]);
 
-    IL.Draw(B.Canvas, 3, 2, Integer(ObjMsg.Icon));
+    IL.Draw(B.Canvas, 3, (L.ItemHeight-IL.Height) div 2, Integer(ObjMsg.Icon));
 
     if ObjMsg.RaiseExcept then B.Canvas.Font.Color := clRed;
     A := ObjMsg.Name;
@@ -539,12 +547,10 @@ begin
       B.Canvas.Font.Style := [fsUnderline];
       Delete(A, 1, 1);
     end;
-    B.Canvas.TextOut(22, 2, A);
+    B.Canvas.TextOut(22, (L.ItemHeight-B.Canvas.TextHeight('A')) div 2, A);
 
-    X := 0;
-    if (L.Count*L.ItemHeight)>(L.Height-4) then X := 16;
-    IB.Draw(B.Canvas, L.Width-X-68, 3, Integer(ObjMsg.Buttons));
-    if ObjMsg.Message='' then IP.Draw(B.Canvas, L.Width-X-85, 2, (0));
+    IB.Draw(B.Canvas, Rect.Width-70, (L.ItemHeight-IB.Height) div 2, Integer(ObjMsg.Buttons));
+    if ObjMsg.Message='' then IP.Draw(B.Canvas, Rect.Width-85, (L.ItemHeight-IP.Height) div 2, 0);
 
     L.Canvas.Draw(0, Rect.Top, B);
   finally
@@ -563,7 +569,8 @@ begin
 end;
 
 procedure TFrmDamList.BtnAddClick(Sender: TObject);
-var C: TDamMsg;
+var
+  C: TDamMsg;
 begin
   C := TDamMsg.Create(Own);
   C.Dam := Dam;
@@ -572,45 +579,44 @@ begin
   MessageObjectAdded(C);
 end;
 
-procedure TFrmDamList.BtnAddWizardClick(Sender: TObject);
-var C: TDamMsg;
-begin
-  FrmDamMsgEdit := TFrmDamMsgEdit.Create(Application);
-  try
-    FrmDamMsgEdit.Dam := Dam;
-
-    if FrmDamMsgEdit.ShowModal = mrOk then
-    begin
-      C := TDamMsg.Create(Own);
-      C.Dam := Dam;
-
-      FrmDamMsgEdit.StoreComp(C);
-
-      MessageObjectAdded(C);
-    end;
-  finally
-    FrmDamMsgEdit.Free;
-  end;
-end;
-
 procedure TFrmDamList.BtnEditClick(Sender: TObject);
-var C: TDamMsg;
+var
+  C: TDamMsg;
+  Edit: Boolean;
 begin
-  C := GetFirstSel;
+  Edit := Sender = BtnEdit;
 
-  FrmDamMsgEdit := TFrmDamMsgEdit.Create(Application);
+  if Edit then
+    C := GetFirstSel
+  else
+    C := nil;
+
+  FormStyle := fsNormal; //When FMX, this form is VCL and the preview dialog is FMX, so the preview remains behind this form if stay on top is active
   try
-    FrmDamMsgEdit.Dam := Dam;
-    FrmDamMsgEdit.DamMsg := C;
+    FrmDamMsgEdit := TFrmDamMsgEdit.Create(Application);
+    try
+      FrmDamMsgEdit.Dam := Dam;
+      FrmDamMsgEdit.DamMsg := C;
 
-    if FrmDamMsgEdit.ShowModal = mrOk then
-    begin
-      FrmDamMsgEdit.StoreComp(C);
+      if FrmDamMsgEdit.ShowModal = mrOk then
+      begin
+        if not Edit then
+        begin
+          C := TDamMsg.Create(Own);
+          C.Dam := Dam;
+        end;
+        FrmDamMsgEdit.StoreComp(C);
 
-      DoModified;
+        if Edit then
+          DoModified
+        else
+          MessageObjectAdded(C);
+      end;
+    finally
+      FrmDamMsgEdit.Free;
     end;
   finally
-    FrmDamMsgEdit.Free;
+    FormStyle := fsStayOnTop;
   end;
 end;
 
@@ -653,8 +659,9 @@ end;
 
 procedure TFrmDamList.BtnPasteClick(Sender: TObject);
 {$IFNDEF FPC}
-var I: Integer;
-    tmpSel: TPersistentSelectionList;
+var
+  I: Integer;
+  tmpSel: TPersistentSelectionList;
 {$ENDIF}
 begin
   {$IFNDEF FPC}
@@ -677,8 +684,9 @@ begin
 end;
 
 procedure TFrmDamList.BtnUpOrDownClick(Sender: TObject);
-var Move, I, IEnd: Integer;
-    C: TComponent;
+var
+  Move, I, IEnd: Integer;
+  C: TComponent;
 begin
   if Sender = BtnUp then
   begin
@@ -706,10 +714,11 @@ begin
 end;
 
 procedure TFrmDamList.BtnHideClick(Sender: TObject);
-var Comp: TComponent;
-    I: Integer;
-    A: string;
-    bClear, Mudou: Boolean;
+var
+  Comp: TComponent;
+  I: Integer;
+  A: string;
+  bClear, Mudou: Boolean;
 begin
   bClear := GetFirstSel.Name[1] = '_';
   Mudou := False;

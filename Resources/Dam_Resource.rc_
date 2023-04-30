@@ -1,0 +1,5 @@
+DAM_LANG RCDATA "DamLang.ini"
+IC_ERROR RCDATA "error.png"
+IC_WARNING RCDATA "warning.png"
+IC_QUESTION RCDATA "question.png"
+IC_INFO RCDATA "info.png"

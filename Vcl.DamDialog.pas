@@ -30,7 +30,7 @@ uses
   Windows, MMSystem,
   {$ENDIF}
 {$ELSE}
-  System.Math, System.SysUtils, System.Types, System.UITypes,
+  System.Math, System.SysUtils, System.Types, System.UITypes, System.Classes,
   System.Generics.Collections,
   {$IFDEF MSWINDOWS}
   Winapi.Windows, Winapi.MMSystem,
@@ -41,8 +41,9 @@ uses
   FMX.Graphics, FMX.Controls, FMX.Platform,
   {$ELSE}
   Vcl.DzHTMLText,
-  Vcl.Forms, System.Classes, System.Actions, Vcl.ActnList, Vcl.StdCtrls,
+  Vcl.Forms, System.Actions, Vcl.ActnList, Vcl.StdCtrls,
   Vcl.Buttons, Vcl.Controls, Vcl.ExtCtrls, Vcl.Graphics, Vcl.Clipbrd,
+  Vcl.Imaging.pngimage,
   {$ENDIF}
 {$ENDIF}
   //
@@ -111,14 +112,16 @@ type
 
     procedure OnBtnClick(Sender: TObject);
   public
-    constructor Create; reintroduce;
+    constructor CreateNew(aDamMsg: TDamMsg); reintroduce;
     destructor Destroy; override;
   end;
 
-constructor TFrmDamDialogDyn.Create;
+constructor TFrmDamDialogDyn.CreateNew(aDamMsg: TDamMsg);
 var
   Action: TAction;
 begin
+  DamMsg := aDamMsg;
+
   inherited CreateNew(Application);
 
   ButtonsList := TList<TButton>.Create;
@@ -193,13 +196,11 @@ function RunDamDialog(DamMsg: TDamMsg; const aText: string): TDamMsgRes;
 var
   F: TFrmDamDialogDyn;
 begin
-  F := TFrmDamDialogDyn.Create;
+  F := TFrmDamDialogDyn.CreateNew(DamMsg);
   try
     {$IFDEF VCL}
     if (csDesigning in DamMsg.ComponentState) then F.LbMsg.StyleElements := []; //do not use themes in Delphi IDE
     {$ENDIF}
-
-    F.DamMsg := DamMsg;
 
     F.LangStrs := LoadLanguage(DamMsg.Dam.Language);
 
@@ -238,10 +239,17 @@ end;
 procedure TFrmDamDialogDyn.SetFormCustomization;
 begin
   //form border
-  //if DamMsg.Dam.DialogBorder then
-  //  BorderStyle := {$IFDEF FMX}TFmxFormBorderStyle.Single{$ELSE}bsDialog{$ENDIF}
-  //else
-  //  BorderStyle := {$IFDEF FMX}TFmxFormBorderStyle.None{$ELSE}bsNone{$ENDIF};
+  {$IFDEF FMX}
+  {if DamMsg.Dam.DialogBorder then
+    BorderStyle := TFmxFormBorderStyle.Single
+  else
+    BorderStyle := TFmxFormBorderStyle.None;}
+  {$ELSE}
+  if DamMsg.Dam.DialogBorder then
+    BorderStyle := bsDialog
+  else
+    BorderStyle := bsNone;
+  {$ENDIF}
 
   //form theme colors
   {$IFDEF FMX}
@@ -254,6 +262,13 @@ begin
   Color := DamMsg.Dam.MessageColor;
   BoxButtons.Color := DamMsg.Dam.ButtonsColor;
   {$ENDIF}
+
+  //icon
+  if DamMsg.Dam.HideIcon then
+  begin
+    Icon.Visible := False;
+    LbMsg.SetBounds(8, 8, 0, 0);
+  end;
 end;
 
 procedure TFrmDamDialogDyn.SetTitleAndIcon;
@@ -271,6 +286,48 @@ procedure TFrmDamDialogDyn.SetTitleAndIcon;
     end;
   end;
 
+  procedure GetIconFromResource;
+  var
+    R: TResourceStream;
+    ResName: string;
+  begin
+    ResName := string.Empty;
+    case DamMsg.Icon of
+      diApp   :
+        {$IFDEF FMX}
+        raise Exception.Create('Unsupported app icon in FMX environment');
+        {$ELSE}
+        Icon.Picture.Icon.Assign(Application.Icon);
+        {$ENDIF}
+     diCustom :
+        {$IFDEF FMX}
+        Icon.Bitmap.Assign(DamMsg.CustomIcon);
+        {$ELSE}
+        Icon.Picture.Icon.Assign(DamMsg.CustomIcon);
+        {$ENDIF}
+      diInfo  : ResName := 'IC_INFO';
+      diQuest : ResName := 'IC_QUESTION';
+      diWarn  : ResName := 'IC_WARNING';
+      diError : ResName := 'IC_ERROR';
+      else raise Exception.Create('Unknown icon kind property');
+    end;
+
+    if not ResName.IsEmpty then
+    begin
+      R := GetResource(ResName);
+      try
+        {$IFDEF FMX}
+        Icon.Bitmap.LoadFromStream(R);
+        {$ELSE}
+        Icon.Picture.LoadFromStream(R);
+        Icon.Proportional := True;
+        {$ENDIF}
+      finally
+        R.Free;
+      end;
+    end;
+  end;
+
 begin
   case DamMsg.Title of
     dtApp       : Caption := Application.Title;
@@ -281,15 +338,19 @@ begin
     else raise Exception.Create('Unknown title kind property');
   end;
 
-  {case DamMsg.Icon of
-    diApp   : Icon.Picture.Icon := Application.Icon;
+  {$IF Defined(VCL) and Defined(MSWINDOWS)}
+  case DamMsg.Icon of
+    diApp   : Icon.Picture.Icon.Assign(Application.Icon);
+    diCustom: Icon.Picture.Icon.Assign(DamMsg.CustomIcon);
     diInfo  : Icon.Picture.Icon.Handle := LoadIcon(0, IDI_INFORMATION);
     diQuest : Icon.Picture.Icon.Handle := LoadIcon(0, IDI_QUESTION);
     diWarn  : Icon.Picture.Icon.Handle := LoadIcon(0, IDI_WARNING);
     diError : Icon.Picture.Icon.Handle := LoadIcon(0, IDI_ERROR);
-    diCustom: Icon.Picture.Icon := DamMsg.CustomIcon;
     else raise Exception.Create('Unknown icon kind property');
-  end;}
+  end;
+  {$ELSE}
+  GetIconFromResource;
+  {$ENDIF}
 end;
 
 procedure TFrmDamDialogDyn.BuildButtons;
@@ -321,8 +382,6 @@ begin
       end;
   end;
 
-  Btn := nil;
-
   for I := 1 to NumButtons do
   begin
     Btn := TButton.Create(Self);
@@ -334,10 +393,11 @@ begin
     ButtonsList.Add(Btn);
   end;
 
-  //here btn contains last button reference
-
-  Btn.Cancel := True; //set last button as cancel (esc) button
-  if DamMsg.SwapFocus then ActiveControl := Btn; //set last button as start focus button
+  ButtonsList.Last.Cancel := True;
+  if DamMsg.SwapFocus then
+    ActiveControl := ButtonsList.Last
+  else
+    ActiveControl := ButtonsList.First; //In FMX, first control is not auto focused
 end;
 
 procedure TFrmDamDialogDyn.LoadHelp;
@@ -410,7 +470,7 @@ var
   MinSize, X: TPixels;
 begin
   if DamMsg.FixedWidth=0 then
-    LbMsg.Width := Trunc(GetCurrentMonitorRect.Width * 0.75) //max width
+    LbMsg.Width := Round(GetCurrentMonitorRect.Width * 0.75) //max width
   else
     LbMsg.Width := ToScale(DamMsg.FixedWidth);
 
@@ -422,7 +482,7 @@ begin
     LbMsg.Width := Max(LbMsg.TextWidth, MinSize);
   end;
 
-  ClientWidth := Trunc(LbMsg.BoundsRect.Right+ToScale(8));
+  ClientWidth := Round(LbMsg.BoundsRect.Right+ToScale(8));
 
   //align FloatBtns
   if DamMsg.Dam.CenterButtons then
@@ -434,17 +494,21 @@ begin
 end;
 
 procedure TFrmDamDialogDyn.CalcHeight;
+var
+  IconHeight: TPixels;
 begin
+  IconHeight := IfThen(Icon.Visible, Icon.Height);
+
   LbMsg.Height := LbMsg.TextHeight;
-  ClientHeight := Trunc(
-    Max(LbMsg.Height, Icon.Height)+
+  ClientHeight := Round(
+    Max(LbMsg.Height, IconHeight)+
     (LbMsg.{$IFDEF FMX}Position.Y{$ELSE}Top{$ENDIF}*2)+
     BoxButtons.Height);
 
-  if LbMsg.Height<Icon.Height then //text smaller than icon
+  if LbMsg.Height<IconHeight then //text smaller than icon
   begin
     LbMsg.{$IFDEF FMX}Position.Y{$ELSE}Top{$ENDIF} :=
-      LbMsg.{$IFDEF FMX}Position.Y{$ELSE}Top{$ENDIF} + GetDiv2(Icon.Height-LbMsg.Height);
+      LbMsg.{$IFDEF FMX}Position.Y{$ELSE}Top{$ENDIF} + GetDiv2(IconHeight-LbMsg.Height);
   end;
 end;
 

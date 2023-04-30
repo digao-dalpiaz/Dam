@@ -11,14 +11,12 @@ object FrmDamList: TFrmDamList
   Font.Name = 'Tahoma'
   Font.Style = []
   FormStyle = fsStayOnTop
-  OldCreateOrder = False
   Position = poDesigned
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
   OnShow = FormShow
-  PixelsPerInch = 96
   TextHeight = 13
   object L: TListBox
     Left = 8
@@ -749,7 +747,7 @@ object FrmDamList: TFrmDamList
         5E5E5E5E5E5EE8E8E8E8818181818181818181818181E8E8E8E8}
       NumGlyphs = 2
       TabOrder = 1
-      OnClick = BtnAddWizardClick
+      OnClick = BtnEditClick
     end
     object BtnEdit: TBitBtn
       Left = 8
@@ -911,6 +909,8 @@ object FrmDamList: TFrmDamList
       'function CaptureErrorMsg: string;'
       'procedure ShowErrorMsg;'
       ''
+      '//-- Messages declaration of TDamMsg objects'
+      ''
       '<DECLARATIONS>'
       'implementation'
       ''
@@ -918,47 +918,47 @@ object FrmDamList: TFrmDamList
       ''
       'function DamParams(const Params: array of Variant): TDamParams;'
       'begin'
-      '  Result := DamUnit.DamParams(Params);'
+      '  Result := <ENV>.DamUnit.DamParams(Params);'
       'end;'
       ''
       'procedure MsgInfo(const Msg: string; const Params: TDamParams);'
       'begin'
-      '  DamUnit.MsgInfo(Msg, Params);'
+      '  <ENV>.DamUnit.MsgInfo(Msg, Params);'
       'end;'
       ''
       'procedure MsgWarn(const Msg: string; const Params: TDamParams);'
       'begin'
-      '  DamUnit.MsgWarn(Msg, Params);'
+      '  <ENV>.DamUnit.MsgWarn(Msg, Params);'
       'end;'
       ''
       'procedure MsgError(const Msg: string; const Params: TDamParams);'
       'begin'
-      '  DamUnit.MsgError(Msg, Params);'
+      '  <ENV>.DamUnit.MsgError(Msg, Params);'
       'end;'
       ''
       
         'function MsgQuest(const Msg: string; const Params: TDamParams): ' +
         'Boolean;'
       'begin'
-      '  Result := DamUnit.MsgQuest(Msg, Params);'
+      '  Result := <ENV>.DamUnit.MsgQuest(Msg, Params);'
       'end;'
       ''
       'procedure MsgRaise(const Msg: string; const Params: TDamParams);'
       'begin'
-      '  DamUnit.MsgRaise(Msg, Params);'
+      '  <ENV>.DamUnit.MsgRaise(Msg, Params);'
       'end;'
       ''
       'function CaptureErrorMsg: string;'
       'begin'
-      '  Result := DamUnit.CaptureErrorMsg;'
+      '  Result := <ENV>.DamUnit.CaptureErrorMsg;'
       'end;'
       ''
       'procedure ShowErrorMsg;'
       'begin'
-      '  DamUnit.ShowErrorMsg;'
+      '  <ENV>.DamUnit.ShowErrorMsg;'
       'end;'
       ''
-      '//-- Messages methods of TDamMsg objects'
+      '//-- Messages implementation of TDamMsg objects'
       ''
       '<FUNCTIONS>end.')
     ScrollBars = ssBoth
