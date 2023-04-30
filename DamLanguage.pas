@@ -54,7 +54,7 @@ const
     (Name: 'Japanese'  ; DamLang: dgJapanese  ; SysLang: $11 ),
     (Name: 'Greek'     ; DamLang: dgGreek     ; SysLang: $08 ),
     (Name: 'Russian'   ; DamLang: dgRussian   ; SysLang: $19 ),
-    (Name: 'French'    ; DamLang: dgFrench    ; SysLang: $01 ),
+    (Name: 'French'    ; DamLang: dgFrench    ; SysLang: $0c ),
     (Name: 'Polish'    ; DamLang: dgPolish    ; SysLang: $15 ),
     (Name: 'Dutch'     ; DamLang: dgDutch     ; SysLang: $13 ),
     (Name: 'Turkish'   ; DamLang: dgTurkish   ; SysLang: $1f )
