@@ -143,7 +143,7 @@ begin
   {$ELSE}
   Position := poDesigned;
   PixelsPerInch := DESIGN_DPI;
-    {$IFDEF DCC}
+    {$IF CompilerVersion >= 30} //Delphi 10 Seattle
     OnAfterMonitorDpiChanged := OnDpiChanged;
     {$ENDIF}
   {$ENDIF}
@@ -307,6 +307,7 @@ begin
   end;
 end;
 
+type TPictureAccess = class(TPicture); //needed in Delphi 10.1 Berlin and previous versions (LoadFromStream)
 procedure TFrmDamDialogDyn.SetIcon;
 
   {$IF Defined(VCL) and Defined(MSWINDOWS)}
@@ -350,7 +351,7 @@ procedure TFrmDamDialogDyn.SetIcon;
         {$IFDEF FMX}
         Icon.Bitmap.LoadFromStream(R);
         {$ELSE}
-        Icon.Picture.LoadFromStream(R);
+        TPictureAccess(Icon.Picture).LoadFromStream(R);
         {$ENDIF}
       finally
         R.Free;
