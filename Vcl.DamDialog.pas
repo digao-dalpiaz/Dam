@@ -92,7 +92,8 @@ type
     function GetCurrentMonitorRect: TRect;
 
     procedure SetFormCustomization;
-    procedure SetTitleAndIcon;
+    procedure SetFormTitle;
+    procedure SetIcon;
     procedure BuildButtons;
     procedure LoadHelp;
     procedure LoadTextProps;
@@ -161,6 +162,9 @@ begin
   Icon := TImage.Create(Self);
   Icon.Parent := Self;
   Icon.SetBounds(8, 8, 32, 32);
+  {$IFDEF VCL}
+  Icon.Proportional := True;
+  {$ENDIF}
 
   LbMsg := TDzHTMLText.Create(Self);
   LbMsg.Parent := Self;
@@ -218,7 +222,7 @@ begin
     F.LangStrs := LoadLanguage(DamMsg.Dam.Language);
 
     F.SetFormCustomization;
-    F.SetTitleAndIcon;
+    F.SetFormTitle;
     F.BuildButtons;
     F.LoadHelp;
     F.LoadTextProps; //required before auto form scaling
@@ -274,7 +278,7 @@ begin
   end;
 end;
 
-procedure TFrmDamDialogDyn.SetTitleAndIcon;
+procedure TFrmDamDialogDyn.SetFormTitle;
 
   function GetIconTitle: string;
   begin
@@ -288,6 +292,27 @@ procedure TFrmDamDialogDyn.SetTitleAndIcon;
       else raise Exception.Create('Unknown icon kind property');
     end;
   end;
+
+begin
+  case DamMsg.Title of
+    dtApp       : Caption := Application.Title;
+    dtParentForm: Caption := TForm(DamMsg.Dam.Owner).Caption;
+    dtMainForm  : Caption := Application.MainForm.Caption;
+    dtByIcon    : Caption := GetIconTitle;
+    dtCustom    : Caption := DamMsg.CustomTitle;
+    else raise Exception.Create('Unknown title kind property');
+  end;
+end;
+
+procedure TFrmDamDialogDyn.SetIcon;
+
+  {$IF Defined(VCL) and Defined(MSWINDOWS)}
+  procedure LoadWindowsIcon(Code: Integer);
+  begin
+    Icon.Picture.Icon.Handle := LoadImage(GetModuleHandle('user32'),
+      MAKEINTRESOURCE(Code), IMAGE_ICON, Icon.Width, Icon.Height, LR_DEFAULTCOLOR);
+  end;
+  {$ENDIF}
 
   procedure GetIconFromResource;
   var
@@ -323,7 +348,6 @@ procedure TFrmDamDialogDyn.SetTitleAndIcon;
         Icon.Bitmap.LoadFromStream(R);
         {$ELSE}
         Icon.Picture.LoadFromStream(R);
-        Icon.Proportional := True;
         {$ENDIF}
       finally
         R.Free;
@@ -332,23 +356,14 @@ procedure TFrmDamDialogDyn.SetTitleAndIcon;
   end;
 
 begin
-  case DamMsg.Title of
-    dtApp       : Caption := Application.Title;
-    dtParentForm: Caption := TForm(DamMsg.Dam.Owner).Caption;
-    dtMainForm  : Caption := Application.MainForm.Caption;
-    dtByIcon    : Caption := GetIconTitle;
-    dtCustom    : Caption := DamMsg.CustomTitle;
-    else raise Exception.Create('Unknown title kind property');
-  end;
-
   {$IF Defined(VCL) and Defined(MSWINDOWS)}
   case DamMsg.Icon of
     diApp   : Icon.Picture.Icon.Assign(Application.Icon);
     diCustom: Icon.Picture.Icon.Assign(DamMsg.CustomIcon);
-    diInfo  : Icon.Picture.Icon.Handle := LoadIcon(0, IDI_INFORMATION);
-    diQuest : Icon.Picture.Icon.Handle := LoadIcon(0, IDI_QUESTION);
-    diWarn  : Icon.Picture.Icon.Handle := LoadIcon(0, IDI_WARNING);
-    diError : Icon.Picture.Icon.Handle := LoadIcon(0, IDI_ERROR);
+    diInfo  : LoadWindowsIcon(104);
+    diQuest : LoadWindowsIcon(102);
+    diWarn  : LoadWindowsIcon(101);
+    diError : LoadWindowsIcon(103);
     else raise Exception.Create('Unknown icon kind property');
   end;
   {$ELSE}
@@ -448,6 +463,7 @@ begin
   try
     Scaling.Update(Self, LbMsg.DesignDPI);
   {$ENDIF}
+    SetIcon;
     AlignButtons;
     CalcWidth;
     CalcHeight;
