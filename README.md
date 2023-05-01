@@ -35,13 +35,22 @@
 
 ## What's New
 
+- 05/01/2023 (Version 6.0) (*Minimum DzHTMLText version: 4.2*)
+
+   - FMX support!!!
+   - DPI Scaling improvements
+   - Message dialog DPI update in Runtime when moving dialog across monitors
+   - New Component DCR icons (transparency)
+   - New HideIcon property
+   - Linux supporting (Using Lazarus) - new internal resource icons for message dialogs - same as using in FMX
+
+<details>
+  <summary>Click here to view the entire changelog</summary>
+   
 - 04/11/2023 (Version 5.0) (*Minimum DzHTMLText version: 4.0*)
 
    - DPI Scaling supporting (please update DzHTMLText component)
    - Subfolder supporting in `DamUnitName` property
-
-<details>
-  <summary>Click here to view the entire changelog</summary>
 
 - 09/12/2021 (Version 4.16)
 
@@ -429,6 +438,8 @@ MsgInfo('This is a %p message number %p at time %p', ['test', 123, Now]);
 `MessageColor: TColor` = Define background color of message area on message dialog.
 
 `ButtonsColor: TColor` = Define background color of buttons area on message dialog.
+
+`HideIcon: Boolean` = If True, the icon on the message dialog will be suppressed.
 
 ## TDam events
 
