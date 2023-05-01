@@ -217,7 +217,8 @@ begin
   F := TFrmDamDialogDyn.CreateNew;
   try
     {$IF Defined(VCL) and Defined(DCC)}
-    if (csDesigning in DamMsg.ComponentState) then F.LbMsg.StyleElements := []; //do not use themes in Delphi IDE
+    //using Dam component state, because in Preview, we have new TDamMsg, but TDam of form in design
+    if (csDesigning in DamMsg.Dam.ComponentState) then F.LbMsg.StyleElements := []; //do not use themes in Delphi IDE
     {$ENDIF}
 
     F.DamMsg := DamMsg;
