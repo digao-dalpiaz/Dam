@@ -1,9 +1,17 @@
 {$IFNDEF FMX}unit Vcl.DamDialog;{$ENDIF}
 
 {$IFDEF FMX}
-  //
+  {$IF CompilerVersion >= 26} //XE5
+    {$DEFINE USE_NEW_UNITS}
+  {$ENDIF}
+  {$IF CompilerVersion >= 29} //XE8
+    {$DEFINE USE_NEW_ENV}
+    {$DEFINE USE_IMGLST}
+  {$ENDIF}
 {$ELSE}
   {$DEFINE VCL}
+  {$DEFINE USE_NEW_ENV}
+  {$DEFINE USE_IMGLST}
   {$IF CompilerVersion >= 30} //Delphi 10 Seattle
     {$DEFINE USE_DPICHANGE}
   {$ENDIF}
@@ -41,8 +49,10 @@ uses
   {$ENDIF}
   {$IFDEF FMX}
   FMX.DzHTMLText,
-  FMX.Forms, FMX.Objects, FMX.StdCtrls, FMX.ActnList, FMX.Types,
-  FMX.Graphics, FMX.Controls, FMX.Platform,
+  FMX.Forms, FMX.Objects, FMX.ActnList, FMX.Types, FMX.Controls, FMX.Platform,
+    {$IFDEF USE_NEW_UNITS}
+    FMX.StdCtrls, FMX.Graphics,
+    {$ENDIF}
   {$ELSE}
   Vcl.DzHTMLText,
   Vcl.Forms, System.Actions, Vcl.ActnList, Vcl.StdCtrls,
@@ -181,7 +191,7 @@ begin
   BoxButtons.Parent := Self;
   BoxButtons.Height := 39;
   {$IFDEF FMX}
-  BoxButtons.Align := TAlignLayout.Bottom;
+  BoxButtons.Align := TAlignLayout.{$IF CompilerVersion >= 27}{XE6}Bottom{$ELSE}alBottom{$ENDIF};
   BoxButtons.StyleLookup := 'pushpanel';
   {$ELSE}
   BoxButtons.Align := alBottom;
@@ -265,7 +275,7 @@ begin
   //form theme colors
   {$IFDEF FMX}
   Fill.Color := DamMsg.Dam.MessageColor;
-  if Fill.Color<>TAlphaColors.Null then Fill.Kind := TBrushKind.Solid;
+  if Fill.Color<>TAlphaColors.Null then Fill.Kind := TBrushKind.{$IF CompilerVersion >= 27}{XE6}Solid{$ELSE}bkSolid{$ENDIF};
 
   if DamMsg.Dam.ButtonsColor<>TAlphaColors.Null then
     TShape(BoxButtons.Controls[0]).Fill.Color := DamMsg.Dam.ButtonsColor;
@@ -435,7 +445,9 @@ end;
 
 procedure TFrmDamDialogDyn.LoadTextProps;
 begin
+  {$IFDEF USE_IMGLST}
   LbMsg.Images := DamMsg.Dam.Images;
+  {$ENDIF}
   LbMsg.Font.Assign(DamMsg.Dam.MessageFont);
   {$IFDEF FMX}
   LbMsg.FontColor := DamMsg.Dam.MessageFontColor;
@@ -481,15 +493,22 @@ begin
 end;
 
 procedure TFrmDamDialogDyn.AlignButtons;
-type TBmp = {$IFDEF DCC}
-    {$IFDEF FMX}FMX{$ELSE}Vcl{$ENDIF}.
-  {$ENDIF}Graphics.TBitmap;
+type TBmp =
+  {$IFDEF FPC}
+    Graphics
+  {$ELSE}
+    {$IFDEF FMX}
+    FMX.{$IFDEF USE_NEW_UNITS}Graphics{$ELSE}Types{$ENDIF}
+    {$ELSE}
+    Vcl.Graphics
+    {$ENDIF}
+  {$ENDIF}.TBitmap;
 var
   B: TBmp;
   Btn: TButton;
   X, W: TPixels;
 begin
-  B := TBmp.Create;
+  B := TBmp.Create{$IFNDEF USE_NEW_ENV}(0, 0){$ENDIF};
   try
     B.Canvas.Font.Assign(ButtonsList.First.Font);
 

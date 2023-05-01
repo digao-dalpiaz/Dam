@@ -11,6 +11,9 @@ Please, read the documentation at GitHub link.
 {$IFNDEF FMX}unit Vcl.DamUnit;{$ENDIF}
 
 {$IFDEF FMX}
+  {$IF CompilerVersion >= 26} //XE5
+    {$DEFINE USE_NEW_UNITS}
+  {$ENDIF}
   {$IF CompilerVersion >= 29} //XE8
     {$DEFINE USE_IMGLST}
   {$ENDIF}
@@ -30,7 +33,8 @@ uses
 {$ELSE}
   System.Classes, System.SysUtils, System.UITypes
   {$IFDEF FMX}
-    , FMX.Graphics
+    , FMX.Types
+    {$IFDEF USE_NEW_UNITS}, FMX.Graphics{$ENDIF}
     {$IFDEF USE_IMGLST}, FMX.ImgList{$ENDIF}
   {$ELSE}
   , Vcl.Graphics, Vcl.ImgList
@@ -115,7 +119,9 @@ type
     property About: string read FAbout;
     property Language: TDamLanguage read FLanguage write FLanguage;
     property HandleExceptions: Boolean read FRaises write FRaises default False;
+    {$IFDEF USE_IMGLST}
     property Images: TCustomImageList read FImages write SetImages;
+    {$ENDIF}
     property MessageFont: TFont read FFont write SetFont stored GetFontStored;
     {$IFDEF FMX}
     property MessageFontColor: TColor read FFontColor write FFontColor default TAlphaColors.Black;
