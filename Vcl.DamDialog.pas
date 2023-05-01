@@ -184,6 +184,7 @@ begin
   {$IFDEF VCL}
   LbMsg.DesignDPI := DESIGN_DPI;
   LbMsg.ParentColor := True;
+  LbMsg.ParentFont := False;
   {$ENDIF}
 
   BoxButtons := TPanel.Create(Self);
@@ -438,6 +439,7 @@ begin
   BtnHelp.SetBounds(ToScale(8), ToScale(8), ToScale(25), ToScale(25));
 
   {$IFDEF VCL}
+  BoxButtons.Font.Height := ToScale(-12);
   LbMsg.Font.Height := ToScale(DamMsg.Dam.MessageFont.Height);
   {$ENDIF}
 end;
@@ -611,10 +613,10 @@ begin
   if F<>nil then
     R :=
     {$IFDEF FMX}
-      {$IFDEF USE_FMX_OLD_ENV}
-      TFormAccess(F).FWinService.GetWindowRect(Self).Round
-      {$ELSE}
+      {$IF CompilerVersion >= 30} //Delphi 10 Seattle
       F.Bounds
+      {$ELSE}
+      TFormAccess(F).FWinService.GetWindowRect(Self).Round
       {$ENDIF}
     {$ELSE}
     F.BoundsRect
