@@ -5,12 +5,12 @@
     {$DEFINE USE_NEW_UNITS}
   {$ENDIF}
   {$IF CompilerVersion >= 29} //XE8
-    {$DEFINE USE_NEW_ENV}
     {$DEFINE USE_IMGLST}
+  {$ELSE}
+    {$DEFINE USE_FMX_OLD_ENV}
   {$ENDIF}
 {$ELSE}
   {$DEFINE VCL}
-  {$DEFINE USE_NEW_ENV}
   {$DEFINE USE_IMGLST}
   {$IF CompilerVersion >= 30} //Delphi 10 Seattle
     {$DEFINE USE_DPICHANGE}
@@ -318,7 +318,9 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 type TPictureAccess = class(TPicture); //needed in Delphi 10.1 Berlin and previous versions (LoadFromStream)
+{$ENDIF}
 procedure TFrmDamDialogDyn.SetIcon;
 
   {$IF Defined(VCL) and Defined(MSWINDOWS)}
@@ -342,7 +344,7 @@ procedure TFrmDamDialogDyn.SetIcon;
         {$ELSE}
         Icon.Picture.Icon.Assign(Application.Icon);
         {$ENDIF}
-     diCustom :
+      diCustom :
         {$IFDEF FMX}
         Icon.Bitmap.Assign(DamMsg.CustomIcon);
         {$ELSE}
@@ -464,9 +466,23 @@ begin
 end;
 
 function TFrmDamDialogDyn.GetCurrentMonitorRect: TRect;
+{$IFDEF USE_FMX_OLD_ENV}
+var
+  ScreenService: IFMXScreenService;
+{$ENDIF}
 begin
-  Result := {$IFDEF FMX}Screen.DisplayFromForm(Self){$ELSE}Monitor{$ENDIF}.BoundsRect
-    {$IF Defined(FMX) and (CompilerVersion >= 35)}.Round{$ENDIF}; //Round - Delphi 11
+  {$IFDEF FMX}
+    {$IFDEF USE_FMX_OLD_ENV}
+    if TPlatformServices.Current.SupportsPlatformService(IFMXScreenService, IInterface(ScreenService)) then
+      Result := TRect.Create(0, 0, Round(ScreenService.GetScreenSize.X), Round(ScreenService.GetScreenSize.Y))
+    else
+      raise Exception.Create('Could not get Monitor Rect');
+    {$ELSE}
+    Result := Screen.DisplayFromForm(Self).BoundsRect{$IF CompilerVersion >= 35}.Round{$ENDIF}; //Round - Delphi 11
+    {$ENDIF}
+  {$ELSE}
+    Result := Monitor.BoundsRect;
+  {$ENDIF}
 end;
 
 function GetDiv2(Value: TPixels): TPixels;
@@ -508,7 +524,7 @@ var
   Btn: TButton;
   X, W: TPixels;
 begin
-  B := TBmp.Create{$IFNDEF USE_NEW_ENV}(0, 0){$ENDIF};
+  B := TBmp.Create{$IFDEF USE_FMX_OLD_ENV}(1, 1){$ENDIF};
   try
     B.Canvas.Font.Assign(ButtonsList.First.Font);
 
@@ -589,7 +605,16 @@ begin
     else raise Exception.Create('Invalid dialog position property');
   end;
   if F<>nil then
-    R := {$IFDEF FMX}TFormAccess(F).FWinService.GetWindowRect(Self).Round{$ELSE}F.BoundsRect{$ENDIF};
+    R :=
+    {$IFDEF FMX}
+      {$IFDEF USE_FMX_OLD_ENV}
+      TFormAccess(F).FWinService.GetWindowRect(Self).Round
+      {$ELSE}
+      F.Bounds
+      {$ENDIF}
+    {$ELSE}
+    F.BoundsRect
+    {$ENDIF};
 
   Left := Round(R.Left + GetDiv2(R.Width - Width));
   Top := Round(R.Top + GetDiv2(R.Height - Height));
@@ -628,7 +653,8 @@ begin
   aMsg := TDzHTMLText.HTMLToPlainText(LbMsg.Text);
 
   {$IFDEF FMX}
-  if TPlatformServices.Current.SupportsPlatformService(IFMXClipboardService, uClipBoard) then
+  if TPlatformServices.Current.SupportsPlatformService(IFMXClipboardService,
+    {$IFDEF USE_FMX_OLD_ENV}IInterface(uClipBoard){$ELSE}uClipBoard{$ENDIF}) then
     uClipBoard.SetClipboard(aMsg);
   {$ELSE}
   Clipboard.AsText := aMsg;

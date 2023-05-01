@@ -16,6 +16,8 @@ Please, read the documentation at GitHub link.
   {$ENDIF}
   {$IF CompilerVersion >= 29} //XE8
     {$DEFINE USE_IMGLST}
+  {$ELSE}
+    {$DEFINE USE_FMX_OLD_ENV}
   {$ENDIF}
 {$ELSE}
   {$DEFINE VCL}
@@ -53,9 +55,10 @@ const
 
 type
   {$IFDEF FMX}
-  TColor = TAlphaColor;
+  TAnyColor = TAlphaColor;
   TDamIconObj = TBitmap;
   {$ELSE}
+  TAnyColor = TColor;
   TDamIconObj = TIcon;
   {$ENDIF}
 
@@ -88,11 +91,11 @@ type
 
     FFont: TFont;
     {$IFDEF FMX}
-    FFontColor: TColor;
+    FFontColor: TAnyColor;
     {$ENDIF}
     FDefault: Boolean;
     FUnit: string;
-    FColorMsg, FColorBtn: TColor;
+    FColorMsg, FColorBtn: TAnyColor;
     FCenterButtons: Boolean;
     FDialogPosition: TDamDlgPosition;
     FDialogBorder: Boolean;
@@ -124,14 +127,14 @@ type
     {$ENDIF}
     property MessageFont: TFont read FFont write SetFont stored GetFontStored;
     {$IFDEF FMX}
-    property MessageFontColor: TColor read FFontColor write FFontColor default TAlphaColors.Black;
+    property MessageFontColor: TAnyColor read FFontColor write FFontColor default TAlphaColors.Black;
     {$ENDIF}
     property DamDefault: Boolean read FDefault write FDefault default False;
     property DamUnitName: string read FUnit write FUnit;
     property PlaySounds: Boolean read FSounds write FSounds default True;
     property HideIcon: Boolean read FHideIcon write FHideIcon default False;
-    property MessageColor: TColor read FColorMsg write FColorMsg default DEF_MSG_BACKGROUND;
-    property ButtonsColor: TColor read FColorBtn write FColorBtn default DEF_BTN_BACKGROUND;
+    property MessageColor: TAnyColor read FColorMsg write FColorMsg default DEF_MSG_BACKGROUND;
+    property ButtonsColor: TAnyColor read FColorBtn write FColorBtn default DEF_BTN_BACKGROUND;
     property CenterButtons: Boolean read FCenterButtons write FCenterButtons default False;
     property DialogPosition: TDamDlgPosition read FDialogPosition write FDialogPosition default dpScreenCenter;
     property DialogBorder: Boolean read FDialogBorder write FDialogBorder default True;
@@ -371,7 +374,7 @@ constructor TDamMsg.Create(AOwner: TComponent);
 begin
   inherited;
 
-  FCustomIcon := TDamIconObj.Create;
+  FCustomIcon := TDamIconObj.Create{$IFDEF USE_FMX_OLD_ENV}(0, 0){$ENDIF};
   FTitle := dtByIcon;
   FIcon := diInfo;
   FButtons := dbOK;
@@ -511,13 +514,17 @@ end;
 procedure TDam.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
+
+  {$IFDEF USE_IMGLST}
   if Operation = opRemove then
   begin
     if AComponent = FImages then
       FImages := nil;
   end;
+  {$ENDIF}
 end;
 
+{$IFDEF USE_IMGLST}
 procedure TDam.SetImages(const Value: TCustomImageList);
 begin
   if Value <> FImages then
@@ -527,6 +534,7 @@ begin
       FImages.FreeNotification(Self);
   end;
 end;
+{$ENDIF}
 
 procedure TDam.SetFont(const Value: TFont);
 begin

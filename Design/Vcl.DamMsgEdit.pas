@@ -118,7 +118,12 @@ end;
 
 function ToColor(Color: {$IFDEF DESIGN_FMX}TAlphaColor{$ELSE}TColor{$ENDIF}): TColor;
 begin
-  Result := {$IFDEF DESIGN_FMX}TAlphaColorRec.ColorToRGB(Color){$ELSE}Color{$ENDIF};
+  Result :=
+    {$IFDEF DESIGN_FMX}
+    RGB(TAlphaColorRec(Color).R, TAlphaColorRec(Color).G, TAlphaColorRec(Color).B)
+    {$ELSE}
+    Color
+    {$ENDIF};
 end;
 
 procedure TFrmDamMsgEdit.FormShow(Sender: TObject);
