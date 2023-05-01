@@ -433,6 +433,8 @@ MsgInfo('This is a %p message number %p at time %p', ['test', 123, Now]);
 
 `MessageFont: TFont` = Defines the text font of messages
 
+`MessageFontColor: TAlphaColor` = Defines the text font color of messages *(Only available in FMX environment)*
+
 `PlaySounds: Boolean` = Enable system sounds when showing messages of Warning, Question and Error kinds.
 
 `MessageColor: TColor` = Define background color of message area on message dialog.
