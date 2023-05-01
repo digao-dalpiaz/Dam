@@ -112,6 +112,7 @@ type
     procedure LoadTextProps;
 
     procedure OverallAlign;
+    procedure ManualFormScale;
     procedure AlignButtons;
     procedure CalcWidth;
     procedure CalcHeight;
@@ -127,7 +128,7 @@ type
     procedure Action_HelpExecute(Sender: TObject);
 
     {$IFDEF USE_DPICHANGE}
-    procedure OnDpiChanged(Sender: TObject; Old, New: Integer);
+    procedure OnAfterDpiChanged(Sender: TObject; Old, New: Integer);
     {$ENDIF}
 
     procedure OnBtnClick(Sender: TObject);
@@ -152,11 +153,11 @@ begin
   BorderIcons := [];
   {$ELSE}
   Position := poDesigned;
-  PixelsPerInch := DESIGN_DPI;
+  PixelsPerInch := RetrieveMonitorPPI(Self); //designed at current PPI
   {$ENDIF}
 
   {$IFDEF USE_DPICHANGE}
-  OnAfterMonitorDpiChanged := OnDpiChanged;
+  OnAfterMonitorDpiChanged := OnAfterDpiChanged;
   {$ENDIF}
 
   ActionList := TActionList.Create(Self);
@@ -173,14 +174,12 @@ begin
 
   Icon := TImage.Create(Self);
   Icon.Parent := Self;
-  Icon.SetBounds(8, 8, 32, 32);
   {$IFDEF VCL}
   Icon.Proportional := True;
   {$ENDIF}
 
   LbMsg := TDzHTMLText.Create(Self);
   LbMsg.Parent := Self;
-  LbMsg.SetBounds(48, 8, 0, 0);
   LbMsg.OnLinkClick := LbMsgLinkClick;
   {$IFDEF VCL}
   LbMsg.DesignDPI := DESIGN_DPI;
@@ -189,7 +188,6 @@ begin
 
   BoxButtons := TPanel.Create(Self);
   BoxButtons.Parent := Self;
-  BoxButtons.Height := 39;
   {$IFDEF FMX}
   BoxButtons.Align := TAlignLayout.{$IF CompilerVersion >= 27}{XE6}Bottom{$ELSE}alBottom{$ENDIF};
   BoxButtons.StyleLookup := 'pushpanel';
@@ -201,7 +199,6 @@ begin
 
   BoxFloatBtns := TPanel.Create(Self);
   BoxFloatBtns.Parent := BoxButtons;
-  BoxFloatBtns.SetBounds(0, 8, 0, 25);
   {$IFDEF FMX}
   BoxFloatBtns.StyleLookup := 'pushpanel';
   {$ELSE}
@@ -210,7 +207,6 @@ begin
 
   BtnHelp := TSpeedButton.Create(Self);
   BtnHelp.Parent := BoxButtons;
-  BtnHelp.SetBounds(8, 8, 25, 25);
   BtnHelp.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF} := '?';
   BtnHelp.OnClick := BtnHelpClick;
 end;
@@ -241,9 +237,6 @@ begin
     F.LoadHelp;
     F.LoadTextProps; //required before auto form scaling
 
-    {$IFDEF VCL}
-    //F.ChangeScale(GetMonitorPPI(F), DESIGN_DPI); //auto form scaling
-    {$ENDIF}
     F.OverallAlign;
 
     F.CenterForm;
@@ -286,10 +279,7 @@ begin
 
   //icon
   if DamMsg.Dam.HideIcon then
-  begin
     Icon.Visible := False;
-    LbMsg.SetBounds(8, 8, 0, 0);
-  end;
 end;
 
 procedure TFrmDamDialogDyn.SetFormTitle;
@@ -316,76 +306,6 @@ begin
     dtCustom    : Caption := DamMsg.CustomTitle;
     else raise Exception.Create('Unknown title kind property');
   end;
-end;
-
-{$IFDEF VCL}
-type TPictureAccess = class(TPicture); //needed in Delphi 10.1 Berlin and previous versions (LoadFromStream)
-{$ENDIF}
-procedure TFrmDamDialogDyn.SetIcon;
-
-  {$IF Defined(VCL) and Defined(MSWINDOWS)}
-  procedure LoadWindowsIcon(Code: Integer);
-  begin
-    Icon.Picture.Icon.Handle := LoadImage(GetModuleHandle('user32'),
-      MAKEINTRESOURCE(Code), IMAGE_ICON, Icon.Width, Icon.Height, LR_DEFAULTCOLOR);
-  end;
-  {$ENDIF}
-
-  procedure GetIconFromResource;
-  var
-    R: TResourceStream;
-    ResName: string;
-  begin
-    ResName := string.Empty;
-    case DamMsg.Icon of
-      diApp   :
-        {$IFDEF FMX}
-        raise Exception.Create('Unsupported app icon in FMX environment');
-        {$ELSE}
-        Icon.Picture.Icon.Assign(Application.Icon);
-        {$ENDIF}
-      diCustom :
-        {$IFDEF FMX}
-        Icon.Bitmap.Assign(DamMsg.CustomIcon);
-        {$ELSE}
-        Icon.Picture.Icon.Assign(DamMsg.CustomIcon);
-        {$ENDIF}
-      diInfo  : ResName := 'IC_INFO';
-      diQuest : ResName := 'IC_QUESTION';
-      diWarn  : ResName := 'IC_WARNING';
-      diError : ResName := 'IC_ERROR';
-      else raise Exception.Create('Unknown icon kind property');
-    end;
-
-    if not ResName.IsEmpty then
-    begin
-      R := GetResource(ResName);
-      try
-        {$IFDEF FMX}
-        Icon.Bitmap.LoadFromStream(R);
-        {$ELSE}
-        TPictureAccess(Icon.Picture).LoadFromStream(R);
-        {$ENDIF}
-      finally
-        R.Free;
-      end;
-    end;
-  end;
-
-begin
-  {$IF Defined(VCL) and Defined(MSWINDOWS)}
-  case DamMsg.Icon of
-    diApp   : Icon.Picture.Icon.Assign(Application.Icon);
-    diCustom: Icon.Picture.Icon.Assign(DamMsg.CustomIcon);
-    diInfo  : LoadWindowsIcon(104);
-    diQuest : LoadWindowsIcon(102);
-    diWarn  : LoadWindowsIcon(101);
-    diError : LoadWindowsIcon(103);
-    else raise Exception.Create('Unknown icon kind property');
-  end;
-  {$ELSE}
-  GetIconFromResource;
-  {$ENDIF}
 end;
 
 procedure TFrmDamDialogDyn.BuildButtons;
@@ -497,6 +417,7 @@ begin
   try
     Scaling.Update(Self, DESIGN_DPI);
   {$ENDIF}
+    ManualFormScale;
     SetIcon;
     AlignButtons;
     CalcWidth;
@@ -505,6 +426,89 @@ begin
   finally
     Scaling.Free;
   end;
+  {$ENDIF}
+end;
+
+procedure TFrmDamDialogDyn.ManualFormScale;
+begin
+  Icon.SetBounds(ToScale(8), ToScale(8), ToScale(32), ToScale(32));
+  LbMsg.SetBounds(IfThen(Icon.Visible, ToScale(48), ToScale(8)), ToScale(8), 0, 0);
+  BoxButtons.Height := ToScale(39);
+  BoxFloatBtns.SetBounds(0, ToScale(8), 0, ToScale(25));
+  BtnHelp.SetBounds(ToScale(8), ToScale(8), ToScale(25), ToScale(25));
+
+  {$IFDEF VCL}
+  LbMsg.Font.Height := ToScale(DamMsg.Dam.MessageFont.Height);
+  {$ENDIF}
+end;
+
+{$IFDEF VCL}
+type TPictureAccess = class(TPicture); //needed in Delphi 10.1 Berlin and previous versions (LoadFromStream)
+{$ENDIF}
+procedure TFrmDamDialogDyn.SetIcon;
+
+  {$IF Defined(VCL) and Defined(MSWINDOWS)}
+  procedure LoadWindowsIcon(Code: Integer);
+  begin
+    Icon.Picture.Icon.Handle := LoadImage(GetModuleHandle('user32'),
+      MAKEINTRESOURCE(Code), IMAGE_ICON, Icon.Width, Icon.Height, LR_DEFAULTCOLOR); //scaled
+  end;
+  {$ENDIF}
+
+  procedure GetIconFromResource;
+  var
+    R: TResourceStream;
+    ResName: string;
+  begin
+    ResName := string.Empty;
+    case DamMsg.Icon of
+      diApp   :
+        {$IFDEF FMX}
+        raise Exception.Create('Unsupported app icon in FMX environment');
+        {$ELSE}
+        Icon.Picture.Icon.Assign(Application.Icon);
+        {$ENDIF}
+      diCustom :
+        {$IFDEF FMX}
+        Icon.Bitmap.Assign(DamMsg.CustomIcon);
+        {$ELSE}
+        Icon.Picture.Icon.Assign(DamMsg.CustomIcon);
+        {$ENDIF}
+      diInfo  : ResName := 'IC_INFO';
+      diQuest : ResName := 'IC_QUESTION';
+      diWarn  : ResName := 'IC_WARNING';
+      diError : ResName := 'IC_ERROR';
+      else raise Exception.Create('Unknown icon kind property');
+    end;
+
+    if not ResName.IsEmpty then
+    begin
+      R := GetResource(ResName);
+      try
+        {$IFDEF FMX}
+        Icon.Bitmap.LoadFromStream(R);
+        {$ELSE}
+        TPictureAccess(Icon.Picture).LoadFromStream(R);
+        {$ENDIF}
+      finally
+        R.Free;
+      end;
+    end;
+  end;
+
+begin
+  {$IF Defined(VCL) and Defined(MSWINDOWS)}
+  case DamMsg.Icon of
+    diApp   : Icon.Picture.Icon.Assign(Application.Icon);
+    diCustom: Icon.Picture.Icon.Assign(DamMsg.CustomIcon);
+    diInfo  : LoadWindowsIcon(104);
+    diQuest : LoadWindowsIcon(102);
+    diWarn  : LoadWindowsIcon(101);
+    diError : LoadWindowsIcon(103);
+    else raise Exception.Create('Unknown icon kind property');
+  end;
+  {$ELSE}
+  GetIconFromResource;
   {$ENDIF}
 end;
 
@@ -703,7 +707,7 @@ begin
 end;
 
 {$IFDEF USE_DPICHANGE}
-procedure TFrmDamDialogDyn.OnDpiChanged(Sender: TObject; Old, New: Integer);
+procedure TFrmDamDialogDyn.OnAfterDpiChanged(Sender: TObject; Old, New: Integer);
 begin
   OverallAlign;
 end;
