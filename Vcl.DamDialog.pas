@@ -128,6 +128,7 @@ type
   end;
 
 constructor TFrmDamDialogDyn.CreateNew;
+const DESIGN_DPI = 96;
 var
   Action: TAction;
 begin
@@ -141,7 +142,7 @@ begin
   BorderIcons := [];
   {$ELSE}
   Position := poDesigned;
-  PixelsPerInch := 96;
+  PixelsPerInch := DESIGN_DPI;
     {$IFDEF DCC}
     OnAfterMonitorDpiChanged := OnDpiChanged;
     {$ENDIF}
@@ -171,6 +172,7 @@ begin
   LbMsg.SetBounds(48, 8, 0, 0);
   LbMsg.OnLinkClick := LbMsgLinkClick;
   {$IFDEF VCL}
+  LbMsg.DesignDPI := DESIGN_DPI;
   LbMsg.ParentColor := True;
   {$ENDIF}
 
