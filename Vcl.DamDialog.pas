@@ -4,6 +4,9 @@
   //
 {$ELSE}
   {$DEFINE VCL}
+  {$IF CompilerVersion >= 30} //Delphi 10 Seattle
+    {$DEFINE USE_DPICHANGE}
+  {$ENDIF}
 {$ENDIF}
 
 {$IFDEF FPC}{$mode delphi}{$ENDIF}
@@ -26,7 +29,7 @@ uses
 {$IFDEF FPC}
   Vcl.DzHTMLText,
   Forms, Classes, FGL, ActnList, Buttons, Controls, StdCtrls, ExtCtrls, Clipbrd,
-  SysUtils, Math, Graphics, LMessages,
+  SysUtils, Math, Graphics,
   {$IFDEF MSWINDOWS}
   Windows, MMSystem,
   {$ENDIF}
@@ -113,12 +116,8 @@ type
     procedure Action_CopyExecute(Sender: TObject);
     procedure Action_HelpExecute(Sender: TObject);
 
-    {$IFDEF VCL}
-      {$IFDEF FPC}
-      procedure WMDPIChanged(var Msg: TLMessage); message LM_DPICHANGED;
-      {$ELSE}
-      procedure OnDpiChanged(Sender: TObject; Old, New: Integer);
-      {$ENDIF}
+    {$IFDEF USE_DPICHANGE}
+    procedure OnDpiChanged(Sender: TObject; Old, New: Integer);
     {$ENDIF}
 
     procedure OnBtnClick(Sender: TObject);
@@ -127,8 +126,9 @@ type
     destructor Destroy; override;
   end;
 
-constructor TFrmDamDialogDyn.CreateNew;
 const DESIGN_DPI = 96;
+
+constructor TFrmDamDialogDyn.CreateNew;
 var
   Action: TAction;
 begin
@@ -143,9 +143,10 @@ begin
   {$ELSE}
   Position := poDesigned;
   PixelsPerInch := DESIGN_DPI;
-    {$IF CompilerVersion >= 30} //Delphi 10 Seattle
-    OnAfterMonitorDpiChanged := OnDpiChanged;
-    {$ENDIF}
+  {$ENDIF}
+
+  {$IFDEF USE_DPICHANGE}
+  OnAfterMonitorDpiChanged := OnDpiChanged;
   {$ENDIF}
 
   ActionList := TActionList.Create(Self);
@@ -231,7 +232,7 @@ begin
     F.LoadTextProps; //required before auto form scaling
 
     {$IFDEF VCL}
-    F.{$IFDEF FPC}AutoScale{$ELSE}ScaleForCurrentDpi{$ENDIF}; //auto form scaling
+    //F.ChangeScale(GetMonitorPPI(F), DESIGN_DPI); //auto form scaling
     {$ENDIF}
     F.OverallAlign;
 
@@ -452,7 +453,8 @@ end;
 
 function TFrmDamDialogDyn.GetCurrentMonitorRect: TRect;
 begin
-  Result := {$IFDEF FMX}Screen.DisplayFromForm(Self){$ELSE}Monitor{$ENDIF}.BoundsRect;
+  Result := {$IFDEF FMX}Screen.DisplayFromForm(Self){$ELSE}Monitor{$ENDIF}.BoundsRect
+    {$IF Defined(FMX) and (CompilerVersion >= 35)}.Round{$ENDIF}; //Round - Delphi 11
 end;
 
 function GetDiv2(Value: TPixels): TPixels;
@@ -465,7 +467,7 @@ begin
   {$IFDEF VCL}
   Scaling := TDzFormScaling.Create;
   try
-    Scaling.Update(Self, LbMsg.DesignDPI);
+    Scaling.Update(Self, DESIGN_DPI);
   {$ENDIF}
     SetIcon;
     AlignButtons;
@@ -552,6 +554,7 @@ begin
   end;
 end;
 
+type TFormAccess = class(TForm);
 procedure TFrmDamDialogDyn.CenterForm;
 var
   R: TRect;
@@ -567,7 +570,7 @@ begin
     else raise Exception.Create('Invalid dialog position property');
   end;
   if F<>nil then
-    R := F.{$IFDEF FMX}Bounds{$ELSE}BoundsRect{$ENDIF};
+    R := {$IFDEF FMX}TFormAccess(F).FWinService.GetWindowRect(Self).Round{$ELSE}F.BoundsRect{$ENDIF};
 
   Left := Round(R.Left + GetDiv2(R.Width - Width));
   Top := Round(R.Top + GetDiv2(R.Height - Height));
@@ -654,13 +657,8 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
-procedure TFrmDamDialogDyn.
-  {$IFDEF FPC}
-  WMDPIChanged(var Msg: TLMessage)
-  {$ELSE}
-  OnDpiChanged(Sender: TObject; Old, New: Integer)
-  {$ENDIF};
+{$IFDEF USE_DPICHANGE}
+procedure TFrmDamDialogDyn.OnDpiChanged(Sender: TObject; Old, New: Integer);
 begin
   OverallAlign;
 end;
