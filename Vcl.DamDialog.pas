@@ -84,11 +84,14 @@ const
 {$ENDIF}
 
 type
+  TBoxComps = {$IFDEF FMX}TRectangle{$ELSE}TPanel{$ENDIF};
+
+type
   TFrmDamDialogDyn = class(TForm)
   private
     Icon: TImage;
     LbMsg: TDzHTMLText;
-    BoxButtons, BoxFloatBtns: TPanel;
+    BoxMsg, BoxButtons, BoxFloatBtns: TBoxComps;
     ButtonsList: TList<TButton>;
     BtnHelp: TSpeedButton;
     ActionList: TActionList;
@@ -137,7 +140,12 @@ type
     destructor Destroy; override;
   end;
 
-const DESIGN_DPI = 96;
+const
+  DESIGN_DPI = 96;
+
+  {$IFDEF FMX}
+  BRUSH_KIND_NONE = TBrushKind.{$IF CompilerVersion >= 27}{XE6}None{$ELSE}bkNone{$ENDIF};
+  {$ENDIF}
 
 constructor TFrmDamDialogDyn.CreateNew;
 var
@@ -172,14 +180,25 @@ begin
   Action.ShortCut := 112; //F1
   Action.OnExecute := Action_HelpExecute;
 
+  BoxMsg := TBoxComps.Create(Self);
+  BoxMsg.Parent := Self;
+  {$IFDEF FMX}
+  BoxMsg.Align := TAlignLayout.{$IF CompilerVersion >= 27}{XE6}Client{$ELSE}alClient{$ENDIF};
+  BoxMsg.Stroke.Kind := BRUSH_KIND_NONE; //remove border
+  {$ELSE}
+  BoxMsg.Align := alClient;
+  BoxMsg.BevelOuter := bvNone;
+  BoxMsg.ParentBackground := False;
+  {$ENDIF}
+
   Icon := TImage.Create(Self);
-  Icon.Parent := Self;
+  Icon.Parent := BoxMsg;
   {$IFDEF VCL}
   Icon.Proportional := True;
   {$ENDIF}
 
   LbMsg := TDzHTMLText.Create(Self);
-  LbMsg.Parent := Self;
+  LbMsg.Parent := BoxMsg;
   LbMsg.OnLinkClick := LbMsgLinkClick;
   {$IFDEF VCL}
   LbMsg.DesignDPI := DESIGN_DPI;
@@ -187,21 +206,22 @@ begin
   LbMsg.ParentFont := False;
   {$ENDIF}
 
-  BoxButtons := TPanel.Create(Self);
+  BoxButtons := TBoxComps.Create(Self);
   BoxButtons.Parent := Self;
   {$IFDEF FMX}
   BoxButtons.Align := TAlignLayout.{$IF CompilerVersion >= 27}{XE6}Bottom{$ELSE}alBottom{$ENDIF};
-  BoxButtons.StyleLookup := 'pushpanel';
+  BoxButtons.Stroke.Kind := BRUSH_KIND_NONE; //remove border
   {$ELSE}
   BoxButtons.Align := alBottom;
   BoxButtons.BevelOuter := bvNone;
   BoxButtons.ParentBackground := False;
   {$ENDIF}
 
-  BoxFloatBtns := TPanel.Create(Self);
+  BoxFloatBtns := TBoxComps.Create(Self);
   BoxFloatBtns.Parent := BoxButtons;
   {$IFDEF FMX}
-  BoxFloatBtns.StyleLookup := 'pushpanel';
+  BoxFloatBtns.Stroke.Kind := BRUSH_KIND_NONE; //remove border
+  BoxFloatBtns.Fill.Kind := BRUSH_KIND_NONE; //transparent background
   {$ELSE}
   BoxFloatBtns.BevelOuter := bvNone;
   {$ENDIF}
@@ -268,13 +288,17 @@ begin
 
   //form theme colors
   {$IFDEF FMX}
-  Fill.Color := DamMsg.Dam.MessageColor;
-  if Fill.Color<>TAlphaColors.Null then Fill.Kind := TBrushKind.{$IF CompilerVersion >= 27}{XE6}Solid{$ELSE}bkSolid{$ENDIF};
+  if DamMsg.Dam.MessageColor <> TAlphaColors.Null then
+    BoxMsg.Fill.Color := DamMsg.Dam.MessageColor
+  else
+    BoxMsg.Fill.Kind := BRUSH_KIND_NONE;
 
-  if DamMsg.Dam.ButtonsColor<>TAlphaColors.Null then
-    TShape(BoxButtons.Controls[0]).Fill.Color := DamMsg.Dam.ButtonsColor;
+  if DamMsg.Dam.ButtonsColor <> TAlphaColors.Null then
+    BoxButtons.Fill.Color := DamMsg.Dam.ButtonsColor
+  else
+    BoxButtons.Fill.Kind := BRUSH_KIND_NONE;
   {$ELSE}
-  Color := DamMsg.Dam.MessageColor;
+  BoxMsg.Color := DamMsg.Dam.MessageColor;
   BoxButtons.Color := DamMsg.Dam.ButtonsColor;
   {$ENDIF}
 

@@ -134,7 +134,10 @@ begin
   EdFont.Text := Dam.MessageFont.{$IFDEF DESIGN_FMX}Family{$ELSE}Name{$ENDIF};
   EdSize.Text := FloatToStr(Dam.MessageFont.Size); //using Float to compatibilize with FMX
 
-  Box.Color := ToColor(Dam.MessageColor);
+  {$IFDEF DESIGN_FMX}
+  if Dam.MessageColor <> TAlphaColors.Null then
+  {$ENDIF}
+    Box.Color := ToColor(Dam.MessageColor);
 
   {$IFDEF DESIGN_FMX}
   LbMsg.Font.Name := Dam.MessageFont.Family;
