@@ -30,6 +30,7 @@
 - [Quick Messages](#quick-messages)
 - [Raising exceptions](#raising-exceptions)
 - [How to change Language file](#how-to-change-language-file)
+- [Limitations](#limitations)
 - [Delphi versions below XE8 remark](#delphi-versions-below-xe8-remark)
 - [History](#history)
 
@@ -640,6 +641,22 @@ There is a file called **DamLang.ini**, which has all strings used on the compon
 After that, please run the "**AfterBuild.bat**" to publish this new resource file to the "Lib" folder.
 
 > If you want to add new language, some changes in the code will be needed. So, please, open a new issue and post the language strings you want, then I will apply in the component.
+
+## Limitations
+
+### FMX
+
+- DamMsg.Icon = diApp not supported
+- In Message Dialog Editor, linked Dam images are not supported, so the preview is unavailable in the Editor screen.
+- Help settings for TDamMsg (HelpKeyword and HelpContext) are unsupported
+
+### Windows
+
+- Sounds only supported in Windows environment
+
+### DPI Scaling
+
+- Lazarus and Delphi previous versions than D10 - unsupported auto changing DPI scaling at runtime
 
 ## Delphi versions below XE8 remark
 
