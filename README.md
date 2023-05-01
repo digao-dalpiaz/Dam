@@ -44,6 +44,8 @@
    - New Component DCR icons (transparency)
    - New HideIcon property
    - Linux supporting (Using Lazarus) - new internal resource icons for message dialogs - same as using in FMX
+   
+   **WARNING!!!** Please completely uninstall the previous version by deleting the previous Dam Component folder, because many files have changed their names and locations.
 
 <details>
   <summary>Click here to view the entire changelog</summary>
