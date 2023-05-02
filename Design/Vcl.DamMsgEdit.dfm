@@ -20,7 +20,7 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     Top = 40
     Width = 177
     Height = 33
-    Brush.Color = clInfoBk
+    Brush.Color = 12189695
     Pen.Color = clBtnShadow
   end
   object W6: TShape
@@ -28,7 +28,7 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     Top = 40
     Width = 201
     Height = 33
-    Brush.Color = clInfoBk
+    Brush.Color = 12189695
     Pen.Color = clBtnShadow
   end
   object W4: TShape
@@ -36,7 +36,7 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     Top = 40
     Width = 177
     Height = 33
-    Brush.Color = clInfoBk
+    Brush.Color = 12189695
     Pen.Color = clBtnShadow
   end
   object W2: TShape
@@ -44,7 +44,7 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     Top = 8
     Width = 201
     Height = 33
-    Brush.Color = clInfoBk
+    Brush.Color = 12189695
     Pen.Color = clBtnShadow
   end
   object W3: TShape
@@ -52,7 +52,7 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     Top = 8
     Width = 185
     Height = 33
-    Brush.Color = clInfoBk
+    Brush.Color = 12189695
     Pen.Color = clBtnShadow
   end
   object W1: TShape
@@ -60,7 +60,7 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     Top = 8
     Width = 169
     Height = 33
-    Brush.Color = clInfoBk
+    Brush.Color = 12189695
     Pen.Color = clBtnShadow
   end
   object BtnBold: TSpeedButton
