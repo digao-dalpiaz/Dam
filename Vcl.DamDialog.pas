@@ -12,8 +12,11 @@
 {$ELSE}
   {$DEFINE VCL}
   {$DEFINE USE_IMGLST}
-  {$IF CompilerVersion >= 30} //Delphi 10 Seattle
+  {$IF Defined(DCC) and (CompilerVersion >= 30)} //Delphi 10 Seattle
     {$DEFINE USE_DPICHANGE}
+  {$ENDIF}
+  {$IFDEF MSWINDOWS}
+    {$DEFINE USE_SCALING}
   {$ENDIF}
 {$ENDIF}
 
@@ -33,7 +36,7 @@ function RunDamDialog(DamMsg: TDamMsg; const aText: string): TDamMsgRes;
 implementation
 
 uses
-{$IFDEF VCL}ScalingUtils, {$ENDIF}
+{$IFDEF USE_SCALING}ScalingUtils, {$ENDIF}
 {$IFDEF FPC}
   Vcl.DzHTMLText,
   Forms, Classes, FGL, ActnList, Buttons, Controls, StdCtrls, ExtCtrls, Clipbrd,
@@ -100,7 +103,7 @@ type
     DamResult: TDamMsgRes;
     LangStrs: TDamLanguageDefinition;
 
-    {$IFDEF VCL}
+    {$IFDEF USE_SCALING}
     Scaling: TDzFormScaling;
     {$ENDIF}
 
@@ -161,6 +164,9 @@ begin
   BorderIcons := [];
   {$ELSE}
   Position := poDesigned;
+  {$ENDIF}
+
+  {$IFDEF USE_SCALING}
   PixelsPerInch := RetrieveMonitorPPI(Self); //designed at current PPI
   {$ENDIF}
 
@@ -201,9 +207,11 @@ begin
   LbMsg.Parent := BoxMsg;
   LbMsg.OnLinkClick := LbMsgLinkClick;
   {$IFDEF VCL}
-  LbMsg.DesignDPI := DESIGN_DPI;
   LbMsg.ParentColor := True;
   LbMsg.ParentFont := False;
+  {$ENDIF}
+  {$IFDEF USE_SCALING}
+  LbMsg.DesignDPI := DESIGN_DPI;
   {$ENDIF}
 
   BoxButtons := TBoxComps.Create(Self);
@@ -403,7 +411,7 @@ end;
 
 function TFrmDamDialogDyn.ToScale(Value: TPixels): TPixels;
 begin
-  {$IFDEF VCL}
+  {$IFDEF USE_SCALING}
   Result := Scaling.Calc(Value);
   {$ELSE}
   Result := Value;
@@ -437,7 +445,7 @@ end;
 
 procedure TFrmDamDialogDyn.OverallAlign;
 begin
-  {$IFDEF VCL}
+  {$IFDEF USE_SCALING}
   Scaling := TDzFormScaling.Create;
   try
     Scaling.Update(Self, DESIGN_DPI);
@@ -447,7 +455,7 @@ begin
     AlignButtons;
     CalcWidth;
     CalcHeight;
-  {$IFDEF VCL}
+  {$IFDEF USE_SCALING}
   finally
     Scaling.Free;
   end;
