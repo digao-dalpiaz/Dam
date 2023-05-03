@@ -96,7 +96,7 @@ type
     DamMsg: TDamMsg;
     procedure StoreComp(Target: TDamMsg);
   private
-    procedure PutSelText(TagOpen: string; TagClose: string='');
+    procedure PutSelText(Tag: string; Parameter: string='');
     procedure SetBtn(C: TDamMsg);
   end;
 
@@ -220,11 +220,11 @@ begin
   if Result.StartsWith('$00') then Delete(Result, 2, 2);
 end;
 
-procedure TFrmDamMsgEdit.PutSelText(TagOpen: string; TagClose: string='');
+procedure TFrmDamMsgEdit.PutSelText(Tag: string; Parameter: string='');
 begin
-  if TagClose='' then TagClose := TagOpen;
+  if Parameter<>'' then Parameter := ':' + Parameter;
 
-  M.SelText := '<'+TagOpen+'>'+M.SelText+'</'+TagClose+'>';
+  M.SelText := '<'+Tag+Parameter+'>'+M.SelText+'</'+Tag+'>';
 end;
 
 procedure TFrmDamMsgEdit.BtnBoldClick(Sender: TObject);
@@ -264,22 +264,22 @@ end;
 
 procedure TFrmDamMsgEdit.BtnDoFontClick(Sender: TObject);
 begin
-  PutSelText('fn:'+EdFont.Text, 'fn');
+  PutSelText('fn:', EdFont.Text);
 end;
 
 procedure TFrmDamMsgEdit.BtnDoSizeClick(Sender: TObject);
 begin
-  PutSelText('fs:'+EdSize.Text, 'fs');
+  PutSelText('fs', EdSize.Text);
 end;
 
 procedure TFrmDamMsgEdit.BtnDoFontColorClick(Sender: TObject);
 begin
-  PutSelText('fc:'+CorToStr(EdFontColor.Selected), 'fc');
+  PutSelText('fc', CorToStr(EdFontColor.Selected));
 end;
 
 procedure TFrmDamMsgEdit.BtnDoBgColorClick(Sender: TObject);
 begin
-  PutSelText('bc:'+CorToStr(EdBgColor.Selected), 'bc');
+  PutSelText('bc', CorToStr(EdBgColor.Selected));
 end;
 
 procedure TFrmDamMsgEdit.BtnDoAnyColorClick(Sender: TObject);
@@ -304,17 +304,17 @@ end;
 
 procedure TFrmDamMsgEdit.BtnVertTopClick(Sender: TObject);
 begin
-  PutSelText('valign:top', 'valign');
+  PutSelText('valign', 'top');
 end;
 
 procedure TFrmDamMsgEdit.BtnVertCenterClick(Sender: TObject);
 begin
-  PutSelText('valign:center', 'valign');
+  PutSelText('valign', 'center');
 end;
 
 procedure TFrmDamMsgEdit.BtnVertBottomClick(Sender: TObject);
 begin
-  PutSelText('valign:bottom', 'valign');
+  PutSelText('valign', 'bottom');
 end;
 
 procedure TFrmDamMsgEdit.BtnParameterClick(Sender: TObject);
@@ -459,7 +459,7 @@ begin
 end;
 
 procedure TFrmDamMsgEdit.BtnHelpClick(Sender: TObject);
-const URL = 'https://github.com/digao-dalpiaz/Dam';
+const URL = 'https://github.com/digao-dalpiaz/DzHTMLText#available-tags';
 begin
 {$IFDEF FPC}
   OpenURL(URL);
