@@ -57,7 +57,12 @@ type
     BtnParameter: TSpeedButton;
     BtnExceptPar: TSpeedButton;
     M: TMemo;
-    WPreview: TShape;
+    BtnSup: TSpeedButton;
+    BtnSub: TSpeedButton;
+    BtnStrikeout: TSpeedButton;
+    BtnVertTop: TSpeedButton;
+    BtnVertCenter: TSpeedButton;
+    BtnVertBottom: TSpeedButton;
     procedure MChange(Sender: TObject);
     procedure BtnBoldClick(Sender: TObject);
     procedure BtnItalicClick(Sender: TObject);
@@ -80,6 +85,12 @@ type
     procedure BtnHelpClick(Sender: TObject);
     procedure BtnParameterClick(Sender: TObject);
     procedure BtnExceptParClick(Sender: TObject);
+    procedure BtnSupClick(Sender: TObject);
+    procedure BtnSubClick(Sender: TObject);
+    procedure BtnVertTopClick(Sender: TObject);
+    procedure BtnVertCenterClick(Sender: TObject);
+    procedure BtnVertBottomClick(Sender: TObject);
+    procedure BtnStrikeoutClick(Sender: TObject);
   public
     Dam: TDam;
     DamMsg: TDamMsg;
@@ -231,6 +242,11 @@ begin
   PutSelText('u');
 end;
 
+procedure TFrmDamMsgEdit.BtnStrikeoutClick(Sender: TObject);
+begin
+  PutSelText('s');
+end;
+
 procedure TFrmDamMsgEdit.BtnLeftClick(Sender: TObject);
 begin
   PutSelText('l');
@@ -274,6 +290,31 @@ end;
 procedure TFrmDamMsgEdit.BtnDoLinkClick(Sender: TObject);
 begin
   PutSelText('a');
+end;
+
+procedure TFrmDamMsgEdit.BtnSupClick(Sender: TObject);
+begin
+  PutSelText('sup');
+end;
+
+procedure TFrmDamMsgEdit.BtnSubClick(Sender: TObject);
+begin
+  PutSelText('sub');
+end;
+
+procedure TFrmDamMsgEdit.BtnVertTopClick(Sender: TObject);
+begin
+  PutSelText('valign:top', 'valign');
+end;
+
+procedure TFrmDamMsgEdit.BtnVertCenterClick(Sender: TObject);
+begin
+  PutSelText('valign:center', 'valign');
+end;
+
+procedure TFrmDamMsgEdit.BtnVertBottomClick(Sender: TObject);
+begin
+  PutSelText('valign:bottom', 'valign');
 end;
 
 procedure TFrmDamMsgEdit.BtnParameterClick(Sender: TObject);
