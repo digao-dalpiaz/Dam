@@ -1363,8 +1363,6 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     Top = 72
     Width = 625
     Height = 153
-    EditMargins.Left = 3
-    EditMargins.Right = 3
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
