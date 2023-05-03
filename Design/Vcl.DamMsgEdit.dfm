@@ -336,7 +336,7 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     Height = 25
     AutoSize = False
     Caption = 'Font Color'
-    Color = clInfoBk
+    Color = 12189695
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -9
@@ -353,7 +353,7 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     Height = 25
     AutoSize = False
     Caption = 'Bg. Color'
-    Color = clInfoBk
+    Color = 12189695
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -9
@@ -560,7 +560,7 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     Height = 25
     AutoSize = False
     Caption = 'Any Color'
-    Color = clInfoBk
+    Color = 12189695
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -9
@@ -936,6 +936,14 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     Left = 8
     Top = 232
     Width = 545
+    Height = 153
+    Brush.Color = clBlack
+    Pen.Color = clBtnShadow
+  end
+  object ShapeMemo: TShape
+    Left = 8
+    Top = 72
+    Width = 625
     Height = 153
     Brush.Color = clBlack
     Pen.Color = clBtnShadow
@@ -1359,10 +1367,11 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     TabStop = False
   end
   object M: TMemo
-    Left = 8
-    Top = 72
-    Width = 625
-    Height = 153
+    Left = 9
+    Top = 73
+    Width = 623
+    Height = 151
+    BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
