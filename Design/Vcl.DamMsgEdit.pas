@@ -63,6 +63,7 @@ type
     BtnVertTop: TSpeedButton;
     BtnVertCenter: TSpeedButton;
     BtnVertBottom: TSpeedButton;
+    ShapeMsg: TShape;
     procedure MChange(Sender: TObject);
     procedure BtnBoldClick(Sender: TObject);
     procedure BtnItalicClick(Sender: TObject);

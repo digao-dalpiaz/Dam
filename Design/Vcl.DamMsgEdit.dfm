@@ -932,6 +932,14 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     ShowHint = True
     OnClick = BtnVertBottomClick
   end
+  object ShapeMsg: TShape
+    Left = 8
+    Top = 232
+    Width = 545
+    Height = 153
+    Brush.Color = clBlack
+    Pen.Color = clBtnShadow
+  end
   object BtnOK: TBitBtn
     Left = 560
     Top = 232
@@ -997,13 +1005,12 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
       '50')
   end
   object Box: TScrollBox
-    Left = 8
-    Top = 232
-    Width = 545
-    Height = 154
+    Left = 9
+    Top = 233
+    Width = 543
+    Height = 151
     VertScrollBar.Smooth = True
     VertScrollBar.Tracking = True
-    BevelKind = bkFlat
     BorderStyle = bsNone
     Color = clWhite
     ParentColor = False
@@ -1356,8 +1363,6 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     Top = 72
     Width = 625
     Height = 153
-    BevelKind = bkFlat
-    BorderStyle = bsNone
     EditMargins.Left = 3
     EditMargins.Right = 3
     Font.Charset = DEFAULT_CHARSET
