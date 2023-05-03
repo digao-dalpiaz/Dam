@@ -1003,8 +1003,6 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     Height = 154
     VertScrollBar.Smooth = True
     VertScrollBar.Tracking = True
-    BevelInner = bvNone
-    BevelOuter = bvRaised
     BevelKind = bkFlat
     BorderStyle = bsNone
     Color = clWhite
@@ -1358,9 +1356,7 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
     Top = 72
     Width = 625
     Height = 153
-    BevelInner = bvNone
     BevelKind = bkFlat
-    BevelOuter = bvRaised
     BorderStyle = bsNone
     EditMargins.Left = 3
     EditMargins.Right = 3

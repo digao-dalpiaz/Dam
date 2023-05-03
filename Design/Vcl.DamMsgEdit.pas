@@ -96,7 +96,7 @@ type
     DamMsg: TDamMsg;
     procedure StoreComp(Target: TDamMsg);
   private
-    procedure PutSelText(Tag: string; Parameter: string='');
+    procedure PutSelText(aTag: string; aParameter: string='');
     procedure SetBtn(C: TDamMsg);
   end;
 
@@ -220,11 +220,11 @@ begin
   if Result.StartsWith('$00') then Delete(Result, 2, 2);
 end;
 
-procedure TFrmDamMsgEdit.PutSelText(Tag: string; Parameter: string='');
+procedure TFrmDamMsgEdit.PutSelText(aTag: string; aParameter: string='');
 begin
-  if Parameter<>'' then Parameter := ':' + Parameter;
+  if aParameter<>'' then aParameter := ':' + aParameter;
 
-  M.SelText := '<'+Tag+Parameter+'>'+M.SelText+'</'+Tag+'>';
+  M.SelText := '<'+aTag+aParameter+'>'+M.SelText+'</'+aTag+'>';
 end;
 
 procedure TFrmDamMsgEdit.BtnBoldClick(Sender: TObject);
