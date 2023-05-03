@@ -10,19 +10,7 @@ Please, read the documentation at GitHub link.
 
 {$IFNDEF FMX}unit Vcl.DamUnit;{$ENDIF}
 
-{$IFDEF FMX}
-  {$IF CompilerVersion >= 26} //XE5
-    {$DEFINE USE_NEW_UNITS}
-  {$ENDIF}
-  {$IF CompilerVersion >= 29} //XE8
-    {$DEFINE USE_IMGLST}
-  {$ELSE}
-    {$DEFINE USE_FMX_OLD_ENV}
-  {$ENDIF}
-{$ELSE}
-  {$DEFINE VCL}
-  {$DEFINE USE_IMGLST}
-{$ENDIF}
+{$INCLUDE 'Defines.inc'}
 
 {$IFDEF FPC}{$mode delphi}{$ENDIF}
 

@@ -1,26 +1,39 @@
 {$IFNDEF FMX}unit Vcl.DamDialog;{$ENDIF}
 
-{$IFDEF FMX}
-  {$IF CompilerVersion >= 26} //XE5
-    {$DEFINE USE_NEW_UNITS}
-  {$ENDIF}
-  {$IF CompilerVersion >= 29} //XE8
-    {$DEFINE USE_IMGLST}
-  {$ELSE}
-    {$DEFINE USE_FMX_OLD_ENV}
-  {$ENDIF}
-{$ELSE}
-  {$DEFINE VCL}
-  {$DEFINE USE_IMGLST}
-  {$IF Defined(DCC) and (CompilerVersion >= 30)} //Delphi 10 Seattle
-    {$DEFINE USE_DPICHANGE}
-  {$ENDIF}
-  {$IFDEF MSWINDOWS}
-    {$DEFINE USE_SCALING}
-  {$ENDIF}
-{$ENDIF}
+{$INCLUDE 'Defines.inc'}
 
 {$IFDEF FPC}{$mode delphi}{$ENDIF}
+
+{
+-------------------------------------------------------------------------------
+Important things about DPI:
+
+1. FMX has your own internal scaling (works like DPI aware), so the controls
+   are automatically shown proportional (no need scaling control).
+
+2. In VCL, when creating form dinamically, scaling is not changed
+   automatically (it's only changed when moving form already shown, of course,
+   if Scaling = True).
+
+3. ScalingUtils depends on Windows, so it only works in VCL with MSWINDOWS.
+
+4. DPI Change event after form already shown (when moving form through
+   different monitors) is only available in Delphi 10 Seattle and posterior.
+
+5. Font should be always calculated using stored property "Height" than dynamic
+   property "Size" when apllying proportional DPI.
+
+6. In Delphi 11, the property PixelPerInch is changed dynamically when DPI
+   changes, so we lose the original DPI that form was designed. This is an
+   important value for DzHTMLText, because the HTML tags are configured
+   based in designer DPI scale. So there is a property to deal with that in
+   DzHTMLText (DesignDPI), storing original DPI.
+
+7. Delphi versions have different behavior about DPI, so here I set all form
+   controls DPI manually, calculating using Design DPI versus Monitor DPI.
+
+-------------------------------------------------------------------------------
+}
 
 interface
 
@@ -147,7 +160,7 @@ const
   DESIGN_DPI = 96;
 
   {$IFDEF FMX}
-  BRUSH_KIND_NONE = TBrushKind.{$IF CompilerVersion >= 27}{XE6}None{$ELSE}bkNone{$ENDIF};
+  BRUSH_KIND_NONE = TBrushKind.{$IFDEF USE_NEW_ENUMS}None{$ELSE}bkNone{$ENDIF};
   {$ENDIF}
 
 constructor TFrmDamDialogDyn.CreateNew;
@@ -168,6 +181,7 @@ begin
 
   {$IFDEF USE_SCALING}
   PixelsPerInch := RetrieveMonitorPPI(Self); //designed at current PPI
+  //unnecessary, but ensure some Delphi version running Scaling Change due to different Design PPI x Monitor PPI on form show?
   {$ENDIF}
 
   {$IFDEF USE_DPICHANGE}
@@ -189,7 +203,7 @@ begin
   BoxMsg := TBoxComps.Create(Self);
   BoxMsg.Parent := Self;
   {$IFDEF FMX}
-  BoxMsg.Align := TAlignLayout.{$IF CompilerVersion >= 27}{XE6}Client{$ELSE}alClient{$ENDIF};
+  BoxMsg.Align := TAlignLayout.{$IFDEF USE_NEW_ENUMS}Client{$ELSE}alClient{$ENDIF};
   BoxMsg.Stroke.Kind := BRUSH_KIND_NONE; //remove border
   {$ELSE}
   BoxMsg.Align := alClient;
@@ -217,7 +231,7 @@ begin
   BoxButtons := TBoxComps.Create(Self);
   BoxButtons.Parent := Self;
   {$IFDEF FMX}
-  BoxButtons.Align := TAlignLayout.{$IF CompilerVersion >= 27}{XE6}Bottom{$ELSE}alBottom{$ENDIF};
+  BoxButtons.Align := TAlignLayout.{$IFDEF USE_NEW_ENUMS}Bottom{$ELSE}alBottom{$ENDIF};
   BoxButtons.Stroke.Kind := BRUSH_KIND_NONE; //remove border
   {$ELSE}
   BoxButtons.Align := alBottom;
@@ -252,7 +266,7 @@ var
 begin
   F := TFrmDamDialogDyn.CreateNew;
   try
-    {$IF Defined(VCL) and Defined(DCC)}
+    {$IFDEF VCL_DCC}
     //using Dam component state, because in Preview, we have new TDamMsg, but TDam of form in design
     if (csDesigning in DamMsg.Dam.ComponentState) then F.LbMsg.StyleElements := []; //do not use themes in Delphi IDE
     {$ENDIF}
@@ -471,7 +485,7 @@ begin
   BtnHelp.SetBounds(ToScale(8), ToScale(8), ToScale(25), ToScale(25));
 
   {$IFDEF VCL}
-  BoxButtons.Font.Height := ToScale(-12);
+  BoxButtons.Font.Height := ToScale(-12); //equivalent to 9 pt
   LbMsg.Font.Height := ToScale(DamMsg.Dam.MessageFont.Height);
   {$ENDIF}
 end;
@@ -481,7 +495,7 @@ type TPictureAccess = class(TPicture); //needed in Delphi 10.1 Berlin and previo
 {$ENDIF}
 procedure TFrmDamDialogDyn.SetIcon;
 
-  {$IF Defined(VCL) and Defined(MSWINDOWS)}
+  {$IFDEF VCL_WIN}
   procedure LoadWindowsIcon(Code: Integer);
   begin
     Icon.Picture.Icon.Handle := LoadImage(GetModuleHandle('user32'),
@@ -531,7 +545,7 @@ procedure TFrmDamDialogDyn.SetIcon;
   end;
 
 begin
-  {$IF Defined(VCL) and Defined(MSWINDOWS)}
+  {$IFDEF VCL_WIN}
   case DamMsg.Icon of
     diApp   : Icon.Picture.Icon.Assign(Application.Icon);
     diCustom: Icon.Picture.Icon.Assign(DamMsg.CustomIcon);
