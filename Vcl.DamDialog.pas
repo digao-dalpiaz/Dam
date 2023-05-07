@@ -179,11 +179,6 @@ begin
   Position := poDesigned;
   {$ENDIF}
 
-  {$IFDEF USE_SCALING}
-  PixelsPerInch := RetrieveMonitorPPI(Self); //designed at current PPI
-  //unnecessary, but ensure some Delphi version running Scaling Change due to different Design PPI x Monitor PPI on form show?
-  {$ENDIF}
-
   {$IFDEF USE_DPICHANGE}
   OnAfterMonitorDpiChanged := OnAfterDpiChanged;
   {$ENDIF}
@@ -223,9 +218,6 @@ begin
   {$IFDEF VCL}
   LbMsg.ParentColor := True;
   LbMsg.ParentFont := False;
-  {$ENDIF}
-  {$IFDEF USE_SCALING}
-  LbMsg.DesignDPI := DESIGN_DPI;
   {$ENDIF}
 
   BoxButtons := TBoxComps.Create(Self);
@@ -477,6 +469,10 @@ begin
 end;
 
 procedure TFrmDamDialogDyn.ManualFormScale;
+{$IFDEF VCL}
+var
+  DPI: Integer;
+{$ENDIF}
 begin
   Icon.SetBounds(ToScale(8), ToScale(8), ToScale(32), ToScale(32));
   LbMsg.SetBounds(IfThen(Icon.Visible, ToScale(48), ToScale(8)), ToScale(8), 0, 0);
@@ -485,8 +481,10 @@ begin
   BtnHelp.SetBounds(ToScale(8), ToScale(8), ToScale(25), ToScale(25));
 
   {$IFDEF VCL}
-  BoxButtons.Font.Height := ToScale(-12); //equivalent to 9 pt
-  LbMsg.Font.Height := ToScale(DamMsg.Dam.MessageFont.Height);
+  //here we can't use ToScale (Scaling.Calc), because is set with Design DPI, instead of Monitor DPI
+  DPI := {$IFDEF USE_SCALING}Scaling.MonitorPPI{$ELSE}DESIGN_DPI{$ENDIF};
+  BoxButtons.Font.Height := CalcFontHeight(9, DPI);
+  LbMsg.Font.Height := CalcFontHeight(DamMsg.Dam.MessageFont.Size, DPI);
   {$ENDIF}
 end;
 
@@ -603,6 +601,9 @@ begin
   else
     LbMsg.Width := ToScale(DamMsg.FixedWidth);
 
+  {$IFDEF USE_SCALING}
+  LbMsg.DesignDPI := RetrieveDesignerPPI(TCustomForm(DamMsg.Dam.Owner));
+  {$ENDIF}
   LbMsg.Text := DamMsg.Message; //set TEXT
 
   if (DamMsg.FixedWidth=0) and (LbMsg.TextWidth < LbMsg.Width) then
