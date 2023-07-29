@@ -35,13 +35,17 @@
 
 ## What's New
 
+- 07/29/2023 (Version 5.1)
+
+   - Fix Russian translation (Issue #36)
+   
+<details>
+  <summary>Click here to view the entire changelog</summary>
+
 - 04/11/2023 (Version 5.0) (*Minimum DzHTMLText version: 4.0*)
 
    - DPI Scaling supporting (please update DzHTMLText component)
    - Subfolder supporting in `DamUnitName` property
-
-<details>
-  <summary>Click here to view the entire changelog</summary>
 
 - 09/12/2021 (Version 4.16)
 
