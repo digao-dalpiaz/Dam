@@ -4,7 +4,7 @@
 
 ## Delphi and Lazarus Message Dialogs with Formatted Text
 
-![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-XE3..11-blue.svg)
+![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-XE3..12-blue.svg)
 ![Platforms](https://img.shields.io/badge/Platforms-Win32%20and%20Win64-red.svg)
 ![Auto Install](https://img.shields.io/badge/-Auto%20Install%20App-orange.svg)
 ![VCL](https://img.shields.io/badge/-VCL-lightgrey.svg)
@@ -311,7 +311,7 @@ The Message Dialog: :stuck_out_tongue:
 
 7. Run **AfterBuild.bat** to publish DFM and RES to Release folders.
 
-> Supports Delphi XE3..Delphi 11
+> Supports Delphi XE3..Delphi 12
 
 ### Lazarus installation
 
