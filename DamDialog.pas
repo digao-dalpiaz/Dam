@@ -89,7 +89,9 @@ var
 begin
   F := TFrmDamDialog.Create(Application);
   try
+    {$IFDEF DCC}
     if (csDesigning in DamMsg.ComponentState) then F.LbMsg.StyleElements := []; //do not use themes in Delphi IDE
+    {$ENDIF}
 
     F.DamMsg := DamMsg;
 
