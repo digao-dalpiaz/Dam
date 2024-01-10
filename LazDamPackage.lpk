@@ -16,7 +16,7 @@
         </CompilerMessages>
       </Other>
     </CompilerOptions>
-    <Files Count="3">
+    <Files Count="4">
       <Item1>
         <Filename Value="Vcl.DamUnit.pas"/>
         <UnitName Value="Vcl.DamUnit"/>
@@ -29,6 +29,10 @@
         <Filename Value="DamLanguage.pas"/>
         <UnitName Value="DamLanguage"/>
       </Item3>
+      <Item4>
+        <Filename Value="DamInternalExcept.pas"/>
+        <UnitName Value="DamInternalExcept"/>
+      </Item4>
     </Files>
     <CompatibilityMode Value="True"/>
     <RequiredPkgs Count="1">

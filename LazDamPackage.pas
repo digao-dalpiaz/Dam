@@ -8,7 +8,8 @@ unit LazDamPackage;
 interface
 
 uses
-  Vcl.DamUnit, Vcl.DamDialog, DamLanguage, LazarusPackageIntf;
+  Vcl.DamUnit, Vcl.DamDialog, DamLanguage, DamInternalExcept, 
+  LazarusPackageIntf;
 
 implementation
 

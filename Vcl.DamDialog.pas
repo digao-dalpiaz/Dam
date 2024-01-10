@@ -400,9 +400,7 @@ begin
 end;
 
 function TFrmDamDialogDyn.GetCurrentMonitorWidth: Integer;
-const DEF_PPI = 96;
 var
-  PPI: Integer;
   R: TRect;
   F: {$IFDEF FMX}TCommonCustomForm{$ELSE}TForm{$ENDIF};
 {$IFDEF FMX}
@@ -455,15 +453,9 @@ begin
     R := M.BoundsRect;
   {$ENDIF}
 
-  {$IF Defined(VCL) and (Defined(DCC) and (CompilerVersion >= 30)) or Defined(FPC)} //D10 Seattle or Lazarus
-  PPI := M.PixelsPerInch;
-  {$ELSE}
-  PPI := DEF_PPI;
-  {$ENDIF}
-
   Result := R.Width;
-  {$IFNDEF FPC}
-  Result := Round(Result * DEF_PPI / PPI);
+  {$IF Defined(DCC) and Defined(VCL) and (CompilerVersion >= 30)} //D10 Seattle
+  Result := Round(Result * 96 / M.PixelsPerInch);
   {$ENDIF}
 end;
 
