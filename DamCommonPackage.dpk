@@ -33,6 +33,7 @@ requires
   rtl;
 
 contains
-  DamLanguage in 'DamLanguage.pas';
+  DamLanguage in 'DamLanguage.pas',
+  DamInternalExcept in 'DamInternalExcept.pas';
 
 end.

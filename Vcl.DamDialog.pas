@@ -4,37 +4,6 @@
 
 {$IFDEF FPC}{$mode delphi}{$ENDIF}
 
-{
--------------------------------------------------------------------------------
-Important things about DPI:
-
-1. FMX has your own internal scaling (works like DPI aware), so the controls
-   are automatically shown proportional (no need scaling control).
-
-2. In VCL, when creating form dinamically, scaling is not changed
-   automatically (it's only changed when moving form already shown, of course,
-   if Scaling = True).
-
-3. ScalingUtils depends on Windows, so it only works in VCL with MSWINDOWS.
-
-4. DPI Change event after form already shown (when moving form through
-   different monitors) is only available in Delphi 10 Seattle and posterior.
-
-5. Font should be always calculated using stored property "Height" than dynamic
-   property "Size" when apllying proportional DPI.
-
-6. In Delphi 11, the property PixelPerInch is changed dynamically when DPI
-   changes, so we lose the original DPI that form was designed. This is an
-   important value for DzHTMLText, because the HTML tags are configured
-   based in designer DPI scale. So there is a property to deal with that in
-   DzHTMLText (DesignDPI), storing original DPI.
-
-7. Delphi versions have different behavior about DPI, so here I set all form
-   controls DPI manually, calculating using Design DPI versus Monitor DPI.
-
--------------------------------------------------------------------------------
-}
-
 interface
 
 uses
@@ -49,7 +18,6 @@ function RunDamDialog(DamMsg: TDamMsg; const aText: string): TDamMsgRes;
 implementation
 
 uses
-{$IFDEF USE_SCALING}ScalingUtils, {$ENDIF}
 {$IFDEF FPC}
   Vcl.DzHTMLText,
   Forms, Classes, FGL, ActnList, Buttons, Controls, StdCtrls, ExtCtrls, Clipbrd,
@@ -77,7 +45,7 @@ uses
   {$ENDIF}
 {$ENDIF}
   //
-  DamLanguage;
+  DamLanguage, DamInternalExcept;
 
 {$IFDEF FPC}
 const
@@ -108,7 +76,7 @@ type
     Icon: TImage;
     LbMsg: TDzHTMLText;
     BoxMsg, BoxButtons, BoxFloatBtns: TBoxComps;
-    ButtonsList: TList<TButton>;
+
     BtnHelp: TSpeedButton;
     ActionList: TActionList;
 
@@ -116,27 +84,19 @@ type
     DamResult: TDamMsgRes;
     LangStrs: TDamLanguageDefinition;
 
-    {$IFDEF USE_SCALING}
-    Scaling: TDzFormScaling;
-    {$ENDIF}
+    procedure BuildControls;
 
-    function ToScale(Value: TPixels): TPixels;
-    function GetCurrentMonitorRect: TRect;
+    function GetCurrentMonitorWidth: Integer;
 
     procedure SetFormCustomization;
     procedure SetFormTitle;
     procedure SetIcon;
+    procedure SetHelpButton;
     procedure BuildButtons;
-    procedure LoadHelp;
     procedure LoadTextProps;
 
-    procedure OverallAlign;
-    procedure ManualFormScale;
-    procedure AlignButtons;
     procedure CalcWidth;
     procedure CalcHeight;
-
-    procedure CenterForm;
 
     procedure DoSound;
 
@@ -153,36 +113,57 @@ type
     procedure OnBtnClick(Sender: TObject);
   public
     constructor CreateNew; reintroduce;
-    destructor Destroy; override;
   end;
 
-const
-  DESIGN_DPI = 96;
-
-  {$IFDEF FMX}
-  BRUSH_KIND_NONE = TBrushKind.{$IFDEF USE_NEW_ENUMS}None{$ELSE}bkNone{$ENDIF};
-  {$ENDIF}
+{$IFDEF FMX}
+const BRUSH_KIND_NONE = TBrushKind.{$IFDEF USE_NEW_ENUMS}None{$ELSE}bkNone{$ENDIF};
+{$ENDIF}
 
 constructor TFrmDamDialogDyn.CreateNew;
-var
-  Action: TAction;
 begin
-  inherited CreateNew(Application);
-
-  ButtonsList := TList<TButton>.Create;
+  //using CreateNew for resources to work correctly
+  inherited CreateNew(Screen.ActiveForm); //active form is used when centering by active form
 
   OnShow := FormShow;
-
-  {$IFDEF FMX}
-  BorderIcons := [];
-  {$ELSE}
-  Position := poDesigned;
-  {$ENDIF}
 
   {$IFDEF USE_DPICHANGE}
   OnAfterMonitorDpiChanged := OnAfterDpiChanged;
   {$ENDIF}
+end;
 
+function RunDamDialog(DamMsg: TDamMsg; const aText: string): TDamMsgRes;
+var
+  F: TFrmDamDialogDyn;
+begin
+  F := TFrmDamDialogDyn.CreateNew;
+  try
+    F.DamMsg := DamMsg;
+    F.LangStrs := LoadLanguage(DamMsg.Dam.Language);
+
+    F.BuildControls;
+
+    F.SetFormCustomization;
+    F.SetFormTitle;
+    F.SetHelpButton;
+    F.BuildButtons;
+
+    F.SetIcon;
+    F.CalcWidth; //load text props occurs inside this method
+    F.CalcHeight;
+
+    F.ShowModal;
+    Result := F.DamResult;
+  finally
+    F.Free;
+  end;
+end;
+
+//
+
+procedure TFrmDamDialogDyn.BuildControls;
+var
+  Action: TAction;
+begin
   ActionList := TActionList.Create(Self);
 
   Action := TAction.Create(Self);
@@ -207,20 +188,28 @@ begin
   {$ENDIF}
 
   Icon := TImage.Create(Self);
+  Icon.SetBounds(8, 8, 32, 32);
   Icon.Parent := BoxMsg;
   {$IFDEF VCL}
   Icon.Proportional := True;
   {$ENDIF}
+  Icon.Visible := not DamMsg.Dam.HideIcon;
 
   LbMsg := TDzHTMLText.Create(Self);
+  LbMsg.SetBounds(IfThen(Icon.Visible, 48, 8), 8, 0, 0);
   LbMsg.Parent := BoxMsg;
   LbMsg.OnLinkClick := LbMsgLinkClick;
   {$IFDEF VCL}
   LbMsg.ParentColor := True;
   LbMsg.ParentFont := False;
   {$ENDIF}
+  {$IFDEF VCL_DCC}
+  //using Dam component state, because in Preview, we have new TDamMsg, but TDam of form in design
+  if (csDesigning in DamMsg.Dam.ComponentState) then LbMsg.StyleElements := []; //do not use themes in Delphi IDE
+  {$ENDIF}
 
   BoxButtons := TBoxComps.Create(Self);
+  BoxButtons.Height := 39;
   BoxButtons.Parent := Self;
   {$IFDEF FMX}
   BoxButtons.Align := TAlignLayout.{$IFDEF USE_NEW_ENUMS}Bottom{$ELSE}alBottom{$ENDIF};
@@ -232,6 +221,7 @@ begin
   {$ENDIF}
 
   BoxFloatBtns := TBoxComps.Create(Self);
+  BoxFloatBtns.SetBounds(0, 8, 0, 25);
   BoxFloatBtns.Parent := BoxButtons;
   {$IFDEF FMX}
   BoxFloatBtns.Stroke.Kind := BRUSH_KIND_NONE; //remove border
@@ -241,58 +231,30 @@ begin
   {$ENDIF}
 
   BtnHelp := TSpeedButton.Create(Self);
+  BtnHelp.SetBounds(8, 8, 25, 25);
   BtnHelp.Parent := BoxButtons;
   BtnHelp.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF} := '?';
   BtnHelp.OnClick := BtnHelpClick;
 end;
 
-destructor TFrmDamDialogDyn.Destroy;
-begin
-  ButtonsList.Free;
-  inherited;
-end;
-
-function RunDamDialog(DamMsg: TDamMsg; const aText: string): TDamMsgRes;
-var
-  F: TFrmDamDialogDyn;
-begin
-  F := TFrmDamDialogDyn.CreateNew;
-  try
-    {$IFDEF VCL_DCC}
-    //using Dam component state, because in Preview, we have new TDamMsg, but TDam of form in design
-    if (csDesigning in DamMsg.Dam.ComponentState) then F.LbMsg.StyleElements := []; //do not use themes in Delphi IDE
-    {$ENDIF}
-
-    F.DamMsg := DamMsg;
-    F.LangStrs := LoadLanguage(DamMsg.Dam.Language);
-
-    F.SetFormCustomization;
-    F.SetFormTitle;
-    F.BuildButtons;
-    F.LoadHelp;
-    F.LoadTextProps; //required before auto form scaling
-
-    F.OverallAlign;
-
-    F.CenterForm;
-
-    F.ShowModal;
-    Result := F.DamResult;
-  finally
-    F.Free;
-  end;
-end;
-
-//
-
 procedure TFrmDamDialogDyn.SetFormCustomization;
 begin
+  case DamMsg.Dam.DialogPosition of
+    dpScreenCenter: Position := {$IFDEF FMX}TFormPosition.ScreenCenter{$ELSE}poScreenCenter{$ENDIF};
+    dpActiveFormCenter: Position := {$IFDEF FMX}TFormPosition.OwnerFormCenter{$ELSE}poOwnerFormCenter{$ENDIF};
+    dpMainFormCenter: Position := {$IFDEF FMX}TFormPosition.MainFormCenter{$ELSE}poMainFormCenter{$ENDIF};
+    else raise EDamInternalExcept.Create('Invalid dialog position property');
+  end;
+
   //form border
   {$IFDEF FMX}
-  //if DamMsg.Dam.DialogBorder then
-  //  BorderStyle := TFmxFormBorderStyle.Single
-  //else
-  //  BorderStyle := TFmxFormBorderStyle.None;
+  if DamMsg.Dam.DialogBorder then
+  begin
+    BorderStyle := TFmxFormBorderStyle.Single;
+    BorderIcons := []; //I can't remove only icon
+  end
+  else
+    BorderStyle := TFmxFormBorderStyle.None;
   {$ELSE}
   if DamMsg.Dam.DialogBorder then
     BorderStyle := bsDialog
@@ -315,10 +277,6 @@ begin
   BoxMsg.Color := DamMsg.Dam.MessageColor;
   BoxButtons.Color := DamMsg.Dam.ButtonsColor;
   {$ENDIF}
-
-  //icon
-  if DamMsg.Dam.HideIcon then
-    Icon.Visible := False;
 end;
 
 procedure TFrmDamDialogDyn.SetFormTitle;
@@ -332,7 +290,7 @@ procedure TFrmDamDialogDyn.SetFormTitle;
       diWarn  : Result := LangStrs.Warn;
       diError : Result := LangStrs.Error;
       diCustom: Result := LangStrs.Msg;
-      else raise Exception.Create('Unknown icon kind property');
+      else raise EDamInternalExcept.Create('Unknown icon kind property');
     end;
   end;
 
@@ -343,14 +301,50 @@ begin
     dtMainForm  : Caption := Application.MainForm.Caption;
     dtByIcon    : Caption := GetIconTitle;
     dtCustom    : Caption := DamMsg.CustomTitle;
-    else raise Exception.Create('Unknown title kind property');
+    else raise EDamInternalExcept.Create('Unknown title kind property');
   end;
+end;
+
+function CalcButtonWidth(Btn: TButton): TPixels;
+type TBmp =
+  {$IFDEF FPC}
+    Graphics
+  {$ELSE}
+    {$IFDEF FMX}
+    FMX.{$IFDEF USE_NEW_UNITS}Graphics{$ELSE}Types{$ENDIF}
+    {$ELSE}
+    Vcl.Graphics
+    {$ENDIF}
+  {$ENDIF}.TBitmap;
+var
+  B: TBmp;
+begin
+  B := TBmp.Create{$IFDEF USE_FMX_OLD_ENV}(1, 1){$ENDIF};
+  try
+    B.Canvas.Font.Assign(Btn.Font);
+
+    Result := Max(B.Canvas.TextWidth(Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF})+20, 75);
+  finally
+    B.Free;
+  end;
+end;
+
+procedure TFrmDamDialogDyn.SetHelpButton;
+begin
+  BtnHelp.Visible :=
+    {$IFDEF VCL}
+    (DamMsg.HelpContext<>0) or (DamMsg.HelpKeyword<>EmptyStr)
+    {$ELSE}
+    False //** here we can implement help event for FMX ???
+    {$ENDIF};
 end;
 
 procedure TFrmDamDialogDyn.BuildButtons;
 var
+  ButtonsList: TList<TButton>;
   NumButtons: Byte;
   I: Integer;
+  X: TPixels;
   Btn: TButton;
   Names: array[1..3] of string;
 begin
@@ -358,7 +352,7 @@ begin
     dbOne, dbOK: NumButtons := 1;
     dbTwo, dbYesNo: NumButtons := 2;
     dbThree: NumButtons := 3;
-    else raise Exception.Create('Unknown buttons kind property');
+    else raise EDamInternalExcept.Create('Unknown buttons kind property');
   end;
 
   DamResult := NumButtons; //default result - last button
@@ -376,116 +370,106 @@ begin
       end;
   end;
 
-  for I := 1 to NumButtons do
-  begin
-    Btn := TButton.Create(Self);
-    Btn.Parent := BoxFloatBtns;
-    Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF} := Names[I];
-    Btn.OnClick := OnBtnClick;
-    Btn.Tag := I;
+ ButtonsList := TList<TButton>.Create;
+ try
+    X := 0;
+    for I := 1 to NumButtons do
+    begin
+      Btn := TButton.Create(Self);
+      Btn.Parent := BoxFloatBtns;
+      Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF} := Names[I];
+      Btn.OnClick := OnBtnClick;
+      Btn.Tag := I;
 
-    ButtonsList.Add(Btn);
-  end;
+      Btn.SetBounds(X, 0, CalcButtonWidth(Btn), BoxFloatBtns.Height);
+      X := X + Btn.Width + 8;
 
-  ButtonsList.Last.Cancel := True;
-  if DamMsg.SwapFocus then
-    ActiveControl := ButtonsList.Last
-  else
-    ActiveControl := ButtonsList.First; //In FMX, first control is not auto focused
+      ButtonsList.Add(Btn);
+    end;
+
+    ButtonsList.Last.Cancel := True;
+    if DamMsg.SwapFocus then
+      ActiveControl := ButtonsList.Last
+    else
+      ActiveControl := ButtonsList.First; //In FMX, first control is not auto focused
+
+    BoxFloatBtns.Width := ButtonsList.Last.BoundsRect.Right;
+ finally
+   ButtonsList.Free;
+ end;
 end;
 
-procedure TFrmDamDialogDyn.LoadHelp;
-begin
-  BtnHelp.Visible :=
-    {$IFDEF VCL}
-    (DamMsg.HelpContext<>0) or (DamMsg.HelpKeyword<>EmptyStr)
-    {$ELSE}
-    False
-    {$ENDIF};
-end;
-
-procedure TFrmDamDialogDyn.LoadTextProps;
-begin
-  {$IFDEF USE_IMGLST}
-  LbMsg.Images := DamMsg.Dam.Images;
-  {$ENDIF}
-  LbMsg.Font.Assign(DamMsg.Dam.MessageFont);
-  {$IFDEF FMX}
-  LbMsg.FontColor := DamMsg.Dam.MessageFontColor;
-  {$ENDIF}
-end;
-
-function TFrmDamDialogDyn.ToScale(Value: TPixels): TPixels;
-begin
-  {$IFDEF USE_SCALING}
-  Result := Scaling.Calc(Value);
-  {$ELSE}
-  Result := Value;
-  {$ENDIF}
-end;
-
-function TFrmDamDialogDyn.GetCurrentMonitorRect: TRect;
-{$IFDEF USE_FMX_OLD_ENV}
+function TFrmDamDialogDyn.GetCurrentMonitorWidth: Integer;
+const DEF_PPI = 96;
 var
+  PPI: Integer;
+  R: TRect;
+  F: {$IFDEF FMX}TCommonCustomForm{$ELSE}TForm{$ENDIF};
+{$IFDEF FMX}
+  D: TDisplay;
+{$ELSE}
+  M: TMonitor;
+{$ENDIF}
+{$IFDEF USE_FMX_OLD_ENV}
   ScreenService: IFMXScreenService;
 {$ENDIF}
+
+{$IFDEF FMX}
+  function GetPrimaryDisplay: TDisplay;
+  var
+    I: Integer;
+  begin
+    for I := 0 to Screen.DisplayCount-1 do
+      if Screen.Displays[I].Primary then
+        Exit(Screen.Displays[I]);
+
+    raise EDamInternalExcept.Create('Primary display not found');
+  end;
+{$ENDIF}
+
 begin
+  F := Screen.ActiveForm;
+
+  {$IFDEF FMX}
+  if F <> nil then
+    D := Screen.DisplayFromForm(F)
+  else
+    D := GetPrimaryDisplay;
+  {$ELSE}
+  if F <> nil then
+    M := F.Monitor
+  else
+    M := Screen.PrimaryMonitor;
+  {$ENDIF}
+
   {$IFDEF FMX}
     {$IFDEF USE_FMX_OLD_ENV}
     if TPlatformServices.Current.SupportsPlatformService(IFMXScreenService, IInterface(ScreenService)) then
-      Result := TRect.Create(0, 0, Round(ScreenService.GetScreenSize.X), Round(ScreenService.GetScreenSize.Y))
+      R := TRect.Create(0, 0, Round(ScreenService.GetScreenSize.X), Round(ScreenService.GetScreenSize.Y))
     else
-      raise Exception.Create('Could not get Monitor Rect');
+      raise EDamInternalExcept.Create('Could not get Monitor Rect');
     {$ELSE}
-    Result := Screen.DisplayFromForm(Self).BoundsRect{$IF CompilerVersion >= 35}.Round{$ENDIF}; //Round - Delphi 11
+    R := Screen.DisplayFromForm(F).BoundsRect{$IF CompilerVersion >= 35}.Round{$ENDIF}; //Round - Delphi 11
     {$ENDIF}
   {$ELSE}
-    Result := Monitor.BoundsRect;
+    R := M.BoundsRect;
+  {$ENDIF}
+
+  {$IF Defined(VCL) and (Defined(DCC) and (CompilerVersion >= 30)) or Defined(FPC)} //D10 Seattle or Lazarus
+  PPI := M.PixelsPerInch;
+  {$ELSE}
+  PPI := DEF_PPI;
+  {$ENDIF}
+
+  Result := R.Width;
+  {$IFNDEF FPC}
+  Result := Round(Result * DEF_PPI / PPI);
   {$ENDIF}
 end;
 
 function GetDiv2(Value: TPixels): TPixels;
 begin
   Result := Value {$IFDEF FMX}/{$ELSE}div{$ENDIF} 2;
-end;
-
-procedure TFrmDamDialogDyn.OverallAlign;
-begin
-  {$IFDEF USE_SCALING}
-  Scaling := TDzFormScaling.Create;
-  try
-    Scaling.Update(Self, DESIGN_DPI);
-  {$ENDIF}
-    ManualFormScale;
-    SetIcon;
-    AlignButtons;
-    CalcWidth;
-    CalcHeight;
-  {$IFDEF USE_SCALING}
-  finally
-    Scaling.Free;
-  end;
-  {$ENDIF}
-end;
-
-procedure TFrmDamDialogDyn.ManualFormScale;
-{$IFDEF VCL}
-var
-  DPI: Integer;
-{$ENDIF}
-begin
-  Icon.SetBounds(ToScale(8), ToScale(8), ToScale(32), ToScale(32));
-  LbMsg.SetBounds(IfThen(Icon.Visible, ToScale(48), ToScale(8)), ToScale(8), 0, 0);
-  BoxButtons.Height := ToScale(39);
-  BoxFloatBtns.SetBounds(0, ToScale(8), 0, ToScale(25));
-  BtnHelp.SetBounds(ToScale(8), ToScale(8), ToScale(25), ToScale(25));
-
-  {$IFDEF VCL}
-  //here we can't use ToScale (Scaling.Calc), because is set with Design DPI, instead of Monitor DPI
-  DPI := {$IFDEF USE_SCALING}Scaling.MonitorPPI{$ELSE}DESIGN_DPI{$ENDIF};
-  BoxButtons.Font.Height := CalcFontHeight(9, DPI);
-  LbMsg.Font.Height := CalcFontHeight(DamMsg.Dam.MessageFont.Size, DPI);
-  {$ENDIF}
 end;
 
 {$IFDEF VCL}
@@ -510,7 +494,7 @@ procedure TFrmDamDialogDyn.SetIcon;
     case DamMsg.Icon of
       diApp   :
         {$IFDEF FMX}
-        raise Exception.Create('Unsupported app icon in FMX environment');
+        raise EDamInternalExcept.Create('Unsupported app icon in FMX environment');
         {$ELSE}
         Icon.Picture.Icon.Assign(Application.Icon);
         {$ENDIF}
@@ -524,7 +508,7 @@ procedure TFrmDamDialogDyn.SetIcon;
       diQuest : ResName := 'IC_QUESTION';
       diWarn  : ResName := 'IC_WARNING';
       diError : ResName := 'IC_ERROR';
-      else raise Exception.Create('Unknown icon kind property');
+      else raise EDamInternalExcept.Create('Unknown icon kind property');
     end;
 
     if not ResName.IsEmpty then
@@ -551,45 +535,25 @@ begin
     diQuest : LoadWindowsIcon(102);
     diWarn  : LoadWindowsIcon(101);
     diError : LoadWindowsIcon(103);
-    else raise Exception.Create('Unknown icon kind property');
+    else raise EDamInternalExcept.Create('Unknown icon kind property');
   end;
   {$ELSE}
   GetIconFromResource;
   {$ENDIF}
 end;
 
-procedure TFrmDamDialogDyn.AlignButtons;
-type TBmp =
-  {$IFDEF FPC}
-    Graphics
-  {$ELSE}
-    {$IFDEF FMX}
-    FMX.{$IFDEF USE_NEW_UNITS}Graphics{$ELSE}Types{$ENDIF}
-    {$ELSE}
-    Vcl.Graphics
-    {$ENDIF}
-  {$ENDIF}.TBitmap;
-var
-  B: TBmp;
-  Btn: TButton;
-  X, W: TPixels;
+procedure TFrmDamDialogDyn.LoadTextProps;
 begin
-  B := TBmp.Create{$IFDEF USE_FMX_OLD_ENV}(1, 1){$ENDIF};
-  try
-    B.Canvas.Font.Assign(ButtonsList.First.Font);
+  {$IFDEF USE_IMGLST}
+  LbMsg.Images := DamMsg.Dam.Images;
+  {$ENDIF}
 
-    X := 0;
-    for Btn in ButtonsList do
-    begin
-      W := Max(B.Canvas.TextWidth(Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF})+ToScale(20), ToScale(75));
-      Btn.SetBounds(X, 0, W, BoxFloatBtns.Height);
-      X := X + Btn.Width + ToScale(8);
-    end;
-  finally
-    B.Free;
-  end;
+  LbMsg.Font.Assign(DamMsg.Dam.MessageFont);
+  {$IFDEF FMX}
+  LbMsg.FontColor := DamMsg.Dam.MessageFontColor;
+  {$ENDIF}
 
-  BoxFloatBtns.Width := ButtonsList.Last.BoundsRect.Right;
+  LbMsg.Text := DamMsg.Message; //set TEXT
 end;
 
 procedure TFrmDamDialogDyn.CalcWidth;
@@ -597,28 +561,27 @@ var
   MinSize, X: TPixels;
 begin
   if DamMsg.FixedWidth=0 then
-    LbMsg.Width := Round(GetCurrentMonitorRect.Width * 0.75) //max width
+    X := Round(GetCurrentMonitorWidth * 0.75) //max width
   else
-    LbMsg.Width := ToScale(DamMsg.FixedWidth);
+    X := DamMsg.FixedWidth;
 
-  {$IFDEF USE_SCALING}
-  LbMsg.DesignDPI := RetrieveDesignerPPI(TCustomForm(DamMsg.Dam.Owner));
-  {$ENDIF}
-  LbMsg.Text := DamMsg.Message; //set TEXT
+  LbMsg.Width := X - LbMsg.BoundsRect.Left - 8;
+
+  LoadTextProps;
 
   if (DamMsg.FixedWidth=0) and (LbMsg.TextWidth < LbMsg.Width) then
   begin
-    MinSize := Max(ToScale(300), BoxFloatBtns.Width);
+    MinSize := Max(300, (BoxFloatBtns.Width+75)-LbMsg.BoundsRect.Left);
     LbMsg.Width := Max(LbMsg.TextWidth, MinSize);
   end;
 
-  ClientWidth := Round(LbMsg.BoundsRect.Right+ToScale(8));
+  ClientWidth := Round(LbMsg.BoundsRect.Right+8);
 
   //align FloatBtns
   if DamMsg.Dam.CenterButtons then
     X := GetDiv2(ClientWidth-BoxFloatBtns.Width) //center
   else
-    X := ClientWidth-BoxFloatBtns.Width-ToScale(8); //right
+    X := ClientWidth-BoxFloatBtns.Width-8; //right
 
   BoxFloatBtns.{$IFDEF FMX}Position.X{$ELSE}Left{$ENDIF} := X;
 end;
@@ -642,39 +605,10 @@ begin
   end;
 end;
 
-type TFormAccess = class(TForm);
-procedure TFrmDamDialogDyn.CenterForm;
-var
-  R: TRect;
-  F: {$IFDEF FMX}TCommonCustomForm{$ELSE}TForm{$ENDIF};
-begin
-  //form screen position
-  R := GetCurrentMonitorRect;
-  F := nil;
-  case DamMsg.Dam.DialogPosition of
-    dpScreenCenter: {};
-    dpMainFormCenter: F := Application.MainForm;
-    dpActiveFormCenter: F := Screen.ActiveForm;
-    else raise Exception.Create('Invalid dialog position property');
-  end;
-  if F<>nil then
-    R :=
-    {$IFDEF FMX}
-      {$IF CompilerVersion >= 30} //Delphi 10 Seattle
-      F.Bounds
-      {$ELSE}
-      TFormAccess(F).FWinService.GetWindowRect(Self).Round
-      {$ENDIF}
-    {$ELSE}
-    F.BoundsRect
-    {$ENDIF};
-
-  Left := Round(R.Left + GetDiv2(R.Width - Width));
-  Top := Round(R.Top + GetDiv2(R.Height - Height));
-end;
-
 procedure TFrmDamDialogDyn.FormShow(Sender: TObject);
 begin
+
+
   if DamMsg.Dam.PlaySounds then
     DoSound;
 end;
@@ -729,7 +663,7 @@ begin
   if DamMsg.HelpKeyword<>EmptyStr then
     Application.HelpKeyword(DamMsg.HelpKeyword)
   else
-    raise Exception.Create('Unknown help property');
+    raise EDamInternalExcept.Create('Unknown help property');
   {$ENDIF}
 end;
 
@@ -758,7 +692,8 @@ end;
 {$IFDEF USE_DPICHANGE}
 procedure TFrmDamDialogDyn.OnAfterDpiChanged(Sender: TObject; Old, New: Integer);
 begin
-  OverallAlign;
+  //only in VCL
+  SetIcon;
 end;
 {$ENDIF}
 

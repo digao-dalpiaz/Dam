@@ -206,6 +206,7 @@ function DamParams(const Params: array of Variant): TDamParams; //compatibility 
 implementation
 
 uses
+  DamInternalExcept,
 {$IFDEF FMX}FMX.DzHTMLText, FMX.DamDialog{$ELSE}Vcl.DzHTMLText, Vcl.DamDialog{$ENDIF},
 {$IFDEF FPC}
   Forms
@@ -224,13 +225,13 @@ var ObjDefault: TDam = nil;
 procedure CheckExceptObject;
 begin
   if ExceptObject=nil then
-    raise Exception.Create('DAM: ExceptObject nil');
+    raise EDamInternalExcept.Create('ExceptObject nil');
 end;
 
 procedure CheckDamDefault;
 begin
   if ObjDefault=nil then
-    raise Exception.Create('DAM: Default TDam not found');
+    raise EDamInternalExcept.Create('Default TDam not found');
 end;
 
 function CaptureErrorMsg: string;
@@ -338,7 +339,7 @@ begin
     begin
       Inc(IdxPar);
       if IdxPar>High(Params) then
-        raise Exception.CreateFmt('DAM: Parameter index %d not found', [IdxPar]);
+        raise EDamInternalExcept.CreateFmt('Parameter index %d not found', [IdxPar]);
     end;
 
     Delete(A, I, Length(ARGS[ArgIdx]));
@@ -414,7 +415,7 @@ begin
     FSwapFocus := SourceMsg.FSwapFocus;
     FRaise := SourceMsg.FRaise;
   end
-    else raise Exception.Create('Source must be TDamMsg');
+    else raise EDamInternalExcept.Create('Source must be TDamMsg');
 end;
 
 function TDamMsg.HasParent: Boolean;
@@ -605,7 +606,7 @@ begin
 end;
 
 initialization
-  if DZHTMLTEXT_INTERNAL_VERSION <> 707 then
-    raise Exception.Create('Please, update DzHTMLText component.');
+  if DZHTMLTEXT_INTERNAL_VERSION <> 706 then
+    raise EDamInternalExcept.Create('Please, update DzHTMLText component.');
 
 end.

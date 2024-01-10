@@ -30,6 +30,7 @@ function LoadLanguage(Language: TDamLanguage): TDamLanguageDefinition;
 implementation
 
 uses
+  DamInternalExcept,
 {$IFDEF FPC}
   SysUtils, IniFiles
 {$ELSE}
@@ -81,7 +82,7 @@ begin
   for P in LANGUAGES_PARAMS do
     if P.DamLang = DamLang then Exit(P.Name);
 
-  raise Exception.Create('Invalid language');
+  raise EDamInternalExcept.Create('Invalid language');
 end;
 
 function GetResource(const Name: string): TResourceStream;
@@ -121,7 +122,7 @@ begin
     end;
 
     if S.Count=0 then
-      raise Exception.CreateFmt('Language "%s" not found in resource', [aLang]);
+      raise EDamInternalExcept.CreateFmt('Language "%s" not found in resource', [aLang]);
 
     with Result do
     begin
