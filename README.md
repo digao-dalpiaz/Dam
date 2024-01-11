@@ -40,6 +40,7 @@
 
    - FMX support!!!
    - DPI Scaling improvements
+   - Message form re-scaling when moving around different monitors
    - Windows messages icons scaling supporting
    - New Component DCR icons (transparency)
    - New HideIcon property
@@ -482,7 +483,7 @@ Fires before a Dam Message is displayed, allowing you to intercept messages and 
 
 `Dam: TDam` = Defines Dam container of this message.
 
-`FixedWidth: Integer` = Defines a fixed width of message window, in pixels. If this value is zero (default), then the window width will be automatically calculated according to the message text. *There is a minimum and maximum fixed limits to the message form*.
+`FixedWidth: Integer` = Defines a fixed width of text part in message window, in pixels. If this value is zero (default), then the window width will be automatically calculated according to the message text. *There is a minimum and maximum fixed limits to the message form (minimum = 300px / maximum = 75% of screen width)*.
 
 `HelpContext: THelpContext` = Defines help context. If this property is defined, when the message dialog will display a help button and will open application help on context target. It's also possible to use F1 key.
 
@@ -651,17 +652,20 @@ After that, please run the "**AfterBuild.bat**" to publish this new resource fil
 
 ### FMX
 
-- DamMsg.Icon = diApp not supported
+- DamMsg.Icon = diApp not supported.
 - In Message Dialog Editor, linked Dam images are not supported, so the preview is unavailable in the Editor screen.
-- Help settings for TDamMsg (HelpKeyword and HelpContext) are unsupported
+- Help settings for TDamMsg (HelpKeyword and HelpContext) are unsupported.
+- When DialogPosition = dpScreenCenter, message dialog always run at primary monitor (Delphi behavior).
+- If OS theme contains different height of message header bar (system menu), Delphi does not show form considering header size, even using ClientRect, so the dialog will be displayed probably bigger than must be. When DialogBorder = False, you will easily see this behavior. Check this thread: https://stackoverflow.com/questions/76164235/creating-forms-dynamically-border-behavior
 
 ### Windows
 
 - Sounds only supported in Windows environment
 
-### DPI Scaling
+### DPI Scaling (VCL)
 
-- Lazarus and Delphi previous versions than D10 - unsupported auto changing DPI scaling at runtime
+- Lazarus and Delphi previous versions than D10 - unsupported re-scaling message at runtime (when moving around different monitors).
+- DamMsg.Icon = diApp/diCustom does not support auto scaling.
 
 ## Delphi versions below XE8 remark
 
