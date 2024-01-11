@@ -108,7 +108,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   published
     property About: string read FAbout;
-    property Language: TDamLanguage read FLanguage write FLanguage;
+    property Language: TDamLanguage read FLanguage write FLanguage; //do not use default here - language must always be stored
     property HandleExceptions: Boolean read FRaises write FRaises default False;
     {$IFDEF USE_IMGLST}
     property Images: TCustomImageList read FImages write SetImages;
@@ -373,8 +373,6 @@ destructor TDamMsg.Destroy;
 begin
   FCustomIcon.Free;
 
-  FDam := nil;
-
   inherited;
 end;
 
@@ -397,7 +395,8 @@ begin
 end;
 
 procedure TDamMsg.Assign(Source: TPersistent);
-var SourceMsg: TDamMsg;
+var
+  SourceMsg: TDamMsg;
 begin
   if Source is TDamMsg then
   begin
@@ -414,6 +413,9 @@ begin
     FButtons := SourceMsg.FButtons;
     FSwapFocus := SourceMsg.FSwapFocus;
     FRaise := SourceMsg.FRaise;
+    FFixedWidth := SourceMsg.FFixedWidth;
+    FHelpContext := SourceMsg.FHelpContext;
+    FHelpKeyword := SourceMsg.FHelpKeyword;
   end
     else raise EDamInternalExcept.Create('Source must be TDamMsg');
 end;
@@ -606,7 +608,7 @@ begin
 end;
 
 initialization
-  if DZHTMLTEXT_INTERNAL_VERSION <> 706 then
+  if DZHTMLTEXT_INTERNAL_VERSION < 706 then
     raise EDamInternalExcept.Create('Please, update DzHTMLText component.');
 
 end.

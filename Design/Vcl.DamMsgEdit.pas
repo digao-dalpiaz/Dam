@@ -98,7 +98,7 @@ type
     DamMsg: TDamMsg;
     procedure StoreComp(Target: TDamMsg);
   private
-    procedure PutSelText(aTag: string; aParameter: string='');
+    procedure PutSelText(aTag: string; aParameter: string = '');
     procedure SetBtn(C: TDamMsg);
   end;
 
@@ -168,8 +168,7 @@ begin
     if A[1] = '_' then Delete(A, 1, 1);
     EdNome.Text := A;
 
-    M.Text := DamMsg.Message;
-    //MChange(nil);
+    M.Text := DamMsg.Message; //OnChange triggered here
 
     V := (DamMsg.Button1 = '')
      and (DamMsg.Button2 = '')
@@ -331,21 +330,22 @@ end;
 
 procedure ClearMsg(Msg: TDamMsg);
 var
-  Def: TDamMsg;
-  SwapFocus: Boolean;
-  AMsg: string;
+  Def, Bkp: TDamMsg;
 begin
   Def := TDamMsg.Create(nil);
+  Bkp := TDamMsg.Create(nil);
   try
-    AMsg := Msg.Message;
-    SwapFocus := Msg.SwapFocus;
-
+    Bkp.Assign(Msg);
     Msg.Assign(Def); //get default properties
 
-    Msg.Message := AMsg;
-    Msg.SwapFocus := SwapFocus;
+    Msg.Message := Bkp.Message;
+    Msg.SwapFocus := Bkp.SwapFocus;
+    Msg.FixedWidth := Bkp.FixedWidth;
+    Msg.HelpContext := Bkp.HelpContext;
+    MSg.HelpKeyword := Bkp.HelpKeyword;
   finally
     Def.Free;
+    Bkp.Free;
   end;
 end;
 

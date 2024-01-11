@@ -69,10 +69,10 @@ begin
     if P.SysLang = SysLocale.PriLangID then
     begin
       DamLang := P.DamLang;
-      Break;
+      Exit;
     end;
 
-  //if not found, it's another unsupported language - leave initial language
+  DamLang := dgEnglish; //default
 end;
 
 function GetLangNameByDamLang(DamLang: TDamLanguage): string;

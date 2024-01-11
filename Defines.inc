@@ -16,7 +16,6 @@
   {$DEFINE VCL}
   {$DEFINE USE_IMGLST}
   {$IFDEF DCC}
-    {$DEFINE VCL_DCC}
     {$IF CompilerVersion >= 30} //Delphi 10 Seattle
       {$DEFINE USE_DPICHANGE}
     {$ENDIF}

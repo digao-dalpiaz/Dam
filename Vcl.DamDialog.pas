@@ -202,10 +202,7 @@ begin
   {$IFDEF VCL}
   LbMsg.ParentColor := True;
   LbMsg.ParentFont := False;
-  {$ENDIF}
-  {$IFDEF VCL_DCC}
-  //using Dam component state, because in Preview, we have new TDamMsg, but TDam of form in design
-  if (csDesigning in DamMsg.Dam.ComponentState) then LbMsg.StyleElements := []; //do not use themes in Delphi IDE
+  LbMsg.Transparent := True; //while we can't get real background color of themes
   {$ENDIF}
 
   BoxButtons := TBoxComps.Create(Self);
@@ -447,7 +444,7 @@ begin
     else
       raise EDamInternalExcept.Create('Could not get Monitor Rect');
     {$ELSE}
-    R := Screen.DisplayFromForm(F).BoundsRect{$IF CompilerVersion >= 35}.Round{$ENDIF}; //Round - Delphi 11
+    R := D.BoundsRect{$IF CompilerVersion >= 35}.Round{$ENDIF}; //Round - Delphi 11
     {$ENDIF}
   {$ELSE}
     R := M.BoundsRect;
@@ -546,6 +543,9 @@ begin
   {$ENDIF}
 
   LbMsg.Text := DamMsg.Message; //set TEXT
+  {$IFDEF VCL}
+  if LbMsg.LinkRefs.Count>0 then BoxMsg.DoubleBuffered := True; //** while using Transparent property
+  {$ENDIF}
 end;
 
 procedure TFrmDamDialogDyn.CalcWidth;
@@ -599,8 +599,6 @@ end;
 
 procedure TFrmDamDialogDyn.FormShow(Sender: TObject);
 begin
-
-
   if DamMsg.Dam.PlaySounds then
     DoSound;
 end;
