@@ -4,7 +4,7 @@
 
 ## Delphi and Lazarus Message Dialogs with Formatted Text
 
-![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-XE3..11-blue.svg)
+![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-XE3..12-blue.svg)
 ![Platforms](https://img.shields.io/badge/Platforms-Win32,Win64,Android,iOS,Mac,Linux-red.svg)
 ![Auto Install](https://img.shields.io/badge/-Auto%20Install%20App-orange.svg)
 ![VCL and FMX](https://img.shields.io/badge/-VCL%20and%20FMX-lightgrey.svg)
@@ -36,7 +36,7 @@
 
 ## What's New
 
-- 05/01/2023 (Version 6.0) (*Minimum DzHTMLText version: 4.2*)
+- 01/10/2024 (Version 6.0) (*Minimum DzHTMLText version: 5.1*)
 
    - FMX support!!!
    - DPI Scaling improvements
@@ -44,6 +44,7 @@
    - New Component DCR icons (transparency)
    - New HideIcon property
    - Linux supporting (Using Lazarus) - new internal resource icons for message dialogs - same as using in FMX
+   - Fixed Message background when using Themes in VCL (now text is transparent)
    
    **WARNING!!!** Please completely uninstall the previous version by deleting the previous Dam Component folder, because many files have changed their names and locations.
 
@@ -303,19 +304,19 @@ The Message Dialog: :stuck_out_tongue:
 
 1. Open **Dam.groupproj** in the Delphi.
 
-2. Ensure **Win32** Platform and **Release** config are selected at both packages.
+2. Ensure **Win32** Platform and **Release** config are selected in all packages.
 
 3. Right-click at root item in the tree and choose **Build All**.
 
-4. If you want to use 64 bit platform, select this platform at DamPackage and do a new Build in this package.
+4. If you want to use 64 bit platform, change platform in all packages and run a new build.
 
-5. Right-click at **DamDesignPackage** and choose **Install**.
+5. Right-click at **DamDesignPackage_VCL** / **DamDesignPackage_FMX** and choose **Install**.
 
 6. Add "Win32\Release" sub folder to Delphi Library Path (Tools\Options), on 32-bit option. If you will use 64 bit platform, add "Win64\Release" sub folder on 64-bit option.
 
 7. Run **AfterBuild.bat** to publish DFM and RES to Release folders.
 
-> Supports Delphi XE3..Delphi 11
+> Supports Delphi XE3..Delphi 12
 
 ### Lazarus installation
 
@@ -478,6 +479,8 @@ Fires before a Dam Message is displayed, allowing you to intercept messages and 
 `CustomIcon: TIcon` = Defines a custom icon to show in the message dialog. This icon only is shown when Icon=diCustom.
 
 `CustomTitle: String` = Defines a custom title for message form. This caption is only used then Title=dtCustom.
+
+`Dam: TDam` = Defines Dam container of this message.
 
 `FixedWidth: Integer` = Defines a fixed width of message window, in pixels. If this value is zero (default), then the window width will be automatically calculated according to the message text. *There is a minimum and maximum fixed limits to the message form*.
 
