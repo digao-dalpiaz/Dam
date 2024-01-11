@@ -581,7 +581,7 @@ begin
   ClientWidth := Round(GetControlRight(LbMsg) + Brd);
 
   //align FloatBtns
-  X := BoxButtons.Width - BoxFloatBtns.Width;
+  X := ClientWidth{BoxButtons.Width does not work with Lazarus} - BoxFloatBtns.Width;
   if DamMsg.Dam.CenterButtons then
     X := GetDiv2(X) //center
   else
