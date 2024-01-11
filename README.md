@@ -40,7 +40,7 @@
 
    - FMX support!!!
    - DPI Scaling improvements
-   - Message dialog DPI update in Runtime when moving dialog across monitors
+   - Windows messages icons scaling supporting
    - New Component DCR icons (transparency)
    - New HideIcon property
    - Linux supporting (Using Lazarus) - new internal resource icons for message dialogs - same as using in FMX
