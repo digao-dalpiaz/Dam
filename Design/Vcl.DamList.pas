@@ -531,6 +531,7 @@ begin
   B := TBmp.Create;
   try
     B.SetSize(Rect.Width, Rect.Height);
+    B.Canvas.Font.Assign(L.Font);
 
     B.Canvas.Brush.Color := clWindow;
     if (odSelected in State) then B.Canvas.Brush.Color := $00C6FFFF;

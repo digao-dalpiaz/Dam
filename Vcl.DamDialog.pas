@@ -95,8 +95,7 @@ type
     procedure BuildButtons;
     procedure LoadTextProps;
 
-    procedure CalcWidth;
-    procedure CalcHeight;
+    procedure CalcFormBounds;
 
     procedure DoSound;
 
@@ -115,9 +114,53 @@ type
     constructor CreateNew; reintroduce;
   end;
 
-{$IFDEF FMX}
-const BRUSH_KIND_NONE = TBrushKind.{$IFDEF USE_NEW_ENUMS}None{$ELSE}bkNone{$ENDIF};
-{$ENDIF}
+const
+  BRD_SPACE = 8;
+  BTN_HEIGHT = 25;
+  {$IFDEF FMX}
+  BRUSH_KIND_NONE = TBrushKind.{$IFDEF USE_NEW_ENUMS}None{$ELSE}bkNone{$ENDIF};
+  {$ENDIF}
+
+function GetDiv2(Value: TPixels): TPixels;
+begin
+  Result := Value {$IFDEF FMX}/{$ELSE}div{$ENDIF} 2;
+end;
+
+function GetControlLeft(C: TControl): TPixels;
+begin
+  Result := C.{$IFDEF FMX}Position.X{$ELSE}Left{$ENDIF};
+end;
+
+function GetControlRight(C: TControl): TPixels;
+begin
+  Result := GetControlLeft(C) + C.Width;
+end;
+
+function CalcButtonWidth(Btn: TButton): TPixels;
+type TBmp =
+  {$IFDEF FPC}
+    Graphics
+  {$ELSE}
+    {$IFDEF FMX}
+    FMX.{$IFDEF USE_NEW_UNITS}Graphics{$ELSE}Types{$ENDIF}
+    {$ELSE}
+    Vcl.Graphics
+    {$ENDIF}
+  {$ENDIF}.TBitmap;
+var
+  B: TBmp;
+begin
+  B := TBmp.Create{$IFDEF USE_FMX_OLD_ENV}(1, 1){$ENDIF};
+  try
+    B.Canvas.Font.Assign(Btn.Font);
+
+    Result := Max(B.Canvas.TextWidth(Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF})+20, 75);
+  finally
+    B.Free;
+  end;
+end;
+
+//
 
 constructor TFrmDamDialogDyn.CreateNew;
 begin
@@ -141,15 +184,14 @@ begin
     F.LangStrs := LoadLanguage(DamMsg.Dam.Language);
 
     F.BuildControls;
-
+    F.LoadTextProps;
     F.SetFormCustomization;
     F.SetFormTitle;
     F.SetHelpButton;
     F.BuildButtons;
 
     F.SetIcon;
-    F.CalcWidth; //load text props occurs inside this method
-    F.CalcHeight;
+    F.CalcFormBounds;
 
     F.ShowModal;
     Result := F.DamResult;
@@ -188,7 +230,7 @@ begin
   {$ENDIF}
 
   Icon := TImage.Create(Self);
-  Icon.SetBounds(8, 8, 32, 32);
+  Icon.SetBounds(BRD_SPACE, BRD_SPACE, 32, 32);
   Icon.Parent := BoxMsg;
   {$IFDEF VCL}
   Icon.Proportional := True;
@@ -196,7 +238,7 @@ begin
   Icon.Visible := not DamMsg.Dam.HideIcon;
 
   LbMsg := TDzHTMLText.Create(Self);
-  LbMsg.SetBounds(IfThen(Icon.Visible, 48, 8), 8, 0, 0);
+  LbMsg.SetBounds(IfThen(Icon.Visible, GetControlRight(Icon))+BRD_SPACE, BRD_SPACE, 0, 0);
   LbMsg.Parent := BoxMsg;
   LbMsg.OnLinkClick := LbMsgLinkClick;
   {$IFDEF VCL}
@@ -206,7 +248,7 @@ begin
   {$ENDIF}
 
   BoxButtons := TBoxComps.Create(Self);
-  BoxButtons.Height := 39;
+  BoxButtons.Height := BRD_SPACE+BTN_HEIGHT+BRD_SPACE;
   BoxButtons.Parent := Self;
   {$IFDEF FMX}
   BoxButtons.Align := TAlignLayout.{$IFDEF USE_NEW_ENUMS}Bottom{$ELSE}alBottom{$ENDIF};
@@ -218,7 +260,7 @@ begin
   {$ENDIF}
 
   BoxFloatBtns := TBoxComps.Create(Self);
-  BoxFloatBtns.SetBounds(0, 8, 0, 25);
+  BoxFloatBtns.SetBounds(0, BRD_SPACE, 0, BTN_HEIGHT);
   BoxFloatBtns.Parent := BoxButtons;
   {$IFDEF FMX}
   BoxFloatBtns.Stroke.Kind := BRUSH_KIND_NONE; //remove border
@@ -228,18 +270,35 @@ begin
   {$ENDIF}
 
   BtnHelp := TSpeedButton.Create(Self);
-  BtnHelp.SetBounds(8, 8, 25, 25);
+  BtnHelp.SetBounds(BRD_SPACE, BRD_SPACE, BTN_HEIGHT{width same as height}, BTN_HEIGHT);
   BtnHelp.Parent := BoxButtons;
   BtnHelp.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF} := '?';
   BtnHelp.OnClick := BtnHelpClick;
 end;
 
+procedure TFrmDamDialogDyn.LoadTextProps;
+begin
+  {$IFDEF USE_IMGLST}
+  LbMsg.Images := DamMsg.Dam.Images;
+  {$ENDIF}
+
+  LbMsg.Font.Assign(DamMsg.Dam.MessageFont); //keep this always before automatic scaling
+  {$IFDEF FMX}
+  LbMsg.FontColor := DamMsg.Dam.MessageFontColor;
+  {$ENDIF}
+
+  LbMsg.Text := DamMsg.Message; //set TEXT
+  {$IFDEF VCL}
+  if LbMsg.LinkRefs.Count>0 then BoxMsg.DoubleBuffered := True; //** while using Transparent property
+  {$ENDIF}
+end;
+
 procedure TFrmDamDialogDyn.SetFormCustomization;
 begin
   case DamMsg.Dam.DialogPosition of
-    dpScreenCenter: Position := {$IFDEF FMX}TFormPosition.ScreenCenter{$ELSE}poScreenCenter{$ENDIF};
-    dpActiveFormCenter: Position := {$IFDEF FMX}TFormPosition.OwnerFormCenter{$ELSE}poOwnerFormCenter{$ENDIF};
-    dpMainFormCenter: Position := {$IFDEF FMX}TFormPosition.MainFormCenter{$ELSE}poMainFormCenter{$ENDIF};
+    dpScreenCenter: Position := {$IFDEF FMX}TFormPosition.{$IFDEF USE_NEW_ENUMS}ScreenCenter{$ELSE}poScreenCenter{$ENDIF}{$ELSE}poScreenCenter{$ENDIF};
+    dpActiveFormCenter: Position := {$IFDEF FMX}TFormPosition.{$IFDEF USE_NEW_ENUMS}OwnerFormCenter{$ELSE}poOwnerFormCenter{$ENDIF}{$ELSE}poOwnerFormCenter{$ENDIF};
+    dpMainFormCenter: Position := {$IFDEF FMX}TFormPosition.{$IFDEF USE_NEW_ENUMS}MainFormCenter{$ELSE}poMainFormCenter{$ENDIF}{$ELSE}poMainFormCenter{$ENDIF};
     else raise EDamInternalExcept.Create('Invalid dialog position property');
   end;
 
@@ -247,11 +306,11 @@ begin
   {$IFDEF FMX}
   if DamMsg.Dam.DialogBorder then
   begin
-    BorderStyle := TFmxFormBorderStyle.Single;
-    BorderIcons := []; //I can't remove only icon
+    BorderStyle := TFmxFormBorderStyle.{$IFDEF USE_NEW_ENUMS}Single{$ELSE}bsSingle{$ENDIF};
+    BorderIcons := []; //How to remove only icon?
   end
   else
-    BorderStyle := TFmxFormBorderStyle.None;
+    BorderStyle := TFmxFormBorderStyle.{$IFDEF USE_NEW_ENUMS}None{$ELSE}bsNone{$ENDIF};
   {$ELSE}
   if DamMsg.Dam.DialogBorder then
     BorderStyle := bsDialog
@@ -299,30 +358,6 @@ begin
     dtByIcon    : Caption := GetIconTitle;
     dtCustom    : Caption := DamMsg.CustomTitle;
     else raise EDamInternalExcept.Create('Unknown title kind property');
-  end;
-end;
-
-function CalcButtonWidth(Btn: TButton): TPixels;
-type TBmp =
-  {$IFDEF FPC}
-    Graphics
-  {$ELSE}
-    {$IFDEF FMX}
-    FMX.{$IFDEF USE_NEW_UNITS}Graphics{$ELSE}Types{$ENDIF}
-    {$ELSE}
-    Vcl.Graphics
-    {$ENDIF}
-  {$ENDIF}.TBitmap;
-var
-  B: TBmp;
-begin
-  B := TBmp.Create{$IFDEF USE_FMX_OLD_ENV}(1, 1){$ENDIF};
-  try
-    B.Canvas.Font.Assign(Btn.Font);
-
-    Result := Max(B.Canvas.TextWidth(Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF})+20, 75);
-  finally
-    B.Free;
   end;
 end;
 
@@ -379,7 +414,7 @@ begin
       Btn.Tag := I;
 
       Btn.SetBounds(X, 0, CalcButtonWidth(Btn), BoxFloatBtns.Height);
-      X := X + Btn.Width + 8;
+      X := X + Btn.Width + BRD_SPACE;
 
       ButtonsList.Add(Btn);
     end;
@@ -390,75 +425,10 @@ begin
     else
       ActiveControl := ButtonsList.First; //In FMX, first control is not auto focused
 
-    BoxFloatBtns.Width := ButtonsList.Last.BoundsRect.Right;
+    BoxFloatBtns.Width := GetControlRight(ButtonsList.Last);
  finally
    ButtonsList.Free;
  end;
-end;
-
-function TFrmDamDialogDyn.GetCurrentMonitorWidth: Integer;
-var
-  R: TRect;
-  F: {$IFDEF FMX}TCommonCustomForm{$ELSE}TForm{$ENDIF};
-{$IFDEF FMX}
-  D: TDisplay;
-{$ELSE}
-  M: TMonitor;
-{$ENDIF}
-{$IFDEF USE_FMX_OLD_ENV}
-  ScreenService: IFMXScreenService;
-{$ENDIF}
-
-{$IFDEF FMX}
-  function GetPrimaryDisplay: TDisplay;
-  var
-    I: Integer;
-  begin
-    for I := 0 to Screen.DisplayCount-1 do
-      if Screen.Displays[I].Primary then
-        Exit(Screen.Displays[I]);
-
-    raise EDamInternalExcept.Create('Primary display not found');
-  end;
-{$ENDIF}
-
-begin
-  F := Screen.ActiveForm;
-
-  {$IFDEF FMX}
-  if F <> nil then
-    D := Screen.DisplayFromForm(F)
-  else
-    D := GetPrimaryDisplay;
-  {$ELSE}
-  if F <> nil then
-    M := F.Monitor
-  else
-    M := Screen.PrimaryMonitor;
-  {$ENDIF}
-
-  {$IFDEF FMX}
-    {$IFDEF USE_FMX_OLD_ENV}
-    if TPlatformServices.Current.SupportsPlatformService(IFMXScreenService, IInterface(ScreenService)) then
-      R := TRect.Create(0, 0, Round(ScreenService.GetScreenSize.X), Round(ScreenService.GetScreenSize.Y))
-    else
-      raise EDamInternalExcept.Create('Could not get Monitor Rect');
-    {$ELSE}
-    R := D.BoundsRect{$IF CompilerVersion >= 35}.Round{$ENDIF}; //Round - Delphi 11
-    {$ENDIF}
-  {$ELSE}
-    R := M.BoundsRect;
-  {$ENDIF}
-
-  Result := R.Width;
-  {$IF Defined(DCC) and Defined(VCL) and (CompilerVersion >= 30)} //D10 Seattle
-  Result := Round(Result * 96 / M.PixelsPerInch);
-  {$ENDIF}
-end;
-
-function GetDiv2(Value: TPixels): TPixels;
-begin
-  Result := Value {$IFDEF FMX}/{$ELSE}div{$ENDIF} 2;
 end;
 
 {$IFDEF VCL}
@@ -531,70 +501,109 @@ begin
   {$ENDIF}
 end;
 
-procedure TFrmDamDialogDyn.LoadTextProps;
+function TFrmDamDialogDyn.GetCurrentMonitorWidth: Integer;
+var
+  R: TRect;
+
+{$IFDEF FMX}
+  {$IFDEF USE_FMX_OLD_ENV}
+  ScreenService: IFMXScreenService;
+  {$ELSE}
+  D: TDisplay;
+
+  function GetPrimaryDisplay: TDisplay;
+  var
+    I: Integer;
+  begin
+    for I := 0 to Screen.DisplayCount-1 do
+      if Screen.Displays[I].Primary then
+        Exit(Screen.Displays[I]);
+
+    raise EDamInternalExcept.Create('Primary display not found');
+  end;
+  {$ENDIF}
+{$ELSE}
+  M: TMonitor;
+{$ENDIF}
+
 begin
-  {$IFDEF USE_IMGLST}
-  LbMsg.Images := DamMsg.Dam.Images;
-  {$ENDIF}
-
-  LbMsg.Font.Assign(DamMsg.Dam.MessageFont);
   {$IFDEF FMX}
-  LbMsg.FontColor := DamMsg.Dam.MessageFontColor;
+    {$IFDEF USE_FMX_OLD_ENV}
+    if TPlatformServices.Current.SupportsPlatformService(IFMXScreenService, IInterface(ScreenService)) then
+      R := TRect.Create(0, 0, Round(ScreenService.GetScreenSize.X), Round(ScreenService.GetScreenSize.Y))
+    else
+      raise EDamInternalExcept.Create('Could not get Monitor Rect');
+    {$ELSE}
+    if Screen.ActiveForm <> nil then
+      D := Screen.DisplayFromForm(Screen.ActiveForm)
+    else
+      D := GetPrimaryDisplay;
+
+    R := D.BoundsRect{$IF CompilerVersion >= 35}.Round{$ENDIF}; //Round - Delphi 11
+    {$ENDIF}
+  {$ELSE}
+    if Screen.ActiveForm <> nil then
+      M := Screen.ActiveForm.Monitor
+    else
+      M := Screen.PrimaryMonitor;
+
+    R := M.BoundsRect;
   {$ENDIF}
 
-  LbMsg.Text := DamMsg.Message; //set TEXT
-  {$IFDEF VCL}
-  if LbMsg.LinkRefs.Count>0 then BoxMsg.DoubleBuffered := True; //** while using Transparent property
-  {$ENDIF}
+  Result := R.Width;
 end;
 
-procedure TFrmDamDialogDyn.CalcWidth;
+procedure TFrmDamDialogDyn.CalcFormBounds;
 var
-  MinSize, X: TPixels;
+  Brd, X, IconHeight, Y: TPixels;
 begin
+  //!!! All sizes must be scaled in this method
+  Brd := GetControlLeft(Icon); //default border scaled
+
+  //--WIDTH--
+
   if DamMsg.FixedWidth=0 then
-    X := Round(GetCurrentMonitorWidth * 0.75) //max width
+    X := Round(GetCurrentMonitorWidth * 0.75) //max width = 75% of screen
   else
-    X := DamMsg.FixedWidth;
+    X := LbMsg.CalcScale(DamMsg.FixedWidth);
 
-  LbMsg.Width := X - LbMsg.BoundsRect.Left - 8;
+  //previous size is based on form, so here we convert to message size
+  LbMsg.Width := X - GetControlLeft(LbMsg) - Brd;
 
-  LoadTextProps;
-
-  if (DamMsg.FixedWidth=0) and (LbMsg.TextWidth < LbMsg.Width) then
+  if (DamMsg.FixedWidth=0) and (LbMsg.TextWidth < LbMsg.Width) then //smaller than max screen size
   begin
-    MinSize := Max(300, (BoxFloatBtns.Width+75)-LbMsg.BoundsRect.Left);
-    LbMsg.Width := Max(LbMsg.TextWidth, MinSize);
+    LbMsg.Width := Max(LbMsg.TextWidth, Max(
+      LbMsg.CalcScale(300),
+      BoxFloatBtns.Width+((GetControlRight(BtnHelp)+Brd)*2){Help button safe space} - GetControlLeft(LbMsg)
+    ));
   end;
 
-  ClientWidth := Round(LbMsg.BoundsRect.Right+8);
+  ClientWidth := Round(GetControlRight(LbMsg) + Brd);
 
   //align FloatBtns
+  X := BoxButtons.Width - BoxFloatBtns.Width;
   if DamMsg.Dam.CenterButtons then
-    X := GetDiv2(ClientWidth-BoxFloatBtns.Width) //center
+    X := GetDiv2(X) //center
   else
-    X := ClientWidth-BoxFloatBtns.Width-8; //right
+    X := X - Brd; //right
 
   BoxFloatBtns.{$IFDEF FMX}Position.X{$ELSE}Left{$ENDIF} := X;
-end;
 
-procedure TFrmDamDialogDyn.CalcHeight;
-var
-  IconHeight: TPixels;
-begin
+  //--HEIGHT--
+
   IconHeight := IfThen(Icon.Visible, Icon.Height);
 
   LbMsg.Height := LbMsg.TextHeight;
   ClientHeight := Round(
     Max(LbMsg.Height, IconHeight)+
-    (LbMsg.{$IFDEF FMX}Position.Y{$ELSE}Top{$ENDIF}*2)+
+    (Brd*2)+
     BoxButtons.Height);
 
+  Y := Brd;
   if LbMsg.Height<IconHeight then //text smaller than icon
-  begin
-    LbMsg.{$IFDEF FMX}Position.Y{$ELSE}Top{$ENDIF} :=
-      LbMsg.{$IFDEF FMX}Position.Y{$ELSE}Top{$ENDIF} + GetDiv2(IconHeight-LbMsg.Height);
-  end;
+    Y := Y + GetDiv2(IconHeight-LbMsg.Height);
+
+  LbMsg.{$IFDEF FMX}Position.Y{$ELSE}Top{$ENDIF} := Y;
 end;
 
 procedure TFrmDamDialogDyn.FormShow(Sender: TObject);
@@ -684,6 +693,7 @@ procedure TFrmDamDialogDyn.OnAfterDpiChanged(Sender: TObject; Old, New: Integer)
 begin
   //only in VCL
   SetIcon;
+  CalcFormBounds;
 end;
 {$ENDIF}
 
