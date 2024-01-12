@@ -541,7 +541,7 @@ begin
    (FFont.Style = [])
    {$ELSE}
    (FFont.Charset = 1) and
-   (FFont.Color = clWindowText) and
+   (FFont.Color = {$IFDEF FPC}clDefault{$ELSE}clWindowText{$ENDIF}) and
    (FFont.Name = DEF_FONT_NAME) and
    (FFont.Orientation = 0) and
    (FFont.Pitch = fpDefault) and
