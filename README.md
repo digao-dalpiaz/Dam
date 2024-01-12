@@ -36,7 +36,7 @@
 
 ## What's New
 
-- 01/10/2024 (Version 6.0) (*Minimum DzHTMLText version: 5.1*)
+- 01/12/2024 (Version 6.0) (*Minimum DzHTMLText version: 5.1*)
 
    - FMX support!!!
    - DPI Scaling improvements
