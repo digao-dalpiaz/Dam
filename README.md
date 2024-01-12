@@ -52,6 +52,14 @@
 <details>
   <summary>Click here to view the entire changelog</summary>
    
+- 12/11/2023 (Version 5.2)
+
+   - Fixed Lazarus compiling (StyleElements)
+
+- 07/29/2023 (Version 5.1)
+
+   - Fix Russian translation (Issue #36)
+
 - 04/11/2023 (Version 5.0) (*Minimum DzHTMLText version: 4.0*)
 
    - DPI Scaling supporting (please update DzHTMLText component)
