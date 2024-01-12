@@ -1,0 +1,47 @@
+package DamDesignPackage_VCL;
+
+{$R *.res}
+{$R 'Dam.dcr'}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DEFINE RELEASE}
+{$DEFINE DESIGN_VCL}
+{$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'Digao Dalpiaz - Dam Component - VCL Designtime'}
+{$DESIGNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  designide,
+  DzHTMLText_VCL,
+  DamPackage_VCL;
+
+contains
+  Vcl.DamFileGenerator in 'Design\Vcl.DamFileGenerator.pas',
+  Vcl.DamFind in 'Design\Vcl.DamFind.pas',
+  Vcl.DamList in 'Design\Vcl.DamList.pas',
+  Vcl.DamMsgEdit in 'Design\Vcl.DamMsgEdit.pas',
+  Vcl.DamReg in 'Design\Vcl.DamReg.pas';
+
+end.

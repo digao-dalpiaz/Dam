@@ -1,17 +1,28 @@
 unit DamLanguage;
 
-{$IFDEF FPC}{$mode delphi}{$ENDIF}
-
 interface
 
-uses DamUnit;
+uses
+{$IFDEF FPC}
+  Classes
+{$ELSE}
+  System.Classes
+{$ENDIF};
 
 {$R Dam_Resource.res}
 
 type
+  TDamLanguage = (dgEnglish, dgPortuguese, dgSpanish, dgGerman, dgItalian,
+    dgChinese, dgJapanese, dgGreek, dgRussian, dgFrench, dgPolish, dgDutch,
+    dgTurkish);
+
   TDamLanguageDefinition = record
     OK, Yes, No, Info, Quest, Warn, Error, Msg: string;
   end;
+
+  TDamResourceAccess = class(TObject);
+
+function GetResource(const Name: string): TResourceStream;
 
 procedure SetDamLangBySysLang(var DamLang: TDamLanguage);
 function LoadLanguage(Language: TDamLanguage): TDamLanguageDefinition;
@@ -19,10 +30,11 @@ function LoadLanguage(Language: TDamLanguage): TDamLanguageDefinition;
 implementation
 
 uses
+  DamInternalExcept,
 {$IFDEF FPC}
-  Classes, SysUtils, IniFiles, Windows
+  SysUtils, IniFiles
 {$ELSE}
-  System.Classes, System.SysUtils, System.IniFiles, Winapi.Windows
+  System.SysUtils, System.Types, System.IniFiles
 {$ENDIF};
 
 type
@@ -34,19 +46,19 @@ type
 
 const
   LANGUAGES_PARAMS: array[0..12] of TLanguageParams = (
-    (Name: 'English'   ; DamLang: dgEnglish   ; SysLang: LANG_ENGLISH   ),
-    (Name: 'Portuguese'; DamLang: dgPortuguese; SysLang: LANG_PORTUGUESE),
-    (Name: 'Spanish'   ; DamLang: dgSpanish   ; SysLang: LANG_SPANISH   ),
-    (Name: 'German'    ; DamLang: dgGerman    ; SysLang: LANG_GERMAN    ),
-    (Name: 'Italian'   ; DamLang: dgItalian   ; SysLang: LANG_ITALIAN   ),
-    (Name: 'Chinese'   ; DamLang: dgChinese   ; SysLang: LANG_CHINESE   ),
-    (Name: 'Japanese'  ; DamLang: dgJapanese  ; SysLang: LANG_JAPANESE  ),
-    (Name: 'Greek'     ; DamLang: dgGreek     ; SysLang: LANG_GREEK     ),
-    (Name: 'Russian'   ; DamLang: dgRussian   ; SysLang: LANG_RUSSIAN   ),
-    (Name: 'French'    ; DamLang: dgFrench    ; SysLang: LANG_FRENCH    ),
-    (Name: 'Polish'    ; DamLang: dgPolish    ; SysLang: LANG_POLISH    ),
-    (Name: 'Dutch'     ; DamLang: dgDutch     ; SysLang: LANG_DUTCH     ),
-    (Name: 'Turkish'   ; DamLang: dgTurkish   ; SysLang: LANG_TURKISH   )
+    (Name: 'English'   ; DamLang: dgEnglish   ; SysLang: $09 ),
+    (Name: 'Portuguese'; DamLang: dgPortuguese; SysLang: $16 ),
+    (Name: 'Spanish'   ; DamLang: dgSpanish   ; SysLang: $0a ),
+    (Name: 'German'    ; DamLang: dgGerman    ; SysLang: $07 ),
+    (Name: 'Italian'   ; DamLang: dgItalian   ; SysLang: $10 ),
+    (Name: 'Chinese'   ; DamLang: dgChinese   ; SysLang: $04 ),
+    (Name: 'Japanese'  ; DamLang: dgJapanese  ; SysLang: $11 ),
+    (Name: 'Greek'     ; DamLang: dgGreek     ; SysLang: $08 ),
+    (Name: 'Russian'   ; DamLang: dgRussian   ; SysLang: $19 ),
+    (Name: 'French'    ; DamLang: dgFrench    ; SysLang: $0c ),
+    (Name: 'Polish'    ; DamLang: dgPolish    ; SysLang: $15 ),
+    (Name: 'Dutch'     ; DamLang: dgDutch     ; SysLang: $13 ),
+    (Name: 'Turkish'   ; DamLang: dgTurkish   ; SysLang: $1f )
   );
 
 procedure SetDamLangBySysLang(var DamLang: TDamLanguage);
@@ -57,10 +69,10 @@ begin
     if P.SysLang = SysLocale.PriLangID then
     begin
       DamLang := P.DamLang;
-      Break;
+      Exit;
     end;
 
-  //if not found, it's another unsupported language - leave initial language
+  DamLang := dgEnglish; //default
 end;
 
 function GetLangNameByDamLang(DamLang: TDamLanguage): string;
@@ -70,7 +82,16 @@ begin
   for P in LANGUAGES_PARAMS do
     if P.DamLang = DamLang then Exit(P.Name);
 
-  raise Exception.Create('Invalid language');
+  raise EDamInternalExcept.Create('Invalid language');
+end;
+
+function GetResource(const Name: string): TResourceStream;
+begin
+  Result := TResourceStream.Create(
+    {$IFDEF FPC}HInstance{$ELSE}FindClassHInstance(TDamResourceAccess){$ENDIF},
+    Name,
+    {$IFDEF FPC}MAKEINTRESOURCE(10){$ELSE}RT_RCDATA{$ENDIF}
+  );
 end;
 
 function LoadLanguage(Language: TDamLanguage): TDamLanguageDefinition;
@@ -84,7 +105,7 @@ begin
 
   S := TStringList.Create;
   try
-    R := TResourceStream.Create({$IFDEF FPC}HInstance{$ELSE}FindClassHInstance(TDam){$ENDIF}, 'DAM_LANG', RT_RCDATA);
+    R := GetResource('DAM_LANG');
     try
       S.LoadFromStream(R, TEncoding.UTF8);
     finally
@@ -101,7 +122,7 @@ begin
     end;
 
     if S.Count=0 then
-      raise Exception.CreateFmt('Language "%s" not found in resource', [aLang]);
+      raise EDamInternalExcept.CreateFmt('Language "%s" not found in resource', [aLang]);
 
     with Result do
     begin

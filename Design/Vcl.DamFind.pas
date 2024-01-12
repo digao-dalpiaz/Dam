@@ -1,4 +1,4 @@
-unit DamFind;
+{$IFNDEF DESIGN_FMX}unit Vcl.DamFind;{$ENDIF}
 
 interface
 
@@ -8,7 +8,7 @@ uses
 {$ELSE}
   Vcl.Forms, Vcl.StdCtrls, Vcl.Controls, Vcl.ExtCtrls, System.Classes,
 {$ENDIF}
-  DamUnit;
+  {$INCLUDE 'DamUnitByEnvDesign.inc'};
 
 type
   TFrmDamFind = class(TForm)
@@ -35,7 +35,11 @@ function DoFindDamMessage(objDam: TDam; out objMsg: TDamMsg): Boolean;
 
 implementation
 
-{$R *.dfm}
+{$IFDEF DESIGN_FMX}
+  {$R Vcl.DamFind.dfm}
+{$ELSE}
+  {$R *.dfm}
+{$ENDIF}
 
 uses
 {$IFDEF FPC}

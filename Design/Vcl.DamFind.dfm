@@ -75,7 +75,6 @@ object FrmDamFind: TFrmDamFind
     Width = 409
     Height = 89
     TabStop = False
-    Color = clInfoBk
     ReadOnly = True
     ScrollBars = ssVertical
     TabOrder = 2

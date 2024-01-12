@@ -5,9 +5,9 @@
 ## Delphi and Lazarus Message Dialogs with Formatted Text
 
 ![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-XE3..12-blue.svg)
-![Platforms](https://img.shields.io/badge/Platforms-Win32%20and%20Win64-red.svg)
+![Platforms](https://img.shields.io/badge/Platforms-Win32,Win64,Android,iOS,Mac,Linux-red.svg)
 ![Auto Install](https://img.shields.io/badge/-Auto%20Install%20App-orange.svg)
-![VCL](https://img.shields.io/badge/-VCL-lightgrey.svg)
+![VCL and FMX](https://img.shields.io/badge/-VCL%20and%20FMX-lightgrey.svg)
 ![Lazarus support](https://img.shields.io/badge/-Lazarus%20support-green.svg)
 ![Languages](https://img.shields.io/badge/Languages-13-brightgreen.svg)
 
@@ -30,17 +30,31 @@
 - [Quick Messages](#quick-messages)
 - [Raising exceptions](#raising-exceptions)
 - [How to change Language file](#how-to-change-language-file)
+- [Limitations](#limitations)
 - [Delphi versions below XE8 remark](#delphi-versions-below-xe8-remark)
 - [History](#history)
 
 ## What's New
 
-- 12/11/2023 (Version 5.2)
+- 01/10/2024 (Version 6.0) (*Minimum DzHTMLText version: 5.1*)
 
-   - Fixed Lazarus compiling (StyleElements)
+   - FMX support!!!
+   - DPI Scaling improvements
+   - Message form re-scaling when moving around different monitors
+   - Windows messages icons scaling supporting
+   - New Component DCR icons (transparency)
+   - New HideIcon property
+   - Linux supporting (Using Lazarus) - new internal resource icons for message dialogs - same as using in FMX
+   - Fixed Message background when using Themes in VCL (now text is transparent)
+   
+   **WARNING!!!** Please completely uninstall the previous version by deleting the previous Dam Component folder, because many files have changed their names and locations.
 
 <details>
   <summary>Click here to view the entire changelog</summary>
+   
+- 12/11/2023 (Version 5.2)
+
+   - Fixed Lazarus compiling (StyleElements)
 
 - 07/29/2023 (Version 5.1)
 
@@ -299,13 +313,13 @@ The Message Dialog: :stuck_out_tongue:
 
 1. Open **Dam.groupproj** in the Delphi.
 
-2. Ensure **Win32** Platform and **Release** config are selected at both packages.
+2. Ensure **Win32** Platform and **Release** config are selected in all packages.
 
 3. Right-click at root item in the tree and choose **Build All**.
 
-4. If you want to use 64 bit platform, select this platform at DamPackage and do a new Build in this package.
+4. If you want to use 64 bit platform, change platform in all packages and run a new build.
 
-5. Right-click at **DamDesignPackage** and choose **Install**.
+5. Right-click at **DamDesignPackage_VCL** / **DamDesignPackage_FMX** and choose **Install**.
 
 6. Add "Win32\Release" sub folder to Delphi Library Path (Tools\Options), on 32-bit option. If you will use 64 bit platform, add "Win64\Release" sub folder on 64-bit option.
 
@@ -319,7 +333,7 @@ The Message Dialog: :stuck_out_tongue:
 
 2. Go to menu Package > Open Package File (.lpk) and load **LazDamDesignPackage.lpk**, and click into **Use > Install**.
 
-# Supported Languages
+## Supported Languages
 
 At this time, the following languages are available for messages:
 
@@ -341,7 +355,7 @@ The language set the caption of buttons in the message dialogs, like OK, Cancel,
 
 > You can open an issue to send me a new language translation or correct current translation
 
-# How to use
+## How to use
 
 The main idea is to drop one TDam in the main form, or main data module. The TDam is a container that have all TDamMsg (message dialog).
 
@@ -432,11 +446,15 @@ MsgInfo('This is a %p message number %p at time %p', ['test', 123, Now]);
 
 `MessageFont: TFont` = Defines the text font of messages
 
+`MessageFontColor: TAlphaColor` = Defines the text font color of messages *(Only available in FMX environment)*
+
 `PlaySounds: Boolean` = Enable system sounds when showing messages of Warning, Question and Error kinds.
 
 `MessageColor: TColor` = Define background color of message area on message dialog.
 
 `ButtonsColor: TColor` = Define background color of buttons area on message dialog.
+
+`HideIcon: Boolean` = If True, the icon on the message dialog will be suppressed.
 
 ## TDam events
 
@@ -471,7 +489,9 @@ Fires before a Dam Message is displayed, allowing you to intercept messages and 
 
 `CustomTitle: String` = Defines a custom title for message form. This caption is only used then Title=dtCustom.
 
-`FixedWidth: Integer` = Defines a fixed width of message window, in pixels. If this value is zero (default), then the window width will be automatically calculated according to the message text. *There is a minimum and maximum fixed limits to the message form*.
+`Dam: TDam` = Defines Dam container of this message.
+
+`FixedWidth: Integer` = Defines a fixed width of text part in message window, in pixels. If this value is zero (default), then the window width will be automatically calculated according to the message text. *There is a minimum and maximum fixed limits to the message form (minimum = 300px / maximum = 75% of screen width - when Android or iOS, maximum = 95% of screen width)*.
 
 `HelpContext: THelpContext` = Defines help context. If this property is defined, when the message dialog will display a help button and will open application help on context target. It's also possible to use F1 key.
 
@@ -630,11 +650,30 @@ end;
 
 ## How to change Language file
 
-There is a file called **DamLang.ini**, which has all strings used on the component. If you want to change some text on this file, you will need to run "**Build Dam Resource.bat**" after that. This batch will create a new file "**Dam_Resource.res**" at the same folder (the source folder).
+There is a file called **DamLang.ini** (Resources folder), which has all strings used on the component. If you want to change some text on this file, you will need to run "**Build Dam Resource.bat**" after that. This batch will create a new file "**Dam_Resource.res**" at root component folder.
 
 After that, please run the "**AfterBuild.bat**" to publish this new resource file to the "Lib" folder.
 
 > If you want to add new language, some changes in the code will be needed. So, please, open a new issue and post the language strings you want, then I will apply in the component.
+
+## Limitations
+
+### FMX
+
+- DamMsg.Icon = diApp not supported.
+- In Message Dialog Editor, linked Dam images are not supported, so the preview is unavailable in the Editor screen.
+- Help settings for TDamMsg (HelpKeyword and HelpContext) are unsupported.
+- When DialogPosition = dpScreenCenter, message dialog always run at primary monitor (Delphi behavior).
+- If OS theme contains different height of message header bar (system menu), Delphi does not show form considering header size, even using ClientRect, so the dialog will be displayed probably bigger than must be. Check this thread: https://stackoverflow.com/questions/76164235/creating-forms-dynamically-border-behavior
+
+### Windows
+
+- Sounds only supported in Windows environment
+
+### DPI Scaling (VCL)
+
+- Lazarus and Delphi previous versions than D10 - unsupported re-scaling message at runtime (when moving around different monitors).
+- DamMsg.Icon = diApp/diCustom does not support auto scaling.
 
 ## Delphi versions below XE8 remark
 
