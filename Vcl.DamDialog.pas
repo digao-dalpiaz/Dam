@@ -93,7 +93,7 @@ type
     procedure SetIcon;
     procedure SetHelpButton;
     procedure BuildButtons;
-    procedure LoadTextProps;
+    procedure LoadTextProps(const MsgText: string);
 
     procedure CalcFormBounds;
 
@@ -184,7 +184,7 @@ begin
     F.LangStrs := LoadLanguage(DamMsg.Dam.Language);
 
     F.BuildControls;
-    F.LoadTextProps;
+    F.LoadTextProps(aText);
     F.SetFormCustomization;
     F.SetFormTitle;
     F.SetHelpButton;
@@ -276,7 +276,7 @@ begin
   BtnHelp.OnClick := BtnHelpClick;
 end;
 
-procedure TFrmDamDialogDyn.LoadTextProps;
+procedure TFrmDamDialogDyn.LoadTextProps(const MsgText: string);
 begin
   {$IFDEF USE_IMGLST}
   LbMsg.Images := DamMsg.Dam.Images;
@@ -287,7 +287,7 @@ begin
   LbMsg.FontColor := DamMsg.Dam.MessageFontColor;
   {$ENDIF}
 
-  LbMsg.Text := DamMsg.Message; //set TEXT
+  LbMsg.Text := MsgText; //set TEXT
   {$IFDEF VCL}
   if LbMsg.LinkRefs.Count>0 then BoxMsg.DoubleBuffered := True; //** while using Transparent property
   {$ENDIF}
@@ -556,6 +556,7 @@ end;
 procedure TFrmDamDialogDyn.CalcFormBounds;
 var
   Brd, X, IconHeight, Y: TPixels;
+  Delta: Extended;
 begin
   //!!! All sizes must be scaled in this method
   Brd := GetControlLeft(Icon); //default border scaled
@@ -563,7 +564,13 @@ begin
   //--WIDTH--
 
   if DamMsg.FixedWidth=0 then
-    X := Round(GetCurrentMonitorWidth * 0.75) //max width = 75% of screen
+  begin
+    Delta := 0.75; //75% of screen width
+    {$IF CompilerVersion >= 26} //XE5
+    if TOSVersion.Platform in [pfiOS, pfAndroid] then Delta := 0.95;
+    {$ENDIF}
+    X := Round(GetCurrentMonitorWidth * Delta)
+  end
   else
     X := LbMsg.CalcScale(DamMsg.FixedWidth);
 
@@ -604,6 +611,17 @@ begin
     Y := Y + GetDiv2(IconHeight-LbMsg.Height);
 
   LbMsg.{$IFDEF FMX}Position.Y{$ELSE}Top{$ENDIF} := Y;
+
+  //
+
+  {$IFDEF FMX}
+  //workaround for: https://stackoverflow.com/questions/76164235/creating-forms-dynamically-border-behavior
+  if not DamMsg.Dam.DialogBorder then
+  begin
+    Width := ClientWidth;
+    Height := ClientHeight;
+  end;
+  {$ENDIF}
 end;
 
 procedure TFrmDamDialogDyn.FormShow(Sender: TObject);

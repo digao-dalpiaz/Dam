@@ -10,8 +10,6 @@ object Form1: TForm1
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
-  PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
     Left = 224
@@ -49,8 +47,10 @@ object Form1: TForm1
   end
   object Dam1: TDam
     Language = dgEnglish
+    DamDefault = True
     DamUnitName = 'DamMessages'
-    Left = 168
+    OnLinkClick = Dam1LinkClick
+    Left = 176
     Top = 64
     object _QuestionSaveFile: TDamMsg
       CustomTitle = 'Do you want to save the file?'
@@ -11625,19 +11625,18 @@ object Form1: TForm1
       Message = 
         'You are leaving the program <fc:clRed>without</fc> save the modi' +
         'fied file.'#13#10#13#10'<b>Do you want to save the file right now?</b>'#13#10#13#10 +
-        '<fs:8><tf:20>If you choose <u>Yes</u>, <fc:clGreen>the file will' +
-        ' be saved and the program will be terminate</fc>.'#13#10#13#10'<tf:20>If y' +
-        'ou choose <u>No</u>, <fc:clRed>all modifications made will be lo' +
-        'st, and the program will be terminate</fc>.'#13#10#13#10'<tf:20>If you cho' +
-        'ose <u>More Info</u>, <fc:clPurple>a window will be open with al' +
-        'l information about the modifications, and you will can select w' +
-        'hich modifications you want to apply</fc>.'#13#10'</fs>'#13#10'<i><a:www.goo' +
-        'gle.com.br>Click here</a> to open help page.</i>'
+        '<div:margin_left=30,width=400><fs:8>If you choose <u>Yes</u>, <f' +
+        'c:clGreen>the file will be saved and the program will be termina' +
+        'te</fc>.'#13#10#13#10'If you choose <u>No</u>, <fc:clRed>all modifications' +
+        ' made will be lost, and the program will be terminate</fc>.'#13#10#13#10'I' +
+        'f you choose <u>More Info</u>, <fc:clPurple>a window will be ope' +
+        'n with all information about the modifications, and you will can' +
+        ' select which modifications you want to apply</fc>.</fs></div>'#13#10 +
+        #13#10'<i><a:www.google.com.br>Click here</a> to open help page.</i>'
       Button1 = 'Yes, save'
       Button2 = 'No'
       Button3 = 'More Info'
       Buttons = dbThree
-      FixedWidth = 380
       Dam = Dam1
     end
     object _QuestionConfirmValues: TDamMsg
@@ -11646,12 +11645,11 @@ object Form1: TForm1
       Icon = diQuest
       Message = 
         'Please, review the values to continue:'#13#10#13#10'<fn:Times New Roman><f' +
-        's:12><b><t:20>Sector #<t:120>Value</b><t:200>'#13#10'%TABLE%</fs></fn>' +
-        #13#10'<i>Click on section number to open details.</i>'#13#10#13#10'<b>Do you w' +
-        'ant to continue?</b>'#13#10#13#10'<fc:clRed>Please check all values before' +
-        ' write them on database.</fc>'
+        's:12><b><div:width=150>Sector</div><div:width=150>Value</div></b' +
+        '>'#13#10'%TABLE%</fs></fn>'#13#10'<i>Click on section number to open details' +
+        '.</i>'#13#10#13#10'<b>Do you want to continue?</b>'#13#10#13#10'<fc:clRed>Please che' +
+        'ck all values before write them on database.</fc>'
       Buttons = dbYesNo
-      FixedWidth = 380
       Dam = Dam1
     end
   end

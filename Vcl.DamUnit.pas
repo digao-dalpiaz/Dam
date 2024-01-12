@@ -540,7 +540,7 @@ begin
    (FFont.Size = DEF_FONT_SIZE) and
    (FFont.Style = [])
    {$ELSE}
-   (FFont.Charset = GetDefFontCharSet) and
+   (FFont.Charset = 1) and
    (FFont.Color = clWindowText) and
    (FFont.Name = DEF_FONT_NAME) and
    (FFont.Orientation = 0) and

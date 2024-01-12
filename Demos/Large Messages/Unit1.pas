@@ -15,6 +15,8 @@ type
     EdResult: TEdit;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure Dam1LinkClick(Sender: TObject; Msg: TDamMsg; const Target: string;
+      var Handled, CloseMsg: Boolean; var MsgResult: TDamMsgRes);
   end;
 
 var
@@ -39,9 +41,13 @@ procedure TForm1.Button2Click(Sender: TObject);
 var A: string;
 
   procedure AddLine(Cod: Integer; Value: Double);
+  var aCod: string;
   begin
-    A := A + Format('<t:20><c><a>%s</a></c><t:120><r>$ %s</r><t:200>',
-      [FormatFloat('0000', Cod), FormatFloat('#,##0.00', Value)])+'<BR>';
+    aCod := FormatFloat('0000', Cod);
+    A := A + Format(
+      '<div:width=150,thick_top=1,lncolor=clGray><c><a:%s>%s</a></c></div>'+
+      '<div:width=150,thick_top=1,lncolor=clGray><r>$ %s</r></div>',
+      [aCod, aCod, FormatFloat('#,##0.00', Value)])+'<BR>';
   end;
 
 var Msg: TDamMsg;
@@ -62,6 +68,13 @@ begin
   finally
     Msg.Free;
   end;
+end;
+
+procedure TForm1.Dam1LinkClick(Sender: TObject; Msg: TDamMsg;
+  const Target: string; var Handled, CloseMsg: Boolean;
+  var MsgResult: TDamMsgRes);
+begin
+  MsgInfo('Link %p clicked!', [Target]);
 end;
 
 end.
