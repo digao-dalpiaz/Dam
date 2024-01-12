@@ -220,8 +220,19 @@ end;
 
 function CorToStr(C: TColor): string;
 begin
+  {$IFDEF DESIGN_FMX}
+  Result := '#'+
+    IntToHex(GetRValue(C), 2)+
+    IntToHex(GetGValue(C), 2)+
+    IntToHex(GetBValue(C), 2);
+  {$ELSE}
   Result := ColorToString(C);
-  if Result.StartsWith('$00') then Delete(Result, 2, 2);
+  if Result.StartsWith('$00') then
+    Result := '#'+
+      Copy(Result, 8, 2)+
+      Copy(Result, 6, 2)+
+      Copy(Result, 4, 2);
+  {$ENDIF}
 end;
 
 procedure TFrmDamMsgEdit.PutSelText(aTag: string; aParameter: string='');
