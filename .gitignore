@@ -4,3 +4,5 @@
 *.stat
 **/Win32
 **/Win64
+lib/
+backup/

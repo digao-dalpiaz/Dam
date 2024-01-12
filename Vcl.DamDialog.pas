@@ -566,7 +566,7 @@ begin
   if DamMsg.FixedWidth=0 then
   begin
     Delta := 0.75; //75% of screen width
-    {$IF CompilerVersion >= 26} //XE5
+    {$IF Defined(DCC) and (CompilerVersion >= 26)} //XE5
     if TOSVersion.Platform in [pfiOS, pfAndroid] then Delta := 0.95;
     {$ENDIF}
     X := Round(GetCurrentMonitorWidth * Delta)
