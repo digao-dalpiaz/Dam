@@ -325,7 +325,7 @@ The Message Dialog: :stuck_out_tongue:
 
 2. Go to menu Package > Open Package File (.lpk) and load **LazDamDesignPackage.lpk**, and click into **Use > Install**.
 
-# Supported Languages
+## Supported Languages
 
 At this time, the following languages are available for messages:
 
@@ -347,7 +347,7 @@ The language set the caption of buttons in the message dialogs, like OK, Cancel,
 
 > You can open an issue to send me a new language translation or correct current translation
 
-# How to use
+## How to use
 
 The main idea is to drop one TDam in the main form, or main data module. The TDam is a container that have all TDamMsg (message dialog).
 
@@ -483,7 +483,7 @@ Fires before a Dam Message is displayed, allowing you to intercept messages and 
 
 `Dam: TDam` = Defines Dam container of this message.
 
-`FixedWidth: Integer` = Defines a fixed width of text part in message window, in pixels. If this value is zero (default), then the window width will be automatically calculated according to the message text. *There is a minimum and maximum fixed limits to the message form (minimum = 300px / maximum = 75% of screen width)*.
+`FixedWidth: Integer` = Defines a fixed width of text part in message window, in pixels. If this value is zero (default), then the window width will be automatically calculated according to the message text. *There is a minimum and maximum fixed limits to the message form (minimum = 300px / maximum = 75% of screen width - when Android or iOS, maximum = 95% of screen width)*.
 
 `HelpContext: THelpContext` = Defines help context. If this property is defined, when the message dialog will display a help button and will open application help on context target. It's also possible to use F1 key.
 
@@ -642,7 +642,7 @@ end;
 
 ## How to change Language file
 
-There is a file called **DamLang.ini**, which has all strings used on the component. If you want to change some text on this file, you will need to run "**Build Dam Resource.bat**" after that. This batch will create a new file "**Dam_Resource.res**" at the same folder (the source folder).
+There is a file called **DamLang.ini** (Resources folder), which has all strings used on the component. If you want to change some text on this file, you will need to run "**Build Dam Resource.bat**" after that. This batch will create a new file "**Dam_Resource.res**" at root component folder.
 
 After that, please run the "**AfterBuild.bat**" to publish this new resource file to the "Lib" folder.
 
@@ -656,7 +656,7 @@ After that, please run the "**AfterBuild.bat**" to publish this new resource fil
 - In Message Dialog Editor, linked Dam images are not supported, so the preview is unavailable in the Editor screen.
 - Help settings for TDamMsg (HelpKeyword and HelpContext) are unsupported.
 - When DialogPosition = dpScreenCenter, message dialog always run at primary monitor (Delphi behavior).
-- If OS theme contains different height of message header bar (system menu), Delphi does not show form considering header size, even using ClientRect, so the dialog will be displayed probably bigger than must be. When DialogBorder = False, you will easily see this behavior. Check this thread: https://stackoverflow.com/questions/76164235/creating-forms-dynamically-border-behavior
+- If OS theme contains different height of message header bar (system menu), Delphi does not show form considering header size, even using ClientRect, so the dialog will be displayed probably bigger than must be. Check this thread: https://stackoverflow.com/questions/76164235/creating-forms-dynamically-border-behavior
 
 ### Windows
 
