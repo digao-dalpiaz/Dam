@@ -40,6 +40,9 @@
 
    - Fixed getting message text when using CTRL+C
 
+<details>
+  <summary>Click here to view the entire changelog</summary>
+
 - 01/12/2024 (Version 6.0) (*Minimum DzHTMLText version: 5.1*)
 
    - FMX support!!!
@@ -53,9 +56,6 @@
    
    **WARNING!!!** Please completely uninstall the previous version by deleting the previous Dam Component folder, because many files have changed their names and locations.
 
-<details>
-  <summary>Click here to view the entire changelog</summary>
-   
 - 12/11/2023 (Version 5.2)
 
    - Fixed Lazarus compiling (StyleElements)
