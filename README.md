@@ -36,6 +36,10 @@
 
 ## What's New
 
+- 01/21/2024 (Version 6.1) (*Minimum DzHTMLText version: 5.2*)
+
+   - Fixed getting message text when using CTRL+C
+
 - 01/12/2024 (Version 6.0) (*Minimum DzHTMLText version: 5.1*)
 
    - FMX support!!!
