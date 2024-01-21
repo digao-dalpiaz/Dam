@@ -246,6 +246,7 @@ begin
   LbMsg.ParentFont := False;
   LbMsg.Transparent := True; //while we can't get real background color of themes
   {$ENDIF}
+  LbMsg.GeneratePlainText := True;
 
   BoxButtons := TBoxComps.Create(Self);
   BoxButtons.Height := BRD_SPACE+BTN_HEIGHT+BRD_SPACE;
@@ -654,7 +655,7 @@ var
   uClipBoard: IFMXClipboardService;
   {$ENDIF}
 begin
-  aMsg := TDzHTMLText.HTMLToPlainText(LbMsg.Text);
+  aMsg := LbMsg.PlainText.ToString;
 
   {$IFDEF FMX}
   if TPlatformServices.Current.SupportsPlatformService(IFMXClipboardService,
