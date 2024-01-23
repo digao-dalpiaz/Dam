@@ -1,9 +1,9 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{2752669B-6202-4A0D-93C1-31F3493FAF32}</ProjectGuid>
-        <MainSource>DamDesignPackage_VCL.dpk</MainSource>
+        <ProjectGuid>{9D697ED4-C6BC-41D4-B466-409EA0FF0E1A}</ProjectGuid>
+        <MainSource>DamDesignPackage_FMX.dpk</MainSource>
         <ProjectVersion>20.1</ProjectVersion>
-        <FrameworkType>VCL</FrameworkType>
+        <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Release</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
@@ -46,7 +46,7 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
-        <DCC_DcuOutput>.\Design\Out</DCC_DcuOutput>
+        <DCC_DcuOutput>..\..\Lib\$(Platform)\$(Config)\Design</DCC_DcuOutput>
         <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
         <DCC_E>false</DCC_E>
         <DCC_N>false</DCC_N>
@@ -55,13 +55,13 @@
         <DCC_K>false</DCC_K>
         <GenDll>true</GenDll>
         <GenPackage>true</GenPackage>
-        <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
-        <SanitizedProjectName>DamDesignPackage_VCL</SanitizedProjectName>
-        <VerInfo_Locale>1046</VerInfo_Locale>
+        <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
+        <SanitizedProjectName>DamDesignPackage_FMX</SanitizedProjectName>
+        <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <DesignOnlyPackage>true</DesignOnlyPackage>
-        <DCC_Description>Digao Dalpiaz - Dam Component - VCL Designtime</DCC_Description>
-        <DCC_Define>DESIGN_VCL;$(DCC_Define)</DCC_Define>
+        <DCC_Define>DESIGN_FMX;$(DCC_Define)</DCC_Define>
+        <DCC_Description>Digao Dalpiaz - Dam Component - FMX Designtime</DCC_Description>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
@@ -69,13 +69,15 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <DCC_UsePackage>rtl;DzHTMLText_VCL;DamPackage;DamPackage_FMX;DamPackage_VCL;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_UsePackage>rtl;DzHTMLText_VCL;DamPackage_FMX;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
         <BT_BuildType>Debug</BT_BuildType>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
+        <DCC_UsePackage>rtl;DzHTMLText_VCL;DamPackage_FMX;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -95,7 +97,6 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -104,13 +105,13 @@
         <DCCReference Include="Dam.dcr"/>
         <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="designide.dcp"/>
+        <DCCReference Include="DamPackage_FMX.dcp"/>
         <DCCReference Include="DzHTMLText_VCL.dcp"/>
-        <DCCReference Include="DamPackage_VCL.dcp"/>
-        <DCCReference Include="Design\Vcl.DamFileGenerator.pas"/>
-        <DCCReference Include="Design\Vcl.DamFind.pas"/>
-        <DCCReference Include="Design\Vcl.DamList.pas"/>
-        <DCCReference Include="Design\Vcl.DamMsgEdit.pas"/>
-        <DCCReference Include="Design\Vcl.DamReg.pas"/>
+        <DCCReference Include="Design\FMX.DamFileGenerator.pas"/>
+        <DCCReference Include="Design\FMX.DamFind.pas"/>
+        <DCCReference Include="Design\FMX.DamList.pas"/>
+        <DCCReference Include="Design\FMX.DamMsgEdit.pas"/>
+        <DCCReference Include="Design\FMX.DamReg.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -129,7 +130,7 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">DamDesignPackage_VCL.dpk</Source>
+                    <Source Name="MainSource">DamDesignPackage_FMX.dpk</Source>
                 </Source>
             </Delphi.Personality>
             <Platforms>

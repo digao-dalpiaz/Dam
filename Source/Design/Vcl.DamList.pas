@@ -1,7 +1,5 @@
 {$IFNDEF DESIGN_FMX}unit Vcl.DamList;{$ENDIF}
 
-{$IFDEF FPC}{$mode delphi}{$ENDIF}
-
 interface
 
 uses

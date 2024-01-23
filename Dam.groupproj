@@ -3,19 +3,19 @@
         <ProjectGuid>{9CD3ADD8-609E-4B79-BA8C-2A5ED9D8F64A}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="DamCommonPackage.dproj">
+        <Projects Include="Source\DamCommonPackage.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="DamPackage_VCL.dproj">
+        <Projects Include="Source\DamPackage_VCL.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="DamPackage_FMX.dproj">
+        <Projects Include="Source\DamPackage_FMX.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="DamDesignPackage_VCL.dproj">
+        <Projects Include="Source\Design\DamDesignPackage_VCL.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="DamDesignPackage_FMX.dproj">
+        <Projects Include="Source\Design\DamDesignPackage_FMX.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -27,49 +27,49 @@
         </BorlandProject>
     </ProjectExtensions>
     <Target Name="DamCommonPackage">
-        <MSBuild Projects="DamCommonPackage.dproj"/>
+        <MSBuild Projects="Source\DamCommonPackage.dproj"/>
     </Target>
     <Target Name="DamCommonPackage:Clean">
-        <MSBuild Projects="DamCommonPackage.dproj" Targets="Clean"/>
+        <MSBuild Projects="Source\DamCommonPackage.dproj" Targets="Clean"/>
     </Target>
     <Target Name="DamCommonPackage:Make">
-        <MSBuild Projects="DamCommonPackage.dproj" Targets="Make"/>
+        <MSBuild Projects="Source\DamCommonPackage.dproj" Targets="Make"/>
     </Target>
     <Target Name="DamPackage_VCL">
-        <MSBuild Projects="DamPackage_VCL.dproj"/>
+        <MSBuild Projects="Source\DamPackage_VCL.dproj"/>
     </Target>
     <Target Name="DamPackage_VCL:Clean">
-        <MSBuild Projects="DamPackage_VCL.dproj" Targets="Clean"/>
+        <MSBuild Projects="Source\DamPackage_VCL.dproj" Targets="Clean"/>
     </Target>
     <Target Name="DamPackage_VCL:Make">
-        <MSBuild Projects="DamPackage_VCL.dproj" Targets="Make"/>
+        <MSBuild Projects="Source\DamPackage_VCL.dproj" Targets="Make"/>
     </Target>
     <Target Name="DamPackage_FMX">
-        <MSBuild Projects="DamPackage_FMX.dproj"/>
+        <MSBuild Projects="Source\DamPackage_FMX.dproj"/>
     </Target>
     <Target Name="DamPackage_FMX:Clean">
-        <MSBuild Projects="DamPackage_FMX.dproj" Targets="Clean"/>
+        <MSBuild Projects="Source\DamPackage_FMX.dproj" Targets="Clean"/>
     </Target>
     <Target Name="DamPackage_FMX:Make">
-        <MSBuild Projects="DamPackage_FMX.dproj" Targets="Make"/>
+        <MSBuild Projects="Source\DamPackage_FMX.dproj" Targets="Make"/>
     </Target>
     <Target Name="DamDesignPackage_VCL">
-        <MSBuild Projects="DamDesignPackage_VCL.dproj"/>
+        <MSBuild Projects="Source\Design\DamDesignPackage_VCL.dproj"/>
     </Target>
     <Target Name="DamDesignPackage_VCL:Clean">
-        <MSBuild Projects="DamDesignPackage_VCL.dproj" Targets="Clean"/>
+        <MSBuild Projects="Source\Design\DamDesignPackage_VCL.dproj" Targets="Clean"/>
     </Target>
     <Target Name="DamDesignPackage_VCL:Make">
-        <MSBuild Projects="DamDesignPackage_VCL.dproj" Targets="Make"/>
+        <MSBuild Projects="Source\Design\DamDesignPackage_VCL.dproj" Targets="Make"/>
     </Target>
     <Target Name="DamDesignPackage_FMX">
-        <MSBuild Projects="DamDesignPackage_FMX.dproj"/>
+        <MSBuild Projects="Source\Design\DamDesignPackage_FMX.dproj"/>
     </Target>
     <Target Name="DamDesignPackage_FMX:Clean">
-        <MSBuild Projects="DamDesignPackage_FMX.dproj" Targets="Clean"/>
+        <MSBuild Projects="Source\Design\DamDesignPackage_FMX.dproj" Targets="Clean"/>
     </Target>
     <Target Name="DamDesignPackage_FMX:Make">
-        <MSBuild Projects="DamDesignPackage_FMX.dproj" Targets="Make"/>
+        <MSBuild Projects="Source\Design\DamDesignPackage_FMX.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
         <CallTarget Targets="DamCommonPackage;DamPackage_VCL;DamPackage_FMX;DamDesignPackage_VCL;DamDesignPackage_FMX"/>

@@ -1,1 +1,1 @@
-BRCC32.EXE Dam_Resource.rc_ -fo..\Dam_Resource.res
+BRCC32.EXE Dam_Resource.rc_ -fo..\Source\Dam_Resource.res

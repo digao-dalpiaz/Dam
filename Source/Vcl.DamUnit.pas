@@ -12,8 +12,6 @@ Please, read the documentation at GitHub link.
 
 {$INCLUDE 'Defines.inc'}
 
-{$IFDEF FPC}{$mode delphi}{$ENDIF}
-
 interface
 
 uses

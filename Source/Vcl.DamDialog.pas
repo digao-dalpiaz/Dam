@@ -2,8 +2,6 @@
 
 {$INCLUDE 'Defines.inc'}
 
-{$IFDEF FPC}{$mode delphi}{$ENDIF}
-
 interface
 
 uses
@@ -46,26 +44,6 @@ uses
 {$ENDIF}
   //
   DamLanguage, DamInternalExcept;
-
-{$IFDEF FPC}
-const
-  {$EXTERNALSYM IDI_HAND}
-  IDI_HAND = MakeIntResource(32513);
-  {$EXTERNALSYM IDI_QUESTION}
-  IDI_QUESTION = MakeIntResource(32514);
-  {$EXTERNALSYM IDI_EXCLAMATION}
-  IDI_EXCLAMATION = MakeIntResource(32515);
-  {$EXTERNALSYM IDI_ASTERISK}
-  IDI_ASTERISK = MakeIntResource(32516);
-  {$EXTERNALSYM IDI_WINLOGO}
-  IDI_WINLOGO = MakeIntResource(32517);
-  {$EXTERNALSYM IDI_WARNING}
-  IDI_WARNING = IDI_EXCLAMATION;
-  {$EXTERNALSYM IDI_ERROR}
-  IDI_ERROR = IDI_HAND;
-  {$EXTERNALSYM IDI_INFORMATION}
-  IDI_INFORMATION = IDI_ASTERISK;
-{$ENDIF}
 
 type
   TBoxComps = {$IFDEF FMX}TRectangle{$ELSE}TPanel{$ENDIF};
