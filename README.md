@@ -38,7 +38,7 @@
 
 - 01/23/2024 (Version 6.2)
 
-   - Reorganization of component folders (Please completely delete the previous component folder). 
+   - Reorganization of component folders (Please completely delete the previous component folder). **WARNING! DCU output folder changed. Now output directory is `Lib\{Platform}\{Config}`. Please review your Library Paths.**
 
 <details>
   <summary>Click here to view the entire changelog</summary>
@@ -329,7 +329,7 @@ The Message Dialog: :stuck_out_tongue:
 
 5. Right-click at **DamDesignPackage_VCL** / **DamDesignPackage_FMX** and choose **Install**.
 
-6. Add "Win32\Release" sub folder to Delphi Library Path (Tools\Options), on 32-bit option. If you will use 64 bit platform, add "Win64\Release" sub folder on 64-bit option.
+6. Add Library Path according to the platform in Tools\Options. Example: If you are using Win32, set path = `Lib\Win32\Release`.
 
 7. Run **AfterBuild.bat** to publish DFM and RES to Release folders.
 
