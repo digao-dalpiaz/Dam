@@ -36,12 +36,16 @@
 
 ## What's New
 
-- 01/21/2024 (Version 6.1) (*Minimum DzHTMLText version: 5.2*)
+- 01/23/2024 (Version 6.2)
 
-   - Fixed getting message text when using CTRL+C
+   - Reorganization of component folders (Please completely delete the previous component folder). 
 
 <details>
   <summary>Click here to view the entire changelog</summary>
+
+- 01/21/2024 (Version 6.1) (*Minimum DzHTMLText version: 5.2*)
+
+   - Fixed getting message text when using CTRL+C
 
 - 01/12/2024 (Version 6.0) (*Minimum DzHTMLText version: 5.1*)
 
