@@ -36,7 +36,7 @@
 
 ## What's New
 
-- 01/23/2024 (Version 6.2)
+- 01/25/2024 (Version 6.2)
 
    - Reorganization of component folders (Please completely delete the previous component folder). **WARNING! DCU output folder changed. Now output directory is `Lib\{Platform}\{Config}`. Please review your Library Paths.**
 
