@@ -39,6 +39,7 @@
 - 01/25/2024 (Version 6.2)
 
    - Reorganization of component folders (Please completely delete the previous component folder). **WARNING! DCU output folder changed. Now output directory is `Lib\{Platform}\{Config}`. Please review your Library Paths.**
+   - Auto-install now supports Delphi 12.
 
 <details>
   <summary>Click here to view the entire changelog</summary>
