@@ -1,8 +1,8 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{2752669B-6202-4A0D-93C1-31F3493FAF32}</ProjectGuid>
-        <MainSource>DamDesignPackage_VCL.dpk</MainSource>
-        <ProjectVersion>20.1</ProjectVersion>
+        <ProjectGuid>{9AE26DA8-E383-4322-85A4-58CD4407140F}</ProjectGuid>
+        <MainSource>DamPackage_VCL.dpk</MainSource>
+        <ProjectVersion>19.5</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Release</Config>
@@ -46,7 +46,7 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
-        <DCC_DcuOutput>.\Design\Out</DCC_DcuOutput>
+        <DCC_DcuOutput>..\Lib\$(Platform)\$(Config)</DCC_DcuOutput>
         <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
         <DCC_E>false</DCC_E>
         <DCC_N>false</DCC_N>
@@ -56,12 +56,11 @@
         <GenDll>true</GenDll>
         <GenPackage>true</GenPackage>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
-        <SanitizedProjectName>DamDesignPackage_VCL</SanitizedProjectName>
+        <SanitizedProjectName>DamPackage_VCL</SanitizedProjectName>
         <VerInfo_Locale>1046</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-        <DesignOnlyPackage>true</DesignOnlyPackage>
-        <DCC_Description>Digao Dalpiaz - Dam Component - VCL Designtime</DCC_Description>
-        <DCC_Define>DESIGN_VCL;$(DCC_Define)</DCC_Define>
+        <RuntimeOnlyPackage>true</RuntimeOnlyPackage>
+        <DCC_Description>Digao Dalpiaz - Dam Component - VCL Runtime</DCC_Description>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
@@ -69,7 +68,6 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <DCC_UsePackage>rtl;DzHTMLText_VCL;DamPackage;DamPackage_FMX;DamPackage_VCL;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
@@ -101,16 +99,11 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="Dam.dcr"/>
         <DCCReference Include="rtl.dcp"/>
-        <DCCReference Include="designide.dcp"/>
         <DCCReference Include="DzHTMLText_VCL.dcp"/>
-        <DCCReference Include="DamPackage_VCL.dcp"/>
-        <DCCReference Include="Design\Vcl.DamFileGenerator.pas"/>
-        <DCCReference Include="Design\Vcl.DamFind.pas"/>
-        <DCCReference Include="Design\Vcl.DamList.pas"/>
-        <DCCReference Include="Design\Vcl.DamMsgEdit.pas"/>
-        <DCCReference Include="Design\Vcl.DamReg.pas"/>
+        <DCCReference Include="DamCommonPackage.dcp"/>
+        <DCCReference Include="Vcl.DamUnit.pas"/>
+        <DCCReference Include="Vcl.DamDialog.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -129,7 +122,7 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">DamDesignPackage_VCL.dpk</Source>
+                    <Source Name="MainSource">DamPackage_VCL.dpk</Source>
                 </Source>
             </Delphi.Personality>
             <Platforms>

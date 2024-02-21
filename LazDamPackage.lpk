@@ -8,37 +8,38 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
+        <OtherUnitFiles Value="Source"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
         <CompilerMessages>
-          <IgnoredMessages idx6058="True" idx5093="True" idx5057="True" idx5028="True" idx5024="True"/>
+          <IgnoredMessages idx6058="True" idx6018="True" idx5093="True" idx5024="True" idx4056="True" idx3124="True" idx3123="True"/>
         </CompilerMessages>
+        <CustomOptions Value="-Sd"/>
       </Other>
     </CompilerOptions>
-    <Files Count="4">
-      <Item1>
-        <Filename Value="Vcl.DamUnit.pas"/>
+    <Files>
+      <Item>
+        <Filename Value="Source\Vcl.DamUnit.pas"/>
         <UnitName Value="Vcl.DamUnit"/>
-      </Item1>
-      <Item2>
-        <Filename Value="Vcl.DamDialog.pas"/>
+      </Item>
+      <Item>
+        <Filename Value="Source\Vcl.DamDialog.pas"/>
         <UnitName Value="Vcl.DamDialog"/>
-      </Item2>
-      <Item3>
-        <Filename Value="DamLanguage.pas"/>
+      </Item>
+      <Item>
+        <Filename Value="Source\DamLanguage.pas"/>
         <UnitName Value="DamLanguage"/>
-      </Item3>
-      <Item4>
-        <Filename Value="DamInternalExcept.pas"/>
+      </Item>
+      <Item>
+        <Filename Value="Source\DamInternalExcept.pas"/>
         <UnitName Value="DamInternalExcept"/>
-      </Item4>
+      </Item>
     </Files>
-    <CompatibilityMode Value="True"/>
-    <RequiredPkgs Count="1">
-      <Item1>
+    <RequiredPkgs>
+      <Item>
         <PackageName Value="LazDzHTMLText"/>
-      </Item1>
+      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

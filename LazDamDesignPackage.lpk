@@ -8,50 +8,40 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <OtherUnitFiles Value="Design"/>
+        <OtherUnitFiles Value="Source\Design"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Other>
-        <CompilerMessages>
-          <IgnoredMessages idx6058="True" idx5093="True" idx5089="True" idx5057="True" idx5028="True" idx5024="True" idx3124="True" idx3123="True"/>
-        </CompilerMessages>
-      </Other>
     </CompilerOptions>
-    <Files Count="6">
-      <Item1>
-        <Filename Value="Dam.lrs"/>
-        <Type Value="LRS"/>
-      </Item1>
-      <Item2>
-        <Filename Value="Design\Vcl.DamFileGenerator.pas"/>
+    <Files>
+      <Item>
+        <Filename Value="Source\Design\Vcl.DamFileGenerator.pas"/>
         <UnitName Value="Vcl.DamFileGenerator"/>
-      </Item2>
-      <Item3>
-        <Filename Value="Design\Vcl.DamFind.pas"/>
+      </Item>
+      <Item>
+        <Filename Value="Source\Design\Vcl.DamFind.pas"/>
         <UnitName Value="Vcl.DamFind"/>
-      </Item3>
-      <Item4>
-        <Filename Value="Design\Vcl.DamList.pas"/>
+      </Item>
+      <Item>
+        <Filename Value="Source\Design\Vcl.DamList.pas"/>
         <UnitName Value="Vcl.DamList"/>
-      </Item4>
-      <Item5>
-        <Filename Value="Design\Vcl.DamMsgEdit.pas"/>
+      </Item>
+      <Item>
+        <Filename Value="Source\Design\Vcl.DamMsgEdit.pas"/>
         <UnitName Value="Vcl.DamMsgEdit"/>
-      </Item5>
-      <Item6>
-        <Filename Value="Design\Vcl.DamReg.pas"/>
+      </Item>
+      <Item>
+        <Filename Value="Source\Design\Vcl.DamReg.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="Vcl.DamReg"/>
-      </Item6>
+      </Item>
     </Files>
-    <CompatibilityMode Value="True"/>
-    <RequiredPkgs Count="2">
-      <Item1>
+    <RequiredPkgs>
+      <Item>
         <PackageName Value="IDEIntf"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <PackageName Value="LazDamPackage"/>
-      </Item2>
+      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

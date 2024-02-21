@@ -12,8 +12,6 @@ Please, read the documentation at GitHub link.
 
 {$INCLUDE 'Defines.inc'}
 
-{$IFDEF FPC}{$mode delphi}{$ENDIF}
-
 interface
 
 uses
@@ -218,7 +216,7 @@ uses
   {$ENDIF}
 {$ENDIF};
 
-const STR_VERSION = '6.1';
+const STR_VERSION = '6.2';
 
 var ObjDefault: TDam = nil;
 
