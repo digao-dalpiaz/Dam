@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{2AEC9D3A-28A5-4A84-93DE-1A111C630472}</ProjectGuid>
         <MainSource>DamPackage_FMX.dpk</MainSource>
-        <ProjectVersion>20.1</ProjectVersion>
+        <ProjectVersion>19.5</ProjectVersion>
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Release</Config>

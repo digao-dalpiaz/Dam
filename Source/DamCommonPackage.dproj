@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{9550D38C-4B10-463A-ABEF-33DB70146799}</ProjectGuid>
         <MainSource>DamCommonPackage.dpk</MainSource>
-        <ProjectVersion>20.1</ProjectVersion>
+        <ProjectVersion>19.5</ProjectVersion>
         <FrameworkType>None</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Release</Config>
