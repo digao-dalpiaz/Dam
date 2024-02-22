@@ -36,13 +36,17 @@
 
 ## What's New
 
+- 02/22/2024 (Version 6.3)
+
+   - Fixed Lazarus Design Package compiling.
+
+<details>
+  <summary>Click here to view the entire changelog</summary>
+
 - 02/20/2024 (Version 6.2)
 
    - Reorganization of component folders (Please completely delete the previous component folder). **WARNING! DCU output folder changed. Now output directory is `Lib\{Platform}\{Config}`. Please review your Library Paths.**
    - Auto-install now supports Delphi 12.
-
-<details>
-  <summary>Click here to view the entire changelog</summary>
 
 - 01/21/2024 (Version 6.1) (*Minimum DzHTMLText version: 5.2*)
 

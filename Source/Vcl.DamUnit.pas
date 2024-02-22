@@ -216,7 +216,7 @@ uses
   {$ENDIF}
 {$ENDIF};
 
-const STR_VERSION = '6.2';
+const STR_VERSION = '6.3';
 
 var ObjDefault: TDam = nil;
 
