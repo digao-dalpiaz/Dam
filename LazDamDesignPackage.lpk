@@ -11,6 +11,12 @@
         <OtherUnitFiles Value="Source\Design"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <IgnoredMessages idx6058="True" idx5024="True" idx3124="True" idx3123="True"/>
+        </CompilerMessages>
+        <CustomOptions Value="-Sd"/>
+      </Other>
     </CompilerOptions>
     <Files>
       <Item>
