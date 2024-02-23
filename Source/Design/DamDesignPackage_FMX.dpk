@@ -32,16 +32,15 @@ package DamDesignPackage_FMX;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
   designide,
   DamPackage_FMX,
   DzHTMLText_VCL;
 
 contains
-  FMX.DamFileGenerator in 'Design\FMX.DamFileGenerator.pas',
-  FMX.DamFind in 'Design\FMX.DamFind.pas',
-  FMX.DamList in 'Design\FMX.DamList.pas',
-  FMX.DamMsgEdit in 'Design\FMX.DamMsgEdit.pas',
-  FMX.DamReg in 'Design\FMX.DamReg.pas';
+  FMX.DamFileGenerator in 'FMX.DamFileGenerator.pas',
+  FMX.DamFind in 'FMX.DamFind.pas',
+  FMX.DamList in 'FMX.DamList.pas',
+  FMX.DamMsgEdit in 'FMX.DamMsgEdit.pas',
+  FMX.DamReg in 'FMX.DamReg.pas';
 
 end.

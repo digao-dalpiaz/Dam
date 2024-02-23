@@ -32,16 +32,15 @@ package DamDesignPackage_VCL;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
   designide,
   DzHTMLText_VCL,
   DamPackage_VCL;
 
 contains
-  Vcl.DamFileGenerator in 'Design\Vcl.DamFileGenerator.pas',
-  Vcl.DamFind in 'Design\Vcl.DamFind.pas',
-  Vcl.DamList in 'Design\Vcl.DamList.pas',
-  Vcl.DamMsgEdit in 'Design\Vcl.DamMsgEdit.pas',
-  Vcl.DamReg in 'Design\Vcl.DamReg.pas';
+  Vcl.DamFileGenerator in 'Vcl.DamFileGenerator.pas',
+  Vcl.DamFind in 'Vcl.DamFind.pas',
+  Vcl.DamList in 'Vcl.DamList.pas',
+  Vcl.DamMsgEdit in 'Vcl.DamMsgEdit.pas',
+  Vcl.DamReg in 'Vcl.DamReg.pas';
 
 end.

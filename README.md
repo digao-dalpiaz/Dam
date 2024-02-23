@@ -36,12 +36,16 @@
 
 ## What's New
 
-- 02/22/2024 (Version 6.3)
+- 02/23/2024 (Version 6.4)
 
-   - Fixed Lazarus Design Package compiling.
+   - Fixed included files path in Design packages (the files was referencing "Design" folder twice).
 
 <details>
   <summary>Click here to view the entire changelog</summary>
+
+- 02/22/2024 (Version 6.3)
+
+   - Fixed Lazarus Design Package compiling.
 
 - 02/20/2024 (Version 6.2)
 
@@ -325,18 +329,11 @@ The Message Dialog: :stuck_out_tongue:
 ### Delphi manual installation
 
 1. Open **Dam.groupproj** in the Delphi.
-
-2. Ensure **Win32** Platform and **Release** config are selected in all packages.
-
+2. Choose desired platform and ensure **Release** config are selected in all packages (Design packages must be compiled in Win32 platform).
 3. Right-click at root item in the tree and choose **Build All**.
-
-4. If you want to use 64 bit platform, change platform in all packages and run a new build.
-
-5. Right-click at **DamDesignPackage_VCL** / **DamDesignPackage_FMX** and choose **Install**.
-
-6. Add Library Path according to the platform in Tools\Options. Example: If you are using Win32, set path = `Lib\Win32\Release`.
-
-7. Run **AfterBuild.bat** to publish DFM and RES to Release folders.
+4. Right-click at **DamDesignPackage_VCL** / **DamDesignPackage_FMX** and choose **Install**.
+5. Add Library Path according to the platform in Tools\Options. Example: If you are using Win32, set path = `Lib\Win32\Release`.
+6. Run **AfterBuild.bat** to publish DFM and RES to Release folders.
 
 > Supports Delphi XE3..Delphi 12
 

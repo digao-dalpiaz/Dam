@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{9D697ED4-C6BC-41D4-B466-409EA0FF0E1A}</ProjectGuid>
         <MainSource>DamDesignPackage_FMX.dpk</MainSource>
-        <ProjectVersion>20.1</ProjectVersion>
+        <ProjectVersion>19.5</ProjectVersion>
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Release</Config>
@@ -103,15 +103,14 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="Dam.dcr"/>
-        <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="designide.dcp"/>
         <DCCReference Include="DamPackage_FMX.dcp"/>
         <DCCReference Include="DzHTMLText_VCL.dcp"/>
-        <DCCReference Include="Design\FMX.DamFileGenerator.pas"/>
-        <DCCReference Include="Design\FMX.DamFind.pas"/>
-        <DCCReference Include="Design\FMX.DamList.pas"/>
-        <DCCReference Include="Design\FMX.DamMsgEdit.pas"/>
-        <DCCReference Include="Design\FMX.DamReg.pas"/>
+        <DCCReference Include="FMX.DamFileGenerator.pas"/>
+        <DCCReference Include="FMX.DamFind.pas"/>
+        <DCCReference Include="FMX.DamList.pas"/>
+        <DCCReference Include="FMX.DamMsgEdit.pas"/>
+        <DCCReference Include="FMX.DamReg.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -135,7 +134,7 @@
             </Delphi.Personality>
             <Platforms>
                 <Platform value="Win32">True</Platform>
-                <Platform value="Win64">True</Platform>
+                <Platform value="Win64">False</Platform>
             </Platforms>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>
