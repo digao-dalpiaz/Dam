@@ -48,6 +48,17 @@ uses
 type
   TBoxComps = {$IFDEF FMX}TRectangle{$ELSE}TPanel{$ENDIF};
 
+  TBmp =
+  {$IFDEF FPC}
+    Graphics
+  {$ELSE}
+    {$IFDEF FMX}
+    FMX.{$IFDEF USE_NEW_UNITS}Graphics{$ELSE}Types{$ENDIF}
+    {$ELSE}
+    Vcl.Graphics
+    {$ENDIF}
+  {$ENDIF}.TBitmap;
+
 type
   TFrmDamDialogDyn = class(TForm)
   private
@@ -61,6 +72,8 @@ type
     DamMsg: TDamMsg;
     DamResult: TDamMsgRes;
     LangStrs: TDamLanguageDefinition;
+
+    VirtualBmp: TBmp;
 
     procedure BuildControls;
 
@@ -90,11 +103,11 @@ type
     procedure OnBtnClick(Sender: TObject);
   public
     constructor CreateNew; reintroduce;
+    destructor Destroy; override;
   end;
 
 const
   BRD_SPACE = 8;
-  BTN_HEIGHT = 25;
   {$IFDEF FMX}
   BRUSH_KIND_NONE = TBrushKind.{$IFDEF USE_NEW_ENUMS}None{$ELSE}bkNone{$ENDIF};
   {$ENDIF}
@@ -114,30 +127,6 @@ begin
   Result := GetControlLeft(C) + C.Width;
 end;
 
-function CalcButtonWidth(Btn: TButton): TPixels;
-type TBmp =
-  {$IFDEF FPC}
-    Graphics
-  {$ELSE}
-    {$IFDEF FMX}
-    FMX.{$IFDEF USE_NEW_UNITS}Graphics{$ELSE}Types{$ENDIF}
-    {$ELSE}
-    Vcl.Graphics
-    {$ENDIF}
-  {$ENDIF}.TBitmap;
-var
-  B: TBmp;
-begin
-  B := TBmp.Create{$IFDEF USE_FMX_OLD_ENV}(1, 1){$ENDIF};
-  try
-    B.Canvas.Font.Assign(Btn.Font);
-
-    Result := Max(B.Canvas.TextWidth(Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF})+20, 75);
-  finally
-    B.Free;
-  end;
-end;
-
 //
 
 constructor TFrmDamDialogDyn.CreateNew;
@@ -150,6 +139,14 @@ begin
   {$IFDEF USE_DPICHANGE}
   OnAfterMonitorDpiChanged := OnAfterDpiChanged;
   {$ENDIF}
+
+  VirtualBmp := TBmp.Create{$IFDEF USE_FMX_OLD_ENV}(1, 1){$ENDIF};
+end;
+
+destructor TFrmDamDialogDyn.Destroy;
+begin
+  VirtualBmp.Free;
+  inherited;
 end;
 
 function RunDamDialog(DamMsg: TDamMsg; const aText: string): TDamMsgRes;
@@ -169,6 +166,9 @@ begin
     F.BuildButtons;
 
     F.SetIcon;
+    {$IFDEF USE_DPICHANGE}
+    F.ScaleForCurrentDPI;
+    {$ENDIF}
     F.CalcFormBounds;
 
     F.ShowModal;
@@ -183,6 +183,7 @@ end;
 procedure TFrmDamDialogDyn.BuildControls;
 var
   Action: TAction;
+  BtnHeight: TPixels;
 begin
   ActionList := TActionList.Create(Self);
 
@@ -226,8 +227,11 @@ begin
   {$ENDIF}
   LbMsg.GeneratePlainText := True;
 
+  VirtualBmp.Canvas.Font.Assign(DamMsg.Dam.ButtonsFont);
+  BtnHeight := VirtualBmp.Canvas.TextHeight('A')+8;
+
   BoxButtons := TBoxComps.Create(Self);
-  BoxButtons.Height := BRD_SPACE+BTN_HEIGHT+BRD_SPACE;
+  BoxButtons.Height := BRD_SPACE+BtnHeight+BRD_SPACE;
   BoxButtons.Parent := Self;
   {$IFDEF FMX}
   BoxButtons.Align := TAlignLayout.{$IFDEF USE_NEW_ENUMS}Bottom{$ELSE}alBottom{$ENDIF};
@@ -239,7 +243,7 @@ begin
   {$ENDIF}
 
   BoxFloatBtns := TBoxComps.Create(Self);
-  BoxFloatBtns.SetBounds(0, BRD_SPACE, 0, BTN_HEIGHT);
+  BoxFloatBtns.SetBounds(0, BRD_SPACE, 0, BtnHeight);
   BoxFloatBtns.Parent := BoxButtons;
   {$IFDEF FMX}
   BoxFloatBtns.Stroke.Kind := BRUSH_KIND_NONE; //remove border
@@ -249,10 +253,11 @@ begin
   {$ENDIF}
 
   BtnHelp := TSpeedButton.Create(Self);
-  BtnHelp.SetBounds(BRD_SPACE, BRD_SPACE, BTN_HEIGHT{width same as height}, BTN_HEIGHT);
+  BtnHelp.SetBounds(BRD_SPACE, BRD_SPACE, VirtualBmp.Canvas.TextWidth('?')+20, BtnHeight);
   BtnHelp.Parent := BoxButtons;
   BtnHelp.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF} := '?';
   BtnHelp.OnClick := BtnHelpClick;
+  BtnHelp.Font.Assign(DamMsg.Dam.ButtonsFont);
 end;
 
 procedure TFrmDamDialogDyn.LoadTextProps(const MsgText: string);
@@ -358,6 +363,7 @@ var
   X: TPixels;
   Btn: TButton;
   Names: array[1..3] of string;
+  BtnText: string;
 begin
   case DamMsg.Buttons of
     dbOne, dbOK: NumButtons := 1;
@@ -386,13 +392,22 @@ begin
     X := 0;
     for I := 1 to NumButtons do
     begin
+      BtnText := Names[I];
+
       Btn := TButton.Create(Self);
       Btn.Parent := BoxFloatBtns;
-      Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF} := Names[I];
+      Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF} := BtnText;
       Btn.OnClick := OnBtnClick;
       Btn.Tag := I;
+      {$IFDEF FMX}
+      Btn.TextSettings.Font.Assign(DamMsg.Dam.ButtonsFont);
+      Btn.TextSettings.FontColor := DamMsg.Dam.ButtonsFontColor;
+      Btn.StyledSettings := [];
+      {$ELSE}
+      Btn.Font.Assign(DamMsg.Dam.ButtonsFont);
+      {$ENDIF}
 
-      Btn.SetBounds(X, 0, CalcButtonWidth(Btn), BoxFloatBtns.Height);
+      Btn.SetBounds(X, 0, Max(VirtualBmp.Canvas.TextWidth(BtnText)+20, 75), BoxFloatBtns.Height);
       X := X + Btn.Width + BRD_SPACE;
 
       ButtonsList.Add(Btn);

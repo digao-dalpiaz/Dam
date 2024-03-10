@@ -36,12 +36,17 @@
 
 ## What's New
 
-- 02/23/2024 (Version 6.4)
+- 03/10/2024 (Version 6.5)
 
-   - Fixed included files path in Design packages (the files was referencing "Design" folder twice).
+   - New ButtonsFont property (and ButtonsFontColor when FMX).
+   - Fixed adjusting DPI when first display dialog in VCL.
 
 <details>
   <summary>Click here to view the entire changelog</summary>
+
+- 02/23/2024 (Version 6.4)
+
+   - Fixed included files path in Design packages (the files was referencing "Design" folder twice).
 
 - 02/22/2024 (Version 6.3)
 
@@ -435,36 +440,40 @@ MsgInfo('This is a %p message number %p at time %p', ['test', 123, Now]);
 
 ## TDam properties
 
+`ButtonsColor: TColor` = Define background color of buttons area on message dialog.
+
+`ButtonsFont: TFont` = Defines the text font of dialog buttons
+
+`ButtonsFontColor: TAlphaColor` = Defines the text font color of dialog buttons *(Only available in FMX environment)*
+
 `CenterButtons: Boolean` = Define if the buttons at message form will be aligned at center. If this property is false, the buttons will be aligned at right of form.
 
 `DamDefault: Boolean` = Defines if this TDam will be used to fire quick messages (please read Quick Messages section). You only can have one defined as Default in the application.
 
 `DamUnitName: String` = Specify the unit name to be created with all message methods in the project folder. Do not specify file extension, because the component will complete the name automatically with ".pas" extension.
 
+`DialogBorder: Boolean` = Defines if the window of message dialog will contain borders. You can disable this property to create modern dialog themes.
+
 `DialogPosition: TDamDlgPosition` = Defines the dialog form start position:
 - dpScreenCenter: center the window based on the screen
 - dpMainFormCenter: center the window based on the main window
 - dpActiveFormCenter: center the window based on the active window
 
-`DialogBorder: Boolean` = Defines if the window of message dialog will contain borders. You can disable this property to create modern dialog themes.
-
 `HandleExceptions: Boolean` = Defines this TDam to handle all application exceptions, showing the error message with the same dialog as all other Dam messages. Only one TDam can be set to handle exceptions in the application.
+
+`HideIcon: Boolean` = If True, the icon on the message dialog will be suppressed.
 
 `Images: TCustomImageList` = Allows you to set an ImageList, using tag `<img:idx>` in the message text, where `idx` is image index.
 
 `Language: TDamLanguage` = Defines the language used by message buttons and message form title. *When you place an instance of TDam component, this property will be initialized according to the system current language. If there is no language available according to the system, English language will be set. This property has no default value, precisely because it should store the language being defined.*
+
+`MessageColor: TColor` = Define background color of message area on message dialog.
 
 `MessageFont: TFont` = Defines the text font of messages
 
 `MessageFontColor: TAlphaColor` = Defines the text font color of messages *(Only available in FMX environment)*
 
 `PlaySounds: Boolean` = Enable system sounds when showing messages of Warning, Question and Error kinds.
-
-`MessageColor: TColor` = Define background color of message area on message dialog.
-
-`ButtonsColor: TColor` = Define background color of buttons area on message dialog.
-
-`HideIcon: Boolean` = If True, the icon on the message dialog will be suppressed.
 
 ## TDam events
 

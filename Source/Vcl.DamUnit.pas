@@ -75,9 +75,11 @@ type
     FImages: TCustomImageList;
     {$ENDIF}
 
-    FFont: TFont;
+    FMessageFont: TFont;
+    FButtonsFont: TFont;
     {$IFDEF FMX}
-    FFontColor: TAnyColor;
+    FMessageFontColor: TAnyColor;
+    FButtonsFontColor: TAnyColor;
     {$ENDIF}
     FDefault: Boolean;
     FUnit: string;
@@ -92,8 +94,10 @@ type
     procedure SetImages(const Value: TCustomImageList);
     {$ENDIF}
 
-    procedure SetFont(const Value: TFont);
-    function GetFontStored: Boolean;
+    procedure SetMessageFont(const Value: TFont);
+    procedure SetButtonsFont(const Value: TFont);
+    function GetMessageFontStored: Boolean;
+    function GetButtonsFontStored: Boolean;
 
     function ShowDialog(Msg: TDamMsg; const Text: string): TDamMsgRes;
     procedure OnError(Sender: TObject; E: Exception);
@@ -111,9 +115,11 @@ type
     {$IFDEF USE_IMGLST}
     property Images: TCustomImageList read FImages write SetImages;
     {$ENDIF}
-    property MessageFont: TFont read FFont write SetFont stored GetFontStored;
+    property MessageFont: TFont read FMessageFont write SetMessageFont stored GetMessageFontStored;
+    property ButtonsFont: TFont read FButtonsFont write SetButtonsFont stored GetButtonsFontStored;
     {$IFDEF FMX}
-    property MessageFontColor: TAnyColor read FFontColor write FFontColor default TAlphaColors.Black;
+    property MessageFontColor: TAnyColor read FMessageFontColor write FMessageFontColor default TAlphaColors.Black;
+    property ButtonsFontColor: TAnyColor read FButtonsFontColor write FButtonsFontColor default TAlphaColors.Black;
     {$ENDIF}
     property DamDefault: Boolean read FDefault write FDefault default False;
     property DamUnitName: string read FUnit write FUnit;
@@ -216,7 +222,7 @@ uses
   {$ENDIF}
 {$ENDIF};
 
-const STR_VERSION = '6.4';
+const STR_VERSION = '6.5';
 
 var ObjDefault: TDam = nil;
 
@@ -444,18 +450,28 @@ end;
 
 // -- TDam
 
+procedure SetFontDefaults(F: TFont);
+begin
+  F.{$IFDEF FMX}Family{$ELSE}Name{$ENDIF} := DEF_FONT_NAME;
+  F.Size := DEF_FONT_SIZE;
+end;
+
 constructor TDam.Create(AOwner: TComponent);
 begin
   inherited;
 
   FAbout := 'Digao Dalpiaz / Version '+STR_VERSION;
 
-  FFont := TFont.Create;
-  FFont.{$IFDEF FMX}Family{$ELSE}Name{$ENDIF} := DEF_FONT_NAME;
+  FMessageFont := TFont.Create;
+  SetFontDefaults(FMessageFont);
+
+  FButtonsFont := TFont.Create;
+  SetFontDefaults(FButtonsFont);
+
   {$IFDEF FMX}
-  FFontColor := TAlphaColors.Black;
+  FMessageFontColor := TAlphaColors.Black;
+  FButtonsFontColor := TAlphaColors.Black;
   {$ENDIF}
-  FFont.Size := DEF_FONT_SIZE;
 
   FSounds := True;
 
@@ -469,7 +485,8 @@ end;
 
 destructor TDam.Destroy;
 begin
-  FFont.Free;
+  FMessageFont.Free;
+  FButtonsFont.Free;
 
   if not (csDesigning in ComponentState) then
   begin
@@ -525,29 +542,43 @@ begin
 end;
 {$ENDIF}
 
-procedure TDam.SetFont(const Value: TFont);
+procedure TDam.SetMessageFont(const Value: TFont);
 begin
-  FFont.Assign(Value);
+  FMessageFont.Assign(Value);
 end;
 
-function TDam.GetFontStored: Boolean;
+procedure TDam.SetButtonsFont(const Value: TFont);
 begin
-  Result := not (
+  FButtonsFont.Assign(Value);
+end;
+
+function IsFontDefaults(F: TFont): Boolean;
+begin
+  Result :=
    {$IFDEF FMX}
-   (FFont.Family = DEF_FONT_NAME) and
-   (FFont.Size = DEF_FONT_SIZE) and
-   (FFont.Style = [])
+   (F.Family = DEF_FONT_NAME) and
+   (F.Size = DEF_FONT_SIZE) and
+   (F.Style = [])
    {$ELSE}
-   (FFont.Charset = 1) and
-   (FFont.Color = {$IFDEF FPC}clDefault{$ELSE}clWindowText{$ENDIF}) and
-   (FFont.Name = DEF_FONT_NAME) and
-   (FFont.Orientation = 0) and
-   (FFont.Pitch = fpDefault) and
-   (FFont.Size = DEF_FONT_SIZE) and
-   (FFont.Style = []) and
-   (FFont.Quality = fqDefault)
-   {$ENDIF}
-  );
+   (F.Charset = 1) and
+   (F.Color = {$IFDEF FPC}clDefault{$ELSE}clWindowText{$ENDIF}) and
+   (F.Name = DEF_FONT_NAME) and
+   (F.Orientation = 0) and
+   (F.Pitch = fpDefault) and
+   (F.Size = DEF_FONT_SIZE) and
+   (F.Style = []) and
+   (F.Quality = fqDefault)
+   {$ENDIF};
+end;
+
+function TDam.GetMessageFontStored: Boolean;
+begin
+  Result := not IsFontDefaults(FMessageFont);
+end;
+
+function TDam.GetButtonsFontStored: Boolean;
+begin
+  Result := not IsFontDefaults(FButtonsFont);
 end;
 
 function TDam.ShowDialog(Msg: TDamMsg; const Text: string): TDamMsgRes;
