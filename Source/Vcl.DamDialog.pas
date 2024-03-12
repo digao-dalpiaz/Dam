@@ -166,7 +166,7 @@ begin
     F.BuildButtons;
 
     F.SetIcon;
-    {$IFDEF USE_DPICHANGE}
+    {$IF Defined(VCL) and Defined(DCC) and (CompilerVersion >= 31)} //Delphi 10.1 Berlin
     F.ScaleForCurrentDPI;
     {$ENDIF}
     F.CalcFormBounds;
