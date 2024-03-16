@@ -36,13 +36,17 @@
 
 ## What's New
 
+- 03/16/2024 (Version 6.6)
+
+   - Fix Delphi 10 Seattle compiling (ScaleForCurrentDPI only available in Delphi 10.1 Berlin)
+
+<details>
+  <summary>Click here to view the entire changelog</summary>
+
 - 03/10/2024 (Version 6.5)
 
    - New ButtonsFont property (and ButtonsFontColor when FMX).
    - Fixed adjusting DPI when first display dialog in VCL.
-
-<details>
-  <summary>Click here to view the entire changelog</summary>
 
 - 02/23/2024 (Version 6.4)
 

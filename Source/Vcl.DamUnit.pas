@@ -222,7 +222,7 @@ uses
   {$ENDIF}
 {$ENDIF};
 
-const STR_VERSION = '6.5';
+const STR_VERSION = '6.6';
 
 var ObjDefault: TDam = nil;
 
