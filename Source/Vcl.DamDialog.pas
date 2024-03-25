@@ -382,7 +382,6 @@ var
   I: Integer;
   Btn: TButton;
   Names: array[1..3] of string;
-  BtnText: string;
 begin
   case DamMsg.Buttons of
     dbOne, dbOK: NumButtons := 1;
@@ -408,11 +407,9 @@ begin
 
   for I := 1 to NumButtons do
   begin
-    BtnText := Names[I];
-
     Btn := TButton.Create(Self);
     Btn.Parent := BoxFloatBtns;
-    Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF} := BtnText;
+    SetButtonText(Btn, Names[I]);
     Btn.OnClick := OnBtnClick;
     Btn.Tag := I;
     {$IFDEF FMX}
