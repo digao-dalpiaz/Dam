@@ -66,12 +66,14 @@ type
     LbMsg: TDzHTMLText;
     BoxMsg, BoxButtons, BoxFloatBtns: TBoxComps;
 
-    BtnHelp: TSpeedButton;
+    BtnHelp: TButton;
     ActionList: TActionList;
 
     DamMsg: TDamMsg;
     DamResult: TDamMsgRes;
     LangStrs: TDamLanguageDefinition;
+
+    ButtonsList: TList<TButton>;
 
     VirtualBmp: TBmp;
 
@@ -127,6 +129,16 @@ begin
   Result := GetControlLeft(C) + C.Width;
 end;
 
+function GetButtonText(Btn: TButton): string;
+begin
+  Result := Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF};
+end;
+
+procedure SetButtonText(Btn: TButton; const Text: string);
+begin
+  Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF} := Text;
+end;
+
 //
 
 constructor TFrmDamDialogDyn.CreateNew;
@@ -140,11 +152,14 @@ begin
   OnAfterMonitorDpiChanged := OnAfterDpiChanged;
   {$ENDIF}
 
+  ButtonsList := TList<TButton>.Create;
+
   VirtualBmp := TBmp.Create{$IFDEF USE_FMX_OLD_ENV}(1, 1){$ENDIF};
 end;
 
 destructor TFrmDamDialogDyn.Destroy;
 begin
+  ButtonsList.Free;
   VirtualBmp.Free;
   inherited;
 end;
@@ -155,6 +170,8 @@ var
 begin
   F := TFrmDamDialogDyn.CreateNew;
   try
+    {$IFDEF FPC}F.PixelsPerInch := 96;{$ENDIF}
+
     F.DamMsg := DamMsg;
     F.LangStrs := LoadLanguage(DamMsg.Dam.Language);
 
@@ -165,10 +182,13 @@ begin
     F.SetHelpButton;
     F.BuildButtons;
 
-    F.SetIcon;
     {$IF Defined(VCL) and Defined(DCC) and (CompilerVersion >= 31)} //Delphi 10.1 Berlin
     F.ScaleForCurrentDPI;
     {$ENDIF}
+    {$IFDEF FPC}
+    F.AutoScale;
+    {$ENDIF}
+    F.SetIcon;
     F.CalcFormBounds;
 
     F.ShowModal;
@@ -252,12 +272,13 @@ begin
   BoxFloatBtns.BevelOuter := bvNone;
   {$ENDIF}
 
-  BtnHelp := TSpeedButton.Create(Self);
-  BtnHelp.SetBounds(BRD_SPACE, BRD_SPACE, VirtualBmp.Canvas.TextWidth('?')+20, BtnHeight);
+  BtnHelp := TButton.Create(Self);
+  BtnHelp.SetBounds(BRD_SPACE, BRD_SPACE, 0, BtnHeight);
   BtnHelp.Parent := BoxButtons;
-  BtnHelp.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF} := '?';
   BtnHelp.OnClick := BtnHelpClick;
+  BtnHelp.TabStop := False;
   BtnHelp.Font.Assign(DamMsg.Dam.ButtonsFont);
+  SetButtonText(BtnHelp, '?');
 end;
 
 procedure TFrmDamDialogDyn.LoadTextProps(const MsgText: string);
@@ -357,10 +378,8 @@ end;
 
 procedure TFrmDamDialogDyn.BuildButtons;
 var
-  ButtonsList: TList<TButton>;
   NumButtons: Byte;
   I: Integer;
-  X: TPixels;
   Btn: TButton;
   Names: array[1..3] of string;
   BtnText: string;
@@ -387,42 +406,31 @@ begin
       end;
   end;
 
- ButtonsList := TList<TButton>.Create;
- try
-    X := 0;
-    for I := 1 to NumButtons do
-    begin
-      BtnText := Names[I];
+  for I := 1 to NumButtons do
+  begin
+    BtnText := Names[I];
 
-      Btn := TButton.Create(Self);
-      Btn.Parent := BoxFloatBtns;
-      Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF} := BtnText;
-      Btn.OnClick := OnBtnClick;
-      Btn.Tag := I;
-      {$IFDEF FMX}
-      Btn.TextSettings.Font.Assign(DamMsg.Dam.ButtonsFont);
-      Btn.TextSettings.FontColor := DamMsg.Dam.ButtonsFontColor;
-      Btn.StyledSettings := [];
-      {$ELSE}
-      Btn.Font.Assign(DamMsg.Dam.ButtonsFont);
-      {$ENDIF}
+    Btn := TButton.Create(Self);
+    Btn.Parent := BoxFloatBtns;
+    Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF} := BtnText;
+    Btn.OnClick := OnBtnClick;
+    Btn.Tag := I;
+    {$IFDEF FMX}
+    Btn.TextSettings.Font.Assign(DamMsg.Dam.ButtonsFont);
+    Btn.TextSettings.FontColor := DamMsg.Dam.ButtonsFontColor;
+    Btn.StyledSettings := [];
+    {$ELSE}
+    Btn.Font.Assign(DamMsg.Dam.ButtonsFont);
+    {$ENDIF}
 
-      Btn.SetBounds(X, 0, Max(VirtualBmp.Canvas.TextWidth(BtnText)+20, 75), BoxFloatBtns.Height);
-      X := X + Btn.Width + BRD_SPACE;
+    ButtonsList.Add(Btn);
+  end;
 
-      ButtonsList.Add(Btn);
-    end;
-
-    ButtonsList.Last.Cancel := True;
-    if DamMsg.SwapFocus then
-      ActiveControl := ButtonsList.Last
-    else
-      ActiveControl := ButtonsList.First; //In FMX, first control is not auto focused
-
-    BoxFloatBtns.Width := GetControlRight(ButtonsList.Last);
- finally
-   ButtonsList.Free;
- end;
+  ButtonsList.Last.Cancel := True;
+  if DamMsg.SwapFocus then
+    ActiveControl := ButtonsList.Last
+  else
+    ActiveControl := ButtonsList.First; //In FMX, first control is not auto focused
 end;
 
 {$IFDEF VCL}
@@ -551,9 +559,24 @@ procedure TFrmDamDialogDyn.CalcFormBounds;
 var
   Brd, X, IconHeight, Y: TPixels;
   Delta: Extended;
+  Btn: TButton;
 begin
   //!!! All sizes must be scaled in this method
   Brd := GetControlLeft(Icon); //default border scaled
+
+  //--Buttons
+
+  VirtualBmp.Canvas.Font.Assign(ButtonsList.First.Font); //font scaled
+
+  BtnHelp.Width := VirtualBmp.Canvas.TextWidth(GetButtonText(BtnHelp))+(2*Brd);
+
+  X := 0;
+  for Btn in ButtonsList do
+  begin
+    Btn.SetBounds(X, 0, Max(VirtualBmp.Canvas.TextWidth(GetButtonText(Btn))+(2*Brd), LbMsg.CalcScale(75)), BoxFloatBtns.Height);
+    X := X + Btn.Width + Brd;
+  end;
+  BoxFloatBtns.Width := GetControlRight(ButtonsList.Last);
 
   //--WIDTH--
 

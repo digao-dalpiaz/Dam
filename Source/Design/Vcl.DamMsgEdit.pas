@@ -160,7 +160,7 @@ begin
   {$ELSE}
   LbMsg.Font.Assign(Dam.MessageFont);
     {$IFDEF DCC}
-    LbMsg.Font.Size := LbMsg.CalcFontHeight(Dam.MessageFont.Size); //** need to scale manually
+    LbMsg.Font.Height := LbMsg.CalcFontHeight(Dam.MessageFont.Size); //** need to scale manually
     {$ENDIF}
   LbMsg.Images := Dam.Images; //there is no way to read FMX ImageList in VCL design!!!
   {$ENDIF}

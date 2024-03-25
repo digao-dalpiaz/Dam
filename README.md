@@ -36,12 +36,19 @@
 
 ## What's New
 
-- 03/16/2024 (Version 6.6)
+- 03/25/2024 (Version 6.7) (*Minimum DzHTMLText version: 6.3*)
 
-   - Fix Delphi 10 Seattle compiling (ScaleForCurrentDPI only available in Delphi 10.1 Berlin)
+   - Fix message icon scaling when showing message (VCL)
+   - Fix Lazarus message scaling
+   - Fix Delphi message editor text preview scaling
+   - Calculate buttons width after DPI scaling
 
 <details>
   <summary>Click here to view the entire changelog</summary>
+
+- 03/16/2024 (Version 6.6)
+
+   - Fix Delphi 10 Seattle compiling (ScaleForCurrentDPI only available in Delphi 10.1 Berlin)
 
 - 03/10/2024 (Version 6.5)
 

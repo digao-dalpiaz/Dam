@@ -222,7 +222,7 @@ uses
   {$ENDIF}
 {$ENDIF};
 
-const STR_VERSION = '6.6';
+const STR_VERSION = '6.7';
 
 var ObjDefault: TDam = nil;
 
@@ -637,7 +637,7 @@ begin
 end;
 
 initialization
-  if DZHTMLTEXT_INTERNAL_VERSION < 708 then
+  if DZHTMLTEXT_INTERNAL_VERSION < 713 then
     raise EDamInternalExcept.Create('Please, update DzHTMLText component.');
 
 end.
