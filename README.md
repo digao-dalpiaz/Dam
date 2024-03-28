@@ -1,3 +1,5 @@
+:newspaper: [Digao Dalpiaz News on Telegram](https://t.me/digaodalpiaznews)
+
 ![Preview](images/dam_preview.gif)
 
 # Dam
