@@ -32,9 +32,8 @@ uses
   {$IFDEF FMX}
   FMX.DzHTMLText,
   FMX.Forms, FMX.Objects, FMX.ActnList, FMX.Types, FMX.Controls, FMX.Platform,
-    {$IFDEF USE_NEW_UNITS}
-    FMX.StdCtrls, FMX.Graphics,
-    {$ENDIF}
+  FMX.StdCtrls, FMX.Graphics,
+    {$IFDEF MSWINDOWS}FMX.Platform.Win, {$ENDIF}
   {$ELSE}
   Vcl.DzHTMLText,
   Vcl.Forms, System.Actions, Vcl.ActnList, Vcl.StdCtrls,
@@ -53,7 +52,7 @@ type
     Graphics
   {$ELSE}
     {$IFDEF FMX}
-    FMX.{$IFDEF USE_NEW_UNITS}Graphics{$ELSE}Types{$ENDIF}
+    FMX.Graphics
     {$ELSE}
     Vcl.Graphics
     {$ENDIF}
@@ -66,7 +65,7 @@ type
     LbMsg: TDzHTMLText;
     BoxMsg, BoxButtons, BoxFloatBtns: TBoxComps;
 
-    BtnHelp: TButton;
+    BtnHelp: TSpeedButton;
     ActionList: TActionList;
 
     DamMsg: TDamMsg;
@@ -76,19 +75,23 @@ type
     ButtonsList: TList<TButton>;
 
     VirtualBmp: TBmp;
+    DisplayRect, OutAreaRect: TRect; //absolute rect - always integer even in FMX
+    DisplayWidth: TPixels;
+    {$IFDEF FMX_WIN}
+    DisplayScale: Single;
+    {$ENDIF}
 
     procedure BuildControls;
-
-    function GetCurrentMonitorWidth: Integer;
-
+    procedure LoadTextProps(const MsgText: string);
     procedure SetFormCustomization;
     procedure SetFormTitle;
-    procedure SetIcon;
     procedure SetHelpButton;
     procedure BuildButtons;
-    procedure LoadTextProps(const MsgText: string);
 
+    procedure GetDisplayRect;
+    procedure SetIcon;
     procedure CalcFormBounds;
+    procedure FormPositioning;
 
     procedure DoSound;
 
@@ -110,9 +113,7 @@ type
 
 const
   BRD_SPACE = 8;
-  {$IFDEF FMX}
-  BRUSH_KIND_NONE = TBrushKind.{$IFDEF USE_NEW_ENUMS}None{$ELSE}bkNone{$ENDIF};
-  {$ENDIF}
+  DEFAULT_PPI = 96;
 
 function GetDiv2(Value: TPixels): TPixels;
 begin
@@ -129,22 +130,12 @@ begin
   Result := GetControlLeft(C) + C.Width;
 end;
 
-function GetButtonText(Btn: TButton): string;
-begin
-  Result := Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF};
-end;
-
-procedure SetButtonText(Btn: TButton; const Text: string);
-begin
-  Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF} := Text;
-end;
-
 //
 
 constructor TFrmDamDialogDyn.CreateNew;
 begin
   //using CreateNew for resources to work correctly
-  inherited CreateNew(Screen.ActiveForm); //active form is used when centering by active form
+  inherited CreateNew(Application);
 
   OnShow := FormShow;
 
@@ -154,7 +145,7 @@ begin
 
   ButtonsList := TList<TButton>.Create;
 
-  VirtualBmp := TBmp.Create{$IFDEF USE_FMX_OLD_ENV}(1, 1){$ENDIF};
+  VirtualBmp := TBmp.Create;
 end;
 
 destructor TFrmDamDialogDyn.Destroy;
@@ -170,7 +161,10 @@ var
 begin
   F := TFrmDamDialogDyn.CreateNew;
   try
-    {$IFDEF FPC}F.PixelsPerInch := 96;{$ENDIF}
+    {$IFDEF FPC}
+    //this does not work if placed in CreateNew
+    F.PixelsPerInch := DEFAULT_PPI;
+    {$ENDIF}
 
     F.DamMsg := DamMsg;
     F.LangStrs := LoadLanguage(DamMsg.Dam.Language);
@@ -182,15 +176,24 @@ begin
     F.SetHelpButton;
     F.BuildButtons;
 
-    {$IF Defined(VCL) and Defined(DCC) and (CompilerVersion >= 31)} //Delphi 10.1 Berlin
-    F.ScaleForCurrentDPI;
-    {$ENDIF}
-    {$IFDEF FPC}
-    F.AutoScale;
+    F.GetDisplayRect;
+
+    {$IFDEF VCL}
+      {$IFDEF DCC}
+        {$IF CompilerVersion >= 31} //Delphi 10.1 Berlin
+        F.ScaleForCurrentDPI;
+        {$ELSE}
+        F.ChangeScale(F.Monitor.PixelsPerInch, DEFAULT_PPI);
+        //there is an issue here: if form moved to another display with different dpi, scaling will be wrong
+        {$ENDIF}
+      {$ELSE}
+      F.AutoScale;
+      {$ENDIF}
     {$ENDIF}
     F.SetIcon;
     F.CalcFormBounds;
 
+    F.FormPositioning;
     F.ShowModal;
     Result := F.DamResult;
   finally
@@ -220,8 +223,8 @@ begin
   BoxMsg := TBoxComps.Create(Self);
   BoxMsg.Parent := Self;
   {$IFDEF FMX}
-  BoxMsg.Align := TAlignLayout.{$IFDEF USE_NEW_ENUMS}Client{$ELSE}alClient{$ENDIF};
-  BoxMsg.Stroke.Kind := BRUSH_KIND_NONE; //remove border
+  BoxMsg.Align := TAlignLayout.Client;
+  BoxMsg.Stroke.Kind := TBrushKind.None; //remove border
   {$ELSE}
   BoxMsg.Align := alClient;
   BoxMsg.BevelOuter := bvNone;
@@ -254,8 +257,8 @@ begin
   BoxButtons.Height := BRD_SPACE+BtnHeight+BRD_SPACE;
   BoxButtons.Parent := Self;
   {$IFDEF FMX}
-  BoxButtons.Align := TAlignLayout.{$IFDEF USE_NEW_ENUMS}Bottom{$ELSE}alBottom{$ENDIF};
-  BoxButtons.Stroke.Kind := BRUSH_KIND_NONE; //remove border
+  BoxButtons.Align := TAlignLayout.Bottom;
+  BoxButtons.Stroke.Kind := TBrushKind.None; //remove border
   {$ELSE}
   BoxButtons.Align := alBottom;
   BoxButtons.BevelOuter := bvNone;
@@ -266,27 +269,23 @@ begin
   BoxFloatBtns.SetBounds(0, BRD_SPACE, 0, BtnHeight);
   BoxFloatBtns.Parent := BoxButtons;
   {$IFDEF FMX}
-  BoxFloatBtns.Stroke.Kind := BRUSH_KIND_NONE; //remove border
-  BoxFloatBtns.Fill.Kind := BRUSH_KIND_NONE; //transparent background
+  BoxFloatBtns.Stroke.Kind := TBrushKind.None; //remove border
+  BoxFloatBtns.Fill.Kind := TBrushKind.None; //transparent background
   {$ELSE}
   BoxFloatBtns.BevelOuter := bvNone;
   {$ENDIF}
 
-  BtnHelp := TButton.Create(Self);
+  BtnHelp := TSpeedButton.Create(Self);
   BtnHelp.SetBounds(BRD_SPACE, BRD_SPACE, 0, BtnHeight);
   BtnHelp.Parent := BoxButtons;
   BtnHelp.OnClick := BtnHelpClick;
-  BtnHelp.TabStop := False;
   BtnHelp.Font.Assign(DamMsg.Dam.ButtonsFont);
-  SetButtonText(BtnHelp, '?');
+  BtnHelp.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF} := '?';
 end;
 
 procedure TFrmDamDialogDyn.LoadTextProps(const MsgText: string);
 begin
-  {$IFDEF USE_IMGLST}
   LbMsg.Images := DamMsg.Dam.Images;
-  {$ENDIF}
-
   LbMsg.Font.Assign(DamMsg.Dam.MessageFont); //keep this always before automatic scaling
   {$IFDEF FMX}
   LbMsg.FontColor := DamMsg.Dam.MessageFontColor;
@@ -300,22 +299,15 @@ end;
 
 procedure TFrmDamDialogDyn.SetFormCustomization;
 begin
-  case DamMsg.Dam.DialogPosition of
-    dpScreenCenter: Position := {$IFDEF FMX}TFormPosition.{$IFDEF USE_NEW_ENUMS}ScreenCenter{$ELSE}poScreenCenter{$ENDIF}{$ELSE}poScreenCenter{$ENDIF};
-    dpActiveFormCenter: Position := {$IFDEF FMX}TFormPosition.{$IFDEF USE_NEW_ENUMS}OwnerFormCenter{$ELSE}poOwnerFormCenter{$ENDIF}{$ELSE}poOwnerFormCenter{$ENDIF};
-    dpMainFormCenter: Position := {$IFDEF FMX}TFormPosition.{$IFDEF USE_NEW_ENUMS}MainFormCenter{$ELSE}poMainFormCenter{$ENDIF}{$ELSE}poMainFormCenter{$ENDIF};
-    else raise EDamInternalExcept.Create('Invalid dialog position property');
-  end;
-
   //form border
   {$IFDEF FMX}
   if DamMsg.Dam.DialogBorder then
   begin
-    BorderStyle := TFmxFormBorderStyle.{$IFDEF USE_NEW_ENUMS}Single{$ELSE}bsSingle{$ENDIF};
+    BorderStyle := TFmxFormBorderStyle.Single;
     BorderIcons := []; //How to remove only icon?
   end
   else
-    BorderStyle := TFmxFormBorderStyle.{$IFDEF USE_NEW_ENUMS}None{$ELSE}bsNone{$ENDIF};
+    BorderStyle := TFmxFormBorderStyle.None;
   {$ELSE}
   if DamMsg.Dam.DialogBorder then
     BorderStyle := bsDialog
@@ -328,12 +320,12 @@ begin
   if DamMsg.Dam.MessageColor <> TAlphaColors.Null then
     BoxMsg.Fill.Color := DamMsg.Dam.MessageColor
   else
-    BoxMsg.Fill.Kind := BRUSH_KIND_NONE;
+    BoxMsg.Fill.Kind := TBrushKind.None;
 
   if DamMsg.Dam.ButtonsColor <> TAlphaColors.Null then
     BoxButtons.Fill.Color := DamMsg.Dam.ButtonsColor
   else
-    BoxButtons.Fill.Kind := BRUSH_KIND_NONE;
+    BoxButtons.Fill.Kind := TBrushKind.None;
   {$ELSE}
   BoxMsg.Color := DamMsg.Dam.MessageColor;
   BoxButtons.Color := DamMsg.Dam.ButtonsColor;
@@ -368,12 +360,7 @@ end;
 
 procedure TFrmDamDialogDyn.SetHelpButton;
 begin
-  BtnHelp.Visible :=
-    {$IFDEF VCL}
-    (DamMsg.HelpContext<>0) or (DamMsg.HelpKeyword<>EmptyStr)
-    {$ELSE}
-    False //** here we can implement help event for FMX ???
-    {$ENDIF};
+  BtnHelp.Visible := (DamMsg.HelpContext<>0) or (DamMsg.HelpKeyword<>EmptyStr);
 end;
 
 procedure TFrmDamDialogDyn.BuildButtons;
@@ -409,7 +396,7 @@ begin
   begin
     Btn := TButton.Create(Self);
     Btn.Parent := BoxFloatBtns;
-    SetButtonText(Btn, Names[I]);
+    Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF} := Names[I];
     Btn.OnClick := OnBtnClick;
     Btn.Tag := I;
     {$IFDEF FMX}
@@ -500,56 +487,56 @@ begin
   {$ENDIF}
 end;
 
-function TFrmDamDialogDyn.GetCurrentMonitorWidth: Integer;
+procedure TFrmDamDialogDyn.GetDisplayRect;
 var
-  R: TRect;
+  OutForm, FormToGetMonitor: {$IFDEF FMX}TCommonCustomForm{$ELSE}TForm{$ENDIF};
 
-{$IFDEF FMX}
-  {$IFDEF USE_FMX_OLD_ENV}
-  ScreenService: IFMXScreenService;
-  {$ELSE}
-  D: TDisplay;
-
-  function GetPrimaryDisplay: TDisplay;
-  var
-    I: Integer;
-  begin
-    for I := 0 to Screen.DisplayCount-1 do
-      if Screen.Displays[I].Primary then
-        Exit(Screen.Displays[I]);
-
-    raise EDamInternalExcept.Create('Primary display not found');
-  end;
-  {$ENDIF}
-{$ELSE}
-  M: TMonitor;
-{$ENDIF}
-
-begin
   {$IFDEF FMX}
-    {$IFDEF USE_FMX_OLD_ENV}
-    if TPlatformServices.Current.SupportsPlatformService(IFMXScreenService, IInterface(ScreenService)) then
-      R := TRect.Create(0, 0, Round(ScreenService.GetScreenSize.X), Round(ScreenService.GetScreenSize.Y))
-    else
-      raise EDamInternalExcept.Create('Could not get Monitor Rect');
-    {$ELSE}
-    if Screen.ActiveForm <> nil then
-      D := Screen.DisplayFromForm(Screen.ActiveForm)
-    else
-      D := GetPrimaryDisplay;
-
-    R := D.BoundsRect{$IF CompilerVersion >= 35}.Round{$ENDIF}; //Round - Delphi 11
-    {$ENDIF}
-  {$ELSE}
-    if Screen.ActiveForm <> nil then
-      M := Screen.ActiveForm.Monitor
-    else
-      M := Screen.PrimaryMonitor;
-
-    R := M.BoundsRect;
+  Display: TDisplay;
+  {$ENDIF}
+begin
+  Position := {$IFDEF FMX}TFormPosition.Designed{$ELSE}poDesigned{$ENDIF};
+  {$IFDEF VCL}
+  DefaultMonitor := dmDesktop; //just to allow form show on manual monitor position
   {$ENDIF}
 
-  Result := R.Width;
+  case DamMsg.Dam.DialogPosition of
+    dpScreenCenter: OutForm := nil;
+    dpActiveFormCenter: OutForm := Screen.ActiveForm;
+    dpMainFormCenter: OutForm := Application.MainForm;
+    else raise EDamInternalExcept.Create('Invalid dialog position property');
+  end;
+
+  FormToGetMonitor := OutForm;
+  if FormToGetMonitor=nil then FormToGetMonitor := Self;
+
+  {$IFDEF FMX}
+    Display := Screen.DisplayFromForm(FormToGetMonitor);
+
+    DisplayRect := Display.PhysicalBounds;
+    DisplayWidth := Display.Bounds.Width; //scaled
+    {$IFDEF MSWINDOWS}DisplayScale := Display.Scale;{$ENDIF}
+  {$ELSE}
+  DisplayRect := FormToGetMonitor.Monitor.BoundsRect;
+  DisplayWidth := DisplayRect.Width;
+
+  //scaling must be based on correct target monitor, so let's put the form in destination monitor
+  //there is no way to set Form.Monitor property, but this will do the job
+  SetBounds(DisplayRect.Left, DisplayRect.Top, Width, Height);
+  {$ENDIF};
+
+  if DamMsg.Dam.PreferDisplayCenter or (OutForm=nil) then
+    OutAreaRect := DisplayRect
+  else
+  begin
+    {$IFDEF FMX_WIN}
+    //in FMX, sizes are already scaled, including form bounds, so we need to call Win API to get physical bounds
+    if not GetWindowRect(WindowHandleToPlatform(OutForm.Handle).Wnd, OutAreaRect) then
+      raise EDamInternalExcept.Create('Error getting window rect');
+    {$ELSE}
+    OutAreaRect := OutForm.{$IFDEF FMX}Bounds{$ELSE}BoundsRect{$ENDIF};
+    {$ENDIF}
+  end;
 end;
 
 procedure TFrmDamDialogDyn.CalcFormBounds;
@@ -565,12 +552,12 @@ begin
 
   VirtualBmp.Canvas.Font.Assign(ButtonsList.First.Font); //font scaled
 
-  BtnHelp.Width := VirtualBmp.Canvas.TextWidth(GetButtonText(BtnHelp))+(2*Brd);
+  BtnHelp.Width := VirtualBmp.Canvas.TextWidth(BtnHelp.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF})+(2*Brd);
 
   X := 0;
   for Btn in ButtonsList do
   begin
-    Btn.SetBounds(X, 0, Max(VirtualBmp.Canvas.TextWidth(GetButtonText(Btn))+(2*Brd), LbMsg.CalcScale(75)), BoxFloatBtns.Height);
+    Btn.SetBounds(X, 0, Max(VirtualBmp.Canvas.TextWidth(Btn.{$IFDEF FMX}Text{$ELSE}Caption{$ENDIF})+(2*Brd), LbMsg.CalcScale(75)), BoxFloatBtns.Height);
     X := X + Btn.Width + Brd;
   end;
   BoxFloatBtns.Width := GetControlRight(ButtonsList.Last);
@@ -580,10 +567,10 @@ begin
   if DamMsg.FixedWidth=0 then
   begin
     Delta := 0.75; //75% of screen width
-    {$IF Defined(DCC) and (CompilerVersion >= 26)} //XE5
+    {$IFDEF DCC}
     if TOSVersion.Platform in [pfiOS, pfAndroid] then Delta := 0.95;
     {$ENDIF}
-    X := Round(GetCurrentMonitorWidth * Delta)
+    X := {$IFDEF VCL}Round{$ENDIF}(DisplayWidth * Delta);
   end
   else
     X := LbMsg.CalcScale(DamMsg.FixedWidth);
@@ -638,6 +625,36 @@ begin
   {$ENDIF}
 end;
 
+procedure TFrmDamDialogDyn.FormPositioning;
+var
+  X, Y, W, H: TPixels;
+begin
+  {$IFDEF FMX_WIN}
+  W := Width * DisplayScale;
+  H := Height * DisplayScale;
+  {$ELSE}
+  W := Width;
+  H := Height;
+  {$ENDIF}
+
+  X := OutAreaRect.Left + GetDiv2(OutAreaRect.Width - W);
+  Y := OutAreaRect.Top + GetDiv2(OutAreaRect.Height - H);
+
+  //--keep dialog inside display bounds
+  if X < DisplayRect.Left then X := DisplayRect.Left;
+  if Y < DisplayRect.Top then X := DisplayRect.Top;
+
+  if X + W > DisplayRect.Right then X := DisplayRect.Right - W;
+  if Y + H > DisplayRect.Bottom then Y := DisplayRect.Bottom - H;
+  //--
+
+  {$IFDEF FMX_WIN}
+  SetWindowPos(WindowHandleToPlatform(Handle).Wnd, 0, Round(X), Round(Y), 0, 0, SWP_NOSIZE);
+  {$ELSE}
+    {$IFDEF FMX}SetBoundsF{$ELSE}SetBounds{$ENDIF}(X, Y, Width, Height);
+  {$ENDIF}
+end;
+
 procedure TFrmDamDialogDyn.FormShow(Sender: TObject);
 begin
   if DamMsg.Dam.PlaySounds then
@@ -671,9 +688,10 @@ begin
   aMsg := LbMsg.PlainText.ToString;
 
   {$IFDEF FMX}
-  if TPlatformServices.Current.SupportsPlatformService(IFMXClipboardService,
-    {$IFDEF USE_FMX_OLD_ENV}IInterface(uClipBoard){$ELSE}uClipBoard{$ENDIF}) then
-    uClipBoard.SetClipboard(aMsg);
+  if not TPlatformServices.Current.SupportsPlatformService(IFMXClipboardService, uClipBoard) then
+    raise EDamInternalExcept.Create('Error getting clipboard service');
+
+  uClipBoard.SetClipboard(aMsg);
   {$ELSE}
   Clipboard.AsText := aMsg;
   {$ENDIF}
@@ -686,7 +704,16 @@ begin
 end;
 
 procedure TFrmDamDialogDyn.BtnHelpClick(Sender: TObject);
+var
+  Handled: Boolean;
 begin
+  if Assigned(DamMsg.Dam.OnHelpClick) then
+  begin
+    Handled := False;
+    DamMsg.Dam.OnHelpClick(DamMsg.Dam, DamMsg, Handled);
+    if Handled then Exit;    
+  end;
+
   {$IFDEF VCL}
   if DamMsg.HelpContext<>0 then
     Application.HelpContext(DamMsg.HelpContext)

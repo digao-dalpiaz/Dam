@@ -1,6 +1,6 @@
 object FrmDamMsgEdit: TFrmDamMsgEdit
-  Left = 288
-  Top = 125
+  Left = 0
+  Top = 0
   BorderStyle = bsDialog
   Caption = 'TDamMsg Editor'
   ClientHeight = 465
@@ -11,7 +11,7 @@ object FrmDamMsgEdit: TFrmDamMsgEdit
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  Position = poDesigned
+  Position = poScreenCenter
   OnCreate = FormCreate
   OnShow = FormShow
   TextHeight = 13

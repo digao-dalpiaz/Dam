@@ -6,7 +6,7 @@
 
 ## Delphi and Lazarus Message Dialogs with Formatted Text
 
-![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-XE3..12-blue.svg)
+![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-10..12-blue.svg)
 ![Platforms](https://img.shields.io/badge/Platforms-Win32,Win64,Android,iOS,Mac,Linux-red.svg)
 ![Auto Install](https://img.shields.io/badge/-Auto%20Install%20App-orange.svg)
 ![VCL and FMX](https://img.shields.io/badge/-VCL%20and%20FMX-lightgrey.svg)
@@ -33,10 +33,20 @@
 - [Raising exceptions](#raising-exceptions)
 - [How to change Language file](#how-to-change-language-file)
 - [Limitations](#limitations)
-- [Delphi versions below XE8 remark](#delphi-versions-below-xe8-remark)
 - [History](#history)
 
 ## What's New
+
+- 03/28/2024 (Version 7.0)
+
+   - Help button now supported in FMX environment
+   - New event OnHelpClick
+   - Message dialog positioning now has full FMX support
+   - New property PreferDisplayCenter
+   - Fix VCL dialog target monitor during scale processing
+
+<details>
+  <summary>Click here to view the entire changelog</summary>
 
 - 03/25/2024 (Version 6.7) (*Minimum DzHTMLText version: 6.3*)
 
@@ -44,9 +54,6 @@
    - Fix Lazarus message scaling
    - Fix Delphi message editor text preview scaling
    - Calculate buttons width after DPI scaling
-
-<details>
-  <summary>Click here to view the entire changelog</summary>
 
 - 03/16/2024 (Version 6.6)
 
@@ -353,7 +360,7 @@ The Message Dialog: :stuck_out_tongue:
 5. Add Library Path according to the platform in Tools\Options. Example: If you are using Win32, set path = `Lib\Win32\Release`.
 6. Run **AfterBuild.bat** to publish DFM and RES to Release folders.
 
-> Supports Delphi XE3..Delphi 12
+> Supports Delphi Delphi 10..Delphi 12
 
 ### Lazarus installation
 
@@ -488,7 +495,16 @@ MsgInfo('This is a %p message number %p at time %p', ['test', 123, Now]);
 
 `PlaySounds: Boolean` = Enable system sounds when showing messages of Warning, Question and Error kinds.
 
+`PreferDisplayCenter: Boolean` = If enabled, when DialogPosition is dpMainFormCenter or dpActiveFormCenter then the dialog will be aligned in the monitor center of target form. If false, the dialog will be aligned in the center of target form directly.
+
 ## TDam events
+
+`OnHelpClick(Sender: TObject; Msg: TDamMsg; var Handled: Boolean)`
+This event will be triggered when clicked on help button in the message dialog.
+
+In VCL, if not handled, the default system help will run.
+
+> The help button is only visible if HelpContext or HelpKeyword properties are set.
 
 `OnLinkClick(Sender: TObject; Msg: TDamMsg; const Target: string; var Handled: Boolean; var CloseMsg: Boolean; var MsgResult: TDamMsgRes)`
 This event will be triggered when clicked on a link contained in the message.
@@ -694,8 +710,6 @@ After that, please run the "**AfterBuild.bat**" to publish this new resource fil
 
 - DamMsg.Icon = diApp not supported.
 - In Message Dialog Editor, linked Dam images are not supported, so the preview is unavailable in the Editor screen.
-- Help settings for TDamMsg (HelpKeyword and HelpContext) are unsupported.
-- When DialogPosition = dpScreenCenter, message dialog always run at primary monitor (Delphi behavior).
 - If OS theme contains different height of message header bar (system menu), Delphi does not show form considering header size, even using ClientRect, so the dialog will be displayed probably bigger than must be. Check this thread: https://stackoverflow.com/questions/76164235/creating-forms-dynamically-border-behavior
 
 ### Windows
@@ -704,23 +718,9 @@ After that, please run the "**AfterBuild.bat**" to publish this new resource fil
 
 ### DPI Scaling (VCL)
 
-- Lazarus and Delphi previous versions than D10 - unsupported re-scaling message at runtime (when moving around different monitors).
+- Lazarus - unsupported re-scaling message at runtime (when moving around different monitors).
+- Delphi 10.0 Seattle may scale dialog message incorrectly if moving arround different monitor with different DPI.
 - DamMsg.Icon = diApp/diCustom does not support auto scaling.
-
-## Delphi versions below XE8 remark
-
-When you are using Delphi versions below XE8, in all Dam methods that contains TDamParams parameter, you will not be able to pass dynamic array parameter directly.
-
-In such cases, use the global function `DamParams`. This function is also available at Dam auto-generated unit.
-
-So, here are some examples of how to use the Dam Message method in these versions:
-
-```delphi
-//Quick message:
-MsgInfo('This is a test message with parameter value = %p', DamParams([999]));
-//Custom message:
-MyCustomMessage(DamParams(['Parameter 1', 'Parameter 2']));
-```
 
 ## History
 

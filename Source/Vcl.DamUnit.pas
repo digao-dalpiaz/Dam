@@ -19,13 +19,11 @@ uses
 {$IFDEF FPC}
   Classes, SysUtils, Graphics, ImgList;
 {$ELSE}
-  System.Classes, System.SysUtils, System.UITypes
+  System.Classes, System.SysUtils, System.UITypes,
   {$IFDEF FMX}
-    , FMX.Types
-    {$IFDEF USE_NEW_UNITS}, FMX.Graphics{$ENDIF}
-    {$IFDEF USE_IMGLST}, FMX.ImgList{$ENDIF}
+  {FMX.Types,} FMX.Graphics, FMX.ImgList
   {$ELSE}
-  , Vcl.Graphics, Vcl.ImgList
+  Vcl.Graphics, Vcl.ImgList
   {$ENDIF};
 {$ENDIF}
 
@@ -62,6 +60,8 @@ type
   TDamLinkClickEvent = procedure(Sender: TObject; Msg: TDamMsg;
     const Target: string; var Handled: Boolean;
     var CloseMsg: Boolean; var MsgResult: TDamMsgRes) of object;
+  TDamHelpClickEvent = procedure(Sender: TObject; Msg: TDamMsg;
+    var Handled: Boolean) of object;
 
   TDam = class(TComponent)
   private
@@ -71,9 +71,7 @@ type
     FSounds: Boolean;
     FHideIcon: Boolean;
 
-    {$IFDEF USE_IMGLST}
     FImages: TCustomImageList;
-    {$ENDIF}
 
     FMessageFont: TFont;
     FButtonsFont: TFont;
@@ -86,13 +84,13 @@ type
     FColorMsg, FColorBtn: TAnyColor;
     FCenterButtons: Boolean;
     FDialogPosition: TDamDlgPosition;
+    FPreferDisplayCenter: Boolean;
     FDialogBorder: Boolean;
     FShowEvent: TDamShowEvent;
     FLinkClick: TDamLinkClickEvent;
+    FHelpClick: TDamHelpClickEvent;
 
-    {$IFDEF USE_IMGLST}
     procedure SetImages(const Value: TCustomImageList);
-    {$ENDIF}
 
     procedure SetMessageFont(const Value: TFont);
     procedure SetButtonsFont(const Value: TFont);
@@ -112,9 +110,7 @@ type
     property About: string read FAbout;
     property Language: TDamLanguage read FLanguage write FLanguage; //do not use default here - language must always be stored
     property HandleExceptions: Boolean read FRaises write FRaises default False;
-    {$IFDEF USE_IMGLST}
     property Images: TCustomImageList read FImages write SetImages;
-    {$ENDIF}
     property MessageFont: TFont read FMessageFont write SetMessageFont stored GetMessageFontStored;
     property ButtonsFont: TFont read FButtonsFont write SetButtonsFont stored GetButtonsFontStored;
     {$IFDEF FMX}
@@ -129,9 +125,11 @@ type
     property ButtonsColor: TAnyColor read FColorBtn write FColorBtn default DEF_BTN_BACKGROUND;
     property CenterButtons: Boolean read FCenterButtons write FCenterButtons default False;
     property DialogPosition: TDamDlgPosition read FDialogPosition write FDialogPosition default dpScreenCenter;
+    property PreferDisplayCenter: Boolean read FPreferDisplayCenter write FPreferDisplayCenter default False;
     property DialogBorder: Boolean read FDialogBorder write FDialogBorder default True;
     property OnShowMessage: TDamShowEvent read FShowEvent write FShowEvent;
     property OnLinkClick: TDamLinkClickEvent read FLinkClick write FLinkClick;
+    property OnHelpClick: TDamHelpClickEvent read FHelpClick write FHelpClick;
   end;
 
   TDamMsg = class(TComponent)
@@ -222,7 +220,7 @@ uses
   {$ENDIF}
 {$ENDIF};
 
-const STR_VERSION = '6.7';
+const STR_VERSION = '7.0';
 
 var ObjDefault: TDam = nil;
 
@@ -367,7 +365,7 @@ constructor TDamMsg.Create(AOwner: TComponent);
 begin
   inherited;
 
-  FCustomIcon := TDamIconObj.Create{$IFDEF USE_FMX_OLD_ENV}(0, 0){$ENDIF};
+  FCustomIcon := TDamIconObj.Create;
   FTitle := dtByIcon;
   FIcon := diInfo;
   FButtons := dbOK;
@@ -521,16 +519,13 @@ procedure TDam.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
 
-  {$IFDEF USE_IMGLST}
   if Operation = opRemove then
   begin
     if AComponent = FImages then
       FImages := nil;
   end;
-  {$ENDIF}
 end;
 
-{$IFDEF USE_IMGLST}
 procedure TDam.SetImages(const Value: TCustomImageList);
 begin
   if Value <> FImages then
@@ -540,7 +535,6 @@ begin
       FImages.FreeNotification(Self);
   end;
 end;
-{$ENDIF}
 
 procedure TDam.SetMessageFont(const Value: TFont);
 begin

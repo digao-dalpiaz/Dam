@@ -10,8 +10,7 @@ uses
 {$ELSE}
   DesignWindows, System.Classes, System.Actions, Vcl.ActnList,
   Vcl.ImgList, Vcl.Controls, Vcl.ComCtrls, Vcl.StdCtrls,
-  Vcl.Buttons, Vcl.ExtCtrls,
-  {$IF CompilerVersion >= 29}System.ImageList, {$ENDIF}
+  Vcl.Buttons, Vcl.ExtCtrls, System.ImageList,
   //
   System.UITypes, System.Types, Vcl.Forms, Winapi.Messages,
   DesignIntf, System.Generics.Collections,
@@ -145,20 +144,13 @@ uses
 const REG_PATH = 'Digao\Dam';
 
 procedure SaveFormPos(Reg: TRegistry; F: TForm);
-var
-  WP: TWindowPlacement;
 begin
-  WP.Length := SizeOf( TWindowPlacement );
-  GetWindowPlacement( F.Handle, @WP );
-
   if Reg.OpenKey('Window', True) then //should return always true !
   begin
-    Reg.WriteInteger('X', WP.rcNormalPosition.Left);
-    Reg.WriteInteger('Y', WP.rcNormalPosition.Top);
-    Reg.WriteInteger('W', WP.rcNormalPosition.Width);
-    Reg.WriteInteger('H', WP.rcNormalPosition.Height);
-
-    Reg.WriteBool('Max', (F.WindowState=wsMaximized) );
+    Reg.WriteInteger('X', F.Left);
+    Reg.WriteInteger('Y', F.Top);
+    Reg.WriteInteger('W', F.ClientWidth);
+    Reg.WriteInteger('H', F.ClientHeight);
   end;
 end;
 
@@ -168,13 +160,8 @@ begin
   begin
     F.Left := Reg.ReadInteger('X');
     F.Top := Reg.ReadInteger('Y');
-    F.Width := Reg.ReadInteger('W');
-    F.Height := Reg.ReadInteger('H');
-
-    if Reg.ReadBool('Max') then
-      F.WindowState := wsMaximized;
-
-    F.Position := poDesigned;
+    F.ClientWidth := Reg.ReadInteger('W');
+    F.ClientHeight := Reg.ReadInteger('H');
   end;
 end;
 {$ENDIF}

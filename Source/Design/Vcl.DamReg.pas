@@ -1,11 +1,5 @@
 {$IFNDEF DESIGN_FMX}unit Vcl.DamReg;{$ENDIF}
 
-{$IFDEF DESIGN_FMX}
-  {$IF CompilerVersion >= 26} //XE5
-    {$DEFINE USE_FMX_NEW_UNITS}
-  {$ENDIF}
-{$ENDIF}
-
 interface
 
 procedure Register;
@@ -18,11 +12,7 @@ uses
 {$ELSE}
   Vcl.Forms, System.Classes, DesignIntf, DesignEditors
   {$IFDEF DESIGN_FMX}
-    {$IFDEF USE_FMX_NEW_UNITS}
-    , FMX.Controls
-    {$ELSE}
-    , FMX.Types
-    {$ENDIF}
+  , FMX.Controls
   {$ELSE}
   , Vcl.Controls
   {$ENDIF}
@@ -47,12 +37,7 @@ procedure RegisterEnv(C: TPersistentClass);
 begin
   GroupDescendentsWith(C,
     {$IFDEF DESIGN_FMX}
-    FMX.
-      {$IFDEF USE_FMX_NEW_UNITS}
-      Controls
-      {$ELSE}
-      Types
-      {$ENDIF}
+    FMX.Controls
     {$ELSE}
     Vcl.Controls
     {$ENDIF}.TControl);

@@ -1,6 +1,6 @@
 object FrmDamList: TFrmDamList
-  Left = 284
-  Top = 124
+  Left = 0
+  Top = 0
   BorderIcons = [biSystemMenu]
   ClientHeight = 340
   ClientWidth = 329
@@ -988,6 +988,8 @@ object FrmDamList: TFrmDamList
         Text = '0/0'
         Width = 50
       end>
+    ExplicitTop = 320
+    ExplicitWidth = 325
   end
   object IL: TImageList
     Left = 136
