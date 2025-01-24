@@ -38,15 +38,19 @@
 
 ## What's New
 
+- 01/24/2025 (Version 6.8)
+
+   - Include Farsi language support
+
+<details>
+  <summary>Click here to view the entire changelog</summary>
+
 - 03/25/2024 (Version 6.7) (*Minimum DzHTMLText version: 6.3*)
 
    - Fix message icon scaling when showing message (VCL)
    - Fix Lazarus message scaling
    - Fix Delphi message editor text preview scaling
    - Calculate buttons width after DPI scaling
-
-<details>
-  <summary>Click here to view the entire changelog</summary>
 
 - 03/16/2024 (Version 6.6)
 

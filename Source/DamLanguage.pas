@@ -14,7 +14,7 @@ uses
 type
   TDamLanguage = (dgEnglish, dgPortuguese, dgSpanish, dgGerman, dgItalian,
     dgChinese, dgJapanese, dgGreek, dgRussian, dgFrench, dgPolish, dgDutch,
-    dgTurkish);
+    dgTurkish, dgFarsi);
 
   TDamLanguageDefinition = record
     OK, Yes, No, Info, Quest, Warn, Error, Msg: string;
@@ -45,7 +45,7 @@ type
   end;
 
 const
-  LANGUAGES_PARAMS: array[0..12] of TLanguageParams = (
+  LANGUAGES_PARAMS: array[0..13] of TLanguageParams = (
     (Name: 'English'   ; DamLang: dgEnglish   ; SysLang: $09 ),
     (Name: 'Portuguese'; DamLang: dgPortuguese; SysLang: $16 ),
     (Name: 'Spanish'   ; DamLang: dgSpanish   ; SysLang: $0a ),
@@ -58,7 +58,8 @@ const
     (Name: 'French'    ; DamLang: dgFrench    ; SysLang: $0c ),
     (Name: 'Polish'    ; DamLang: dgPolish    ; SysLang: $15 ),
     (Name: 'Dutch'     ; DamLang: dgDutch     ; SysLang: $13 ),
-    (Name: 'Turkish'   ; DamLang: dgTurkish   ; SysLang: $1f )
+    (Name: 'Turkish'   ; DamLang: dgTurkish   ; SysLang: $1f ),
+    (Name: 'Farsi'     ; DamLang: dgFarsi     ; SysLang: $29 )
   );
 
 procedure SetDamLangBySysLang(var DamLang: TDamLanguage);
